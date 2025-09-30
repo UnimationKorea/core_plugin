@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// ../.wrangler/tmp/bundle-3aPd7Z/strip-cf-connecting-ip-header.js
+// .wrangler/tmp/bundle-hGDLfd/strip-cf-connecting-ip-header.js
 function stripCfConnectingIPHeader(input, init) {
   const request = new Request(input, init);
   request.headers.delete("CF-Connecting-IP");
@@ -16,24 +16,40 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
   }
 });
 
-// _worker.js
+// .wrangler/tmp/pages-OrBWMK/bundledWorker-0.28384737812662975.mjs
+var __defProp2 = Object.defineProperty;
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+function stripCfConnectingIPHeader2(input, init) {
+  const request = new Request(input, init);
+  request.headers.delete("CF-Connecting-IP");
+  return request;
+}
+__name(stripCfConnectingIPHeader2, "stripCfConnectingIPHeader");
+__name2(stripCfConnectingIPHeader2, "stripCfConnectingIPHeader");
+globalThis.fetch = new Proxy(globalThis.fetch, {
+  apply(target, thisArg, argArray) {
+    return Reflect.apply(target, thisArg, [
+      stripCfConnectingIPHeader2.apply(null, argArray)
+    ]);
+  }
+});
 var bt = Object.defineProperty;
-var Ie = /* @__PURE__ */ __name((e) => {
+var Ie = /* @__PURE__ */ __name2((e) => {
   throw TypeError(e);
 }, "Ie");
-var wt = /* @__PURE__ */ __name((e, t, s) => t in e ? bt(e, t, { enumerable: true, configurable: true, writable: true, value: s }) : e[t] = s, "wt");
-var p = /* @__PURE__ */ __name((e, t, s) => wt(e, typeof t != "symbol" ? t + "" : t, s), "p");
-var He = /* @__PURE__ */ __name((e, t, s) => t.has(e) || Ie("Cannot " + s), "He");
-var a = /* @__PURE__ */ __name((e, t, s) => (He(e, t, "read from private field"), s ? s.call(e) : t.get(e)), "a");
-var v = /* @__PURE__ */ __name((e, t, s) => t.has(e) ? Ie("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), "v");
-var u = /* @__PURE__ */ __name((e, t, s, r) => (He(e, t, "write to private field"), r ? r.call(e, s) : t.set(e, s), s), "u");
-var y = /* @__PURE__ */ __name((e, t, s) => (He(e, t, "access private method"), s), "y");
-var _e = /* @__PURE__ */ __name((e, t, s, r) => ({ set _(n) {
+var wt = /* @__PURE__ */ __name2((e, t, s) => t in e ? bt(e, t, { enumerable: true, configurable: true, writable: true, value: s }) : e[t] = s, "wt");
+var p = /* @__PURE__ */ __name2((e, t, s) => wt(e, typeof t != "symbol" ? t + "" : t, s), "p");
+var He = /* @__PURE__ */ __name2((e, t, s) => t.has(e) || Ie("Cannot " + s), "He");
+var a = /* @__PURE__ */ __name2((e, t, s) => (He(e, t, "read from private field"), s ? s.call(e) : t.get(e)), "a");
+var v = /* @__PURE__ */ __name2((e, t, s) => t.has(e) ? Ie("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), "v");
+var u = /* @__PURE__ */ __name2((e, t, s, r) => (He(e, t, "write to private field"), r ? r.call(e, s) : t.set(e, s), s), "u");
+var y = /* @__PURE__ */ __name2((e, t, s) => (He(e, t, "access private method"), s), "y");
+var _e = /* @__PURE__ */ __name2((e, t, s, r) => ({ set _(n) {
   u(e, t, n, s);
 }, get _() {
   return a(e, t, r);
 } }), "_e");
-var Me = /* @__PURE__ */ __name((e, t, s) => (r, n) => {
+var Me = /* @__PURE__ */ __name2((e, t, s) => (r, n) => {
   let i = -1;
   return o(0);
   async function o(l) {
@@ -55,9 +71,10 @@ var Me = /* @__PURE__ */ __name((e, t, s) => (r, n) => {
     return c && (r.finalized === false || h) && (r.res = c), r;
   }
   __name(o, "o");
+  __name2(o, "o");
 }, "Me");
 var xt = Symbol();
-var Rt = /* @__PURE__ */ __name(async (e, t = /* @__PURE__ */ Object.create(null)) => {
+var Rt = /* @__PURE__ */ __name2(async (e, t = /* @__PURE__ */ Object.create(null)) => {
   const { all: s = false, dot: r = false } = t, i = (e instanceof rt ? e.raw.headers : e.headers).get("Content-Type");
   return i != null && i.startsWith("multipart/form-data") || i != null && i.startsWith("application/x-www-form-urlencoded") ? Et(e, { all: s, dot: r }) : {};
 }, "Rt");
@@ -66,6 +83,7 @@ async function Et(e, t) {
   return s ? jt(s, t) : {};
 }
 __name(Et, "Et");
+__name2(Et, "Et");
 function jt(e, t) {
   const s = /* @__PURE__ */ Object.create(null);
   return e.forEach((r, n) => {
@@ -75,32 +93,33 @@ function jt(e, t) {
   }), s;
 }
 __name(jt, "jt");
-var Ot = /* @__PURE__ */ __name((e, t, s) => {
+__name2(jt, "jt");
+var Ot = /* @__PURE__ */ __name2((e, t, s) => {
   e[t] !== void 0 ? Array.isArray(e[t]) ? e[t].push(s) : e[t] = [e[t], s] : t.endsWith("[]") ? e[t] = [s] : e[t] = s;
 }, "Ot");
-var Pt = /* @__PURE__ */ __name((e, t, s) => {
+var Pt = /* @__PURE__ */ __name2((e, t, s) => {
   let r = e;
   const n = t.split(".");
   n.forEach((i, o) => {
     o === n.length - 1 ? r[i] = s : ((!r[i] || typeof r[i] != "object" || Array.isArray(r[i]) || r[i] instanceof File) && (r[i] = /* @__PURE__ */ Object.create(null)), r = r[i]);
   });
 }, "Pt");
-var Ye = /* @__PURE__ */ __name((e) => {
+var Ye = /* @__PURE__ */ __name2((e) => {
   const t = e.split("/");
   return t[0] === "" && t.shift(), t;
 }, "Ye");
-var At = /* @__PURE__ */ __name((e) => {
+var At = /* @__PURE__ */ __name2((e) => {
   const { groups: t, path: s } = Ct(e), r = Ye(s);
   return St(r, t);
 }, "At");
-var Ct = /* @__PURE__ */ __name((e) => {
+var Ct = /* @__PURE__ */ __name2((e) => {
   const t = [];
   return e = e.replace(/\{[^}]+\}/g, (s, r) => {
     const n = `@${r}`;
     return t.push([n, s]), n;
   }), { groups: t, path: e };
 }, "Ct");
-var St = /* @__PURE__ */ __name((e, t) => {
+var St = /* @__PURE__ */ __name2((e, t) => {
   for (let s = t.length - 1; s >= 0; s--) {
     const [r] = t[s];
     for (let n = e.length - 1; n >= 0; n--)
@@ -112,7 +131,7 @@ var St = /* @__PURE__ */ __name((e, t) => {
   return e;
 }, "St");
 var Re = {};
-var Ht = /* @__PURE__ */ __name((e, t) => {
+var Ht = /* @__PURE__ */ __name2((e, t) => {
   if (e === "*")
     return "*";
   const s = e.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
@@ -122,7 +141,7 @@ var Ht = /* @__PURE__ */ __name((e, t) => {
   }
   return null;
 }, "Ht");
-var Te = /* @__PURE__ */ __name((e, t) => {
+var Te = /* @__PURE__ */ __name2((e, t) => {
   try {
     return t(e);
   } catch {
@@ -135,8 +154,8 @@ var Te = /* @__PURE__ */ __name((e, t) => {
     });
   }
 }, "Te");
-var kt = /* @__PURE__ */ __name((e) => Te(e, decodeURI), "kt");
-var Ze = /* @__PURE__ */ __name((e) => {
+var kt = /* @__PURE__ */ __name2((e) => Te(e, decodeURI), "kt");
+var Ze = /* @__PURE__ */ __name2((e) => {
   const t = e.url, s = t.indexOf("/", t.indexOf(":") + 4);
   let r = s;
   for (; r < t.length; r++) {
@@ -149,12 +168,12 @@ var Ze = /* @__PURE__ */ __name((e) => {
   }
   return t.slice(s, r);
 }, "Ze");
-var Lt = /* @__PURE__ */ __name((e) => {
+var Lt = /* @__PURE__ */ __name2((e) => {
   const t = Ze(e);
   return t.length > 1 && t.at(-1) === "/" ? t.slice(0, -1) : t;
 }, "Lt");
-var te = /* @__PURE__ */ __name((e, t, ...s) => (s.length && (t = te(t, ...s)), `${(e == null ? void 0 : e[0]) === "/" ? "" : "/"}${e}${t === "/" ? "" : `${(e == null ? void 0 : e.at(-1)) === "/" ? "" : "/"}${(t == null ? void 0 : t[0]) === "/" ? t.slice(1) : t}`}`), "te");
-var et = /* @__PURE__ */ __name((e) => {
+var te = /* @__PURE__ */ __name2((e, t, ...s) => (s.length && (t = te(t, ...s)), `${(e == null ? void 0 : e[0]) === "/" ? "" : "/"}${e}${t === "/" ? "" : `${(e == null ? void 0 : e.at(-1)) === "/" ? "" : "/"}${(t == null ? void 0 : t[0]) === "/" ? t.slice(1) : t}`}`), "te");
+var et = /* @__PURE__ */ __name2((e) => {
   if (e.charCodeAt(e.length - 1) !== 63 || !e.includes(":"))
     return null;
   const t = e.split("/"), s = [];
@@ -171,8 +190,8 @@ var et = /* @__PURE__ */ __name((e) => {
         r += "/" + n;
   }), s.filter((n, i, o) => o.indexOf(n) === i);
 }, "et");
-var ke = /* @__PURE__ */ __name((e) => /[%+]/.test(e) ? (e.indexOf("+") !== -1 && (e = e.replace(/\+/g, " ")), e.indexOf("%") !== -1 ? Te(e, st) : e) : e, "ke");
-var tt = /* @__PURE__ */ __name((e, t, s) => {
+var ke = /* @__PURE__ */ __name2((e) => /[%+]/.test(e) ? (e.indexOf("+") !== -1 && (e = e.replace(/\+/g, " ")), e.indexOf("%") !== -1 ? Te(e, st) : e) : e, "ke");
+var tt = /* @__PURE__ */ __name2((e, t, s) => {
   let r;
   if (!s && t && !/[%+]/.test(t)) {
     let o = e.indexOf(`?${t}`, 8);
@@ -204,9 +223,9 @@ var tt = /* @__PURE__ */ __name((e, t, s) => {
   return t ? n[t] : n;
 }, "tt");
 var $t = tt;
-var Dt = /* @__PURE__ */ __name((e, t) => tt(e, t, true), "Dt");
+var Dt = /* @__PURE__ */ __name2((e, t) => tt(e, t, true), "Dt");
 var st = decodeURIComponent;
-var Fe = /* @__PURE__ */ __name((e) => Te(e, st), "Fe");
+var Fe = /* @__PURE__ */ __name2((e) => Te(e, st), "Fe");
 var ne;
 var A;
 var _;
@@ -215,7 +234,7 @@ var it;
 var $e;
 var F;
 var We;
-var rt = (We = /* @__PURE__ */ __name(class {
+var rt = (We = /* @__PURE__ */ __name2(class {
   constructor(e, t = "/", s = [[]]) {
     v(this, _);
     p(this, "raw");
@@ -290,27 +309,27 @@ var rt = (We = /* @__PURE__ */ __name(class {
   get routePath() {
     return a(this, A)[0].map(([[, e]]) => e)[this.routeIndex].path;
   }
-}, "We"), ne = /* @__PURE__ */ new WeakMap(), A = /* @__PURE__ */ new WeakMap(), _ = /* @__PURE__ */ new WeakSet(), nt = /* @__PURE__ */ __name(function(e) {
+}, "We"), ne = /* @__PURE__ */ new WeakMap(), A = /* @__PURE__ */ new WeakMap(), _ = /* @__PURE__ */ new WeakSet(), nt = /* @__PURE__ */ __name2(function(e) {
   const t = a(this, A)[0][this.routeIndex][1][e], s = y(this, _, $e).call(this, t);
   return s && /\%/.test(s) ? Fe(s) : s;
-}, "nt"), it = /* @__PURE__ */ __name(function() {
+}, "nt"), it = /* @__PURE__ */ __name2(function() {
   const e = {}, t = Object.keys(a(this, A)[0][this.routeIndex][1]);
   for (const s of t) {
     const r = y(this, _, $e).call(this, a(this, A)[0][this.routeIndex][1][s]);
     r !== void 0 && (e[s] = /\%/.test(r) ? Fe(r) : r);
   }
   return e;
-}, "it"), $e = /* @__PURE__ */ __name(function(e) {
+}, "it"), $e = /* @__PURE__ */ __name2(function(e) {
   return a(this, A)[1] ? a(this, A)[1][e] : e;
 }, "$e"), F = /* @__PURE__ */ new WeakMap(), We);
 var Tt = { Stringify: 1 };
-var at = /* @__PURE__ */ __name(async (e, t, s, r, n) => {
+var at = /* @__PURE__ */ __name2(async (e, t, s, r, n) => {
   typeof e == "object" && !(e instanceof String) && (e instanceof Promise || (e = e.toString()), e instanceof Promise && (e = await e));
   const i = e.callbacks;
   return i != null && i.length ? (n ? n[0] += e : n = [e], Promise.all(i.map((l) => l({ phase: t, buffer: n, context: r }))).then((l) => Promise.all(l.filter(Boolean).map((c) => at(c, t, false, r, n))).then(() => n[0]))) : Promise.resolve(e);
 }, "at");
 var Nt = "text/plain; charset=UTF-8";
-var Le = /* @__PURE__ */ __name((e, t) => ({ "Content-Type": e, ...t }), "Le");
+var Le = /* @__PURE__ */ __name2((e, t) => ({ "Content-Type": e, ...t }), "Le");
 var ge;
 var ye;
 var D;
@@ -326,7 +345,7 @@ var we;
 var q;
 var se;
 var ze;
-var It = (ze = /* @__PURE__ */ __name(class {
+var It = (ze = /* @__PURE__ */ __name2(class {
   constructor(e, t) {
     v(this, q);
     v(this, ge);
@@ -367,7 +386,7 @@ var It = (ze = /* @__PURE__ */ __name(class {
     p(this, "text", (e2, t2, s) => !a(this, G) && !a(this, ie) && !t2 && !s && !this.finalized ? new Response(e2) : y(this, q, se).call(this, e2, t2, Le(Nt, s)));
     p(this, "json", (e2, t2, s) => y(this, q, se).call(this, JSON.stringify(e2), t2, Le("application/json", s)));
     p(this, "html", (e2, t2, s) => {
-      const r = /* @__PURE__ */ __name((n) => y(this, q, se).call(this, n, t2, Le("text/html; charset=UTF-8", s)), "r");
+      const r = /* @__PURE__ */ __name2((n) => y(this, q, se).call(this, n, t2, Le("text/html; charset=UTF-8", s)), "r");
       return typeof e2 == "object" ? at(e2, Tt.Stringify, false, {}).then(r) : r(e2);
     });
     p(this, "redirect", (e2, t2) => {
@@ -411,7 +430,7 @@ var It = (ze = /* @__PURE__ */ __name(class {
   get var() {
     return a(this, D) ? Object.fromEntries(a(this, D)) : {};
   }
-}, "ze"), ge = /* @__PURE__ */ new WeakMap(), ye = /* @__PURE__ */ new WeakMap(), D = /* @__PURE__ */ new WeakMap(), ie = /* @__PURE__ */ new WeakMap(), T = /* @__PURE__ */ new WeakMap(), j = /* @__PURE__ */ new WeakMap(), me = /* @__PURE__ */ new WeakMap(), ae = /* @__PURE__ */ new WeakMap(), oe = /* @__PURE__ */ new WeakMap(), G = /* @__PURE__ */ new WeakMap(), be = /* @__PURE__ */ new WeakMap(), we = /* @__PURE__ */ new WeakMap(), q = /* @__PURE__ */ new WeakSet(), se = /* @__PURE__ */ __name(function(e, t, s) {
+}, "ze"), ge = /* @__PURE__ */ new WeakMap(), ye = /* @__PURE__ */ new WeakMap(), D = /* @__PURE__ */ new WeakMap(), ie = /* @__PURE__ */ new WeakMap(), T = /* @__PURE__ */ new WeakMap(), j = /* @__PURE__ */ new WeakMap(), me = /* @__PURE__ */ new WeakMap(), ae = /* @__PURE__ */ new WeakMap(), oe = /* @__PURE__ */ new WeakMap(), G = /* @__PURE__ */ new WeakMap(), be = /* @__PURE__ */ new WeakMap(), we = /* @__PURE__ */ new WeakMap(), q = /* @__PURE__ */ new WeakSet(), se = /* @__PURE__ */ __name2(function(e, t, s) {
   const r = a(this, j) ? new Headers(a(this, j).headers) : a(this, G) ?? new Headers();
   if (typeof t == "object" && "headers" in t) {
     const i = t.headers instanceof Headers ? t.headers : new Headers(t.headers);
@@ -434,11 +453,11 @@ var b = "ALL";
 var _t = "all";
 var Mt = ["get", "post", "put", "delete", "options", "patch"];
 var ot = "Can not add a route since the matcher is already built.";
-var ct = /* @__PURE__ */ __name(class extends Error {
+var ct = /* @__PURE__ */ __name2(class extends Error {
 }, "ct");
 var Ft = "__COMPOSED_HANDLER";
-var qt = /* @__PURE__ */ __name((e) => e.text("404 Not Found", 404), "qt");
-var qe = /* @__PURE__ */ __name((e, t) => {
+var qt = /* @__PURE__ */ __name2((e) => e.text("404 Not Found", 404), "qt");
+var qe = /* @__PURE__ */ __name2((e, t) => {
   if ("getResponse" in e) {
     const s = e.getResponse();
     return t.newResponse(s.body, s);
@@ -453,7 +472,7 @@ var V;
 var Ee;
 var je;
 var Be;
-var lt = (Be = /* @__PURE__ */ __name(class {
+var lt = (Be = /* @__PURE__ */ __name2(class {
   constructor(t = {}) {
     v(this, w);
     p(this, "get");
@@ -505,7 +524,7 @@ var lt = (Be = /* @__PURE__ */ __name(class {
     return s.routes.map((n) => {
       var o;
       let i;
-      s.errorHandler === qe ? i = n.handler : (i = /* @__PURE__ */ __name(async (l, c) => (await Me([], s.errorHandler)(l, () => n.handler(l, c))).res, "i"), i[Ft] = n.handler), y(o = r, w, V).call(o, n.method, n.path, i);
+      s.errorHandler === qe ? i = n.handler : (i = /* @__PURE__ */ __name2(async (l, c) => (await Me([], s.errorHandler)(l, () => n.handler(l, c))).res, "i"), i[Ft] = n.handler), y(o = r, w, V).call(o, n.method, n.path, i);
     }), this;
   }
   basePath(t) {
@@ -514,7 +533,7 @@ var lt = (Be = /* @__PURE__ */ __name(class {
   }
   mount(t, s, r) {
     let n, i;
-    r && (typeof r == "function" ? i = r : (i = r.optionHandler, r.replaceRequest === false ? n = /* @__PURE__ */ __name((c) => c, "n") : n = r.replaceRequest));
+    r && (typeof r == "function" ? i = r : (i = r.optionHandler, r.replaceRequest === false ? n = /* @__PURE__ */ __name2((c) => c, "n") : n = r.replaceRequest));
     const o = i ? (c) => {
       const h = i(c);
       return Array.isArray(h) ? h : [h];
@@ -533,7 +552,7 @@ var lt = (Be = /* @__PURE__ */ __name(class {
         return f.pathname = f.pathname.slice(h) || "/", new Request(f, d);
       };
     })());
-    const l = /* @__PURE__ */ __name(async (c, h) => {
+    const l = /* @__PURE__ */ __name2(async (c, h) => {
       const d = await s(n(c.req.raw), ...o(c));
       if (d)
         return d;
@@ -541,18 +560,18 @@ var lt = (Be = /* @__PURE__ */ __name(class {
     }, "l");
     return y(this, w, V).call(this, b, te(t, "*"), l), this;
   }
-}, "Be"), C = /* @__PURE__ */ new WeakMap(), w = /* @__PURE__ */ new WeakSet(), ht = /* @__PURE__ */ __name(function() {
+}, "Be"), C = /* @__PURE__ */ new WeakMap(), w = /* @__PURE__ */ new WeakSet(), ht = /* @__PURE__ */ __name2(function() {
   const t = new lt({ router: this.router, getPath: this.getPath });
   return t.errorHandler = this.errorHandler, u(t, S, a(this, S)), t.routes = this.routes, t;
-}, "ht"), S = /* @__PURE__ */ new WeakMap(), V = /* @__PURE__ */ __name(function(t, s, r) {
+}, "ht"), S = /* @__PURE__ */ new WeakMap(), V = /* @__PURE__ */ __name2(function(t, s, r) {
   t = t.toUpperCase(), s = te(this._basePath, s);
   const n = { basePath: this._basePath, path: s, method: t, handler: r };
   this.router.add(t, s, [r, n]), this.routes.push(n);
-}, "V"), Ee = /* @__PURE__ */ __name(function(t, s) {
+}, "V"), Ee = /* @__PURE__ */ __name2(function(t, s) {
   if (t instanceof Error)
     return this.errorHandler(t, s);
   throw t;
-}, "Ee"), je = /* @__PURE__ */ __name(function(t, s, r, n) {
+}, "Ee"), je = /* @__PURE__ */ __name2(function(t, s, r, n) {
   if (n === "HEAD")
     return (async () => new Response(null, await y(this, w, je).call(this, t, s, r, "GET")))();
   const i = this.getPath(t, { env: r }), o = this.router.match(n, i), l = new It(t, { path: i, matchResult: o, env: r, executionCtx: s, notFoundHandler: a(this, S) });
@@ -588,11 +607,12 @@ function Wt(e, t) {
   return e.length === 1 ? t.length === 1 ? e < t ? -1 : 1 : -1 : t.length === 1 || e === pe || e === ve ? 1 : t === pe || t === ve ? -1 : e === Pe ? 1 : t === Pe ? -1 : e.length === t.length ? e < t ? -1 : 1 : t.length - e.length;
 }
 __name(Wt, "Wt");
+__name2(Wt, "Wt");
 var J;
 var X;
 var H;
 var Ve;
-var De = (Ve = /* @__PURE__ */ __name(class {
+var De = (Ve = /* @__PURE__ */ __name2(class {
   constructor() {
     v(this, J);
     v(this, X);
@@ -642,7 +662,7 @@ var De = (Ve = /* @__PURE__ */ __name(class {
 var Ae;
 var xe;
 var Ke;
-var zt = (Ke = /* @__PURE__ */ __name(class {
+var zt = (Ke = /* @__PURE__ */ __name2(class {
   constructor() {
     v(this, Ae, { varIndex: 0 });
     v(this, xe, new De());
@@ -684,10 +704,12 @@ function ut(e) {
   return Oe[e] ?? (Oe[e] = new RegExp(e === "*" ? "" : `^${e.replace(/\/\*$|([.\\+*[^\]$()])/g, (t, s) => s ? `\\${s}` : "(?:|/.*)")}$`));
 }
 __name(ut, "ut");
+__name2(ut, "ut");
 function Vt() {
   Oe = /* @__PURE__ */ Object.create(null);
 }
 __name(Vt, "Vt");
+__name2(Vt, "Vt");
 function Kt(e) {
   var h;
   const t = new zt(), s = [];
@@ -728,6 +750,7 @@ function Kt(e) {
   return [i, c, n];
 }
 __name(Kt, "Kt");
+__name2(Kt, "Kt");
 function ee(e, t) {
   if (e) {
     for (const s of Object.keys(e).sort((r, n) => n.length - r.length))
@@ -736,13 +759,14 @@ function ee(e, t) {
   }
 }
 __name(ee, "ee");
+__name2(ee, "ee");
 var U;
 var W;
 var le;
 var ft;
 var pt;
 var Ge;
-var Gt = (Ge = /* @__PURE__ */ __name(class {
+var Gt = (Ge = /* @__PURE__ */ __name2(class {
   constructor() {
     v(this, le);
     p(this, "name", "RegExpRouter");
@@ -798,12 +822,12 @@ var Gt = (Ge = /* @__PURE__ */ __name(class {
       return [i[1][c], l];
     }, this.match(e, t);
   }
-}, "Ge"), U = /* @__PURE__ */ new WeakMap(), W = /* @__PURE__ */ new WeakMap(), le = /* @__PURE__ */ new WeakSet(), ft = /* @__PURE__ */ __name(function() {
+}, "Ge"), U = /* @__PURE__ */ new WeakMap(), W = /* @__PURE__ */ new WeakMap(), le = /* @__PURE__ */ new WeakSet(), ft = /* @__PURE__ */ __name2(function() {
   const e = /* @__PURE__ */ Object.create(null);
   return Object.keys(a(this, W)).concat(Object.keys(a(this, U))).forEach((t) => {
     e[t] || (e[t] = y(this, le, pt).call(this, t));
   }), u(this, U, u(this, W, void 0)), e;
-}, "ft"), pt = /* @__PURE__ */ __name(function(e) {
+}, "ft"), pt = /* @__PURE__ */ __name2(function(e) {
   const t = [];
   let s = e === b;
   return [a(this, U), a(this, W)].forEach((r) => {
@@ -814,7 +838,7 @@ var Gt = (Ge = /* @__PURE__ */ __name(class {
 var z;
 var N;
 var Je;
-var Jt = (Je = /* @__PURE__ */ __name(class {
+var Jt = (Je = /* @__PURE__ */ __name2(class {
   constructor(e) {
     p(this, "name", "SmartRouter");
     v(this, z, []);
@@ -864,7 +888,7 @@ var x;
 var I;
 var K;
 var Xe;
-var vt = (Xe = /* @__PURE__ */ __name(class {
+var vt = (Xe = /* @__PURE__ */ __name2(class {
   constructor(e, t, s) {
     v(this, I);
     v(this, B);
@@ -932,7 +956,7 @@ var vt = (Xe = /* @__PURE__ */ __name(class {
     }
     return s.length > 1 && s.sort((c, h) => c.score - h.score), [s.map(({ handler: c, params: h }) => [c, h])];
   }
-}, "Xe"), B = /* @__PURE__ */ new WeakMap(), E = /* @__PURE__ */ new WeakMap(), Q = /* @__PURE__ */ new WeakMap(), ce = /* @__PURE__ */ new WeakMap(), x = /* @__PURE__ */ new WeakMap(), I = /* @__PURE__ */ new WeakSet(), K = /* @__PURE__ */ __name(function(e, t, s, r) {
+}, "Xe"), B = /* @__PURE__ */ new WeakMap(), E = /* @__PURE__ */ new WeakMap(), Q = /* @__PURE__ */ new WeakMap(), ce = /* @__PURE__ */ new WeakMap(), x = /* @__PURE__ */ new WeakMap(), I = /* @__PURE__ */ new WeakSet(), K = /* @__PURE__ */ __name2(function(e, t, s, r) {
   const n = [];
   for (let i = 0, o = a(e, B).length; i < o; i++) {
     const l = a(e, B)[i], c = l[t] || l[b], h = {};
@@ -946,7 +970,7 @@ var vt = (Xe = /* @__PURE__ */ __name(class {
 }, "K"), Xe);
 var Y;
 var Qe;
-var Xt = (Qe = /* @__PURE__ */ __name(class {
+var Xt = (Qe = /* @__PURE__ */ __name2(class {
   constructor() {
     p(this, "name", "TrieRouter");
     v(this, Y);
@@ -965,12 +989,12 @@ var Xt = (Qe = /* @__PURE__ */ __name(class {
     return a(this, Y).search(e, t);
   }
 }, "Qe"), Y = /* @__PURE__ */ new WeakMap(), Qe);
-var gt = /* @__PURE__ */ __name(class extends lt {
+var gt = /* @__PURE__ */ __name2(class extends lt {
   constructor(e = {}) {
     super(e), this.router = e.router ?? new Jt({ routers: [new Gt(), new Xt()] });
   }
 }, "gt");
-var Qt = /* @__PURE__ */ __name((e) => {
+var Qt = /* @__PURE__ */ __name2((e) => {
   const s = { ...{ origin: "*", allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"], allowHeaders: [], exposeHeaders: [] }, ...e }, r = ((i) => typeof i == "string" ? i === "*" ? () => i : (o) => i === o ? o : null : typeof i == "function" ? i : (o) => i.includes(o) ? o : null)(s.origin), n = ((i) => typeof i == "function" ? i : Array.isArray(i) ? () => i : () => [])(s.allowMethods);
   return async function(o, l) {
     var d;
@@ -978,6 +1002,7 @@ var Qt = /* @__PURE__ */ __name((e) => {
       o.res.headers.set(f, g);
     }
     __name(c, "c");
+    __name2(c, "c");
     const h = await r(o.req.header("origin") || "", o);
     if (h && c("Access-Control-Allow-Origin", h), s.origin !== "*") {
       const f = o.req.header("Vary");
@@ -1239,9 +1264,7 @@ for (const [, e] of Object.entries(Yt))
   e && (Ue.route("/", e), Ue.notFound(e.notFoundHandler), yt = true);
 if (!yt)
   throw new Error("Can't import modules from ['/src/index.tsx','/app/server.ts']");
-
-// ../node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -1257,8 +1280,6 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-
-// ../node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
 function reduceError(e) {
   return {
     name: e?.name,
@@ -1268,7 +1289,8 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+__name2(reduceError, "reduceError");
+var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -1280,20 +1302,17 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
-
-// ../.wrangler/tmp/bundle-3aPd7Z/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = Ue;
-
-// ../node_modules/wrangler/templates/middleware/common.ts
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
+__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -1305,6 +1324,7 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
+__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -1312,9 +1332,8 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-
-// ../.wrangler/tmp/bundle-3aPd7Z/middleware-loader.entry.ts
-var __Facade_ScheduledController__ = class {
+__name2(__facade_invoke__, "__facade_invoke__");
+var __Facade_ScheduledController__ = /* @__PURE__ */ __name(class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
@@ -1327,8 +1346,8 @@ var __Facade_ScheduledController__ = class {
     }
     this.#noRetry();
   }
-};
-__name(__Facade_ScheduledController__, "__Facade_ScheduledController__");
+}, "__Facade_ScheduledController__");
+__name2(__Facade_ScheduledController__, "__Facade_ScheduledController__");
 function wrapExportedHandler(worker) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return worker;
@@ -1336,7 +1355,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -1345,7 +1364,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -1361,6 +1380,7 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
+__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -1400,6 +1420,7 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
+__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -1407,8 +1428,230 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default as default
+
+// node_modules/wrangler/templates/pages-dev-util.ts
+function isRoutingRuleMatch(pathname, routingRule) {
+  if (!pathname) {
+    throw new Error("Pathname is undefined.");
+  }
+  if (!routingRule) {
+    throw new Error("Routing rule is undefined.");
+  }
+  const ruleRegExp = transformRoutingRuleToRegExp(routingRule);
+  return pathname.match(ruleRegExp) !== null;
+}
+__name(isRoutingRuleMatch, "isRoutingRuleMatch");
+function transformRoutingRuleToRegExp(rule) {
+  let transformedRule;
+  if (rule === "/" || rule === "/*") {
+    transformedRule = rule;
+  } else if (rule.endsWith("/*")) {
+    transformedRule = `${rule.substring(0, rule.length - 2)}(/*)?`;
+  } else if (rule.endsWith("/")) {
+    transformedRule = `${rule.substring(0, rule.length - 1)}(/)?`;
+  } else if (rule.endsWith("*")) {
+    transformedRule = rule;
+  } else {
+    transformedRule = `${rule}(/)?`;
+  }
+  transformedRule = `^${transformedRule.replaceAll(/\./g, "\\.").replaceAll(/\*/g, ".*")}$`;
+  return new RegExp(transformedRule);
+}
+__name(transformRoutingRuleToRegExp, "transformRoutingRuleToRegExp");
+
+// .wrangler/tmp/pages-OrBWMK/6tnlxhyn5k5.js
+var define_ROUTES_default = { version: 1, include: ["/*"], exclude: ["/static/*"] };
+var routes = define_ROUTES_default;
+var pages_dev_pipeline_default = {
+  fetch(request, env, context) {
+    const { pathname } = new URL(request.url);
+    for (const exclude of routes.exclude) {
+      if (isRoutingRuleMatch(pathname, exclude)) {
+        return env.ASSETS.fetch(request);
+      }
+    }
+    for (const include of routes.include) {
+      if (isRoutingRuleMatch(pathname, include)) {
+        const workerAsHandler = middleware_loader_entry_default;
+        if (workerAsHandler.fetch === void 0) {
+          throw new TypeError("Entry point missing `fetch` handler");
+        }
+        return workerAsHandler.fetch(request, env, context);
+      }
+    }
+    return env.ASSETS.fetch(request);
+  }
 };
-//# sourceMappingURL=bundledWorker-0.10657224964515222.mjs.map
+
+// node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } finally {
+    try {
+      if (request.body !== null && !request.bodyUsed) {
+        const reader = request.body.getReader();
+        while (!(await reader.read()).done) {
+        }
+      }
+    } catch (e) {
+      console.error("Failed to drain the unused request body.", e);
+    }
+  }
+}, "drainBody");
+var middleware_ensure_req_body_drained_default2 = drainBody2;
+
+// node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+function reduceError2(e) {
+  return {
+    name: e?.name,
+    message: e?.message ?? String(e),
+    stack: e?.stack,
+    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
+  };
+}
+__name(reduceError2, "reduceError");
+var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } catch (e) {
+    const error = reduceError2(e);
+    return Response.json(error, {
+      status: 500,
+      headers: { "MF-Experimental-Error-Stack": "true" }
+    });
+  }
+}, "jsonError");
+var middleware_miniflare3_json_error_default2 = jsonError2;
+
+// .wrangler/tmp/bundle-hGDLfd/middleware-insertion-facade.js
+var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
+  middleware_ensure_req_body_drained_default2,
+  middleware_miniflare3_json_error_default2
+];
+var middleware_insertion_facade_default2 = pages_dev_pipeline_default;
+
+// node_modules/wrangler/templates/middleware/common.ts
+var __facade_middleware__2 = [];
+function __facade_register__2(...args) {
+  __facade_middleware__2.push(...args.flat());
+}
+__name(__facade_register__2, "__facade_register__");
+function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
+  const [head, ...tail] = middlewareChain;
+  const middlewareCtx = {
+    dispatch,
+    next(newRequest, newEnv) {
+      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
+    }
+  };
+  return head(request, env, ctx, middlewareCtx);
+}
+__name(__facade_invokeChain__2, "__facade_invokeChain__");
+function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
+  return __facade_invokeChain__2(request, env, ctx, dispatch, [
+    ...__facade_middleware__2,
+    finalMiddleware
+  ]);
+}
+__name(__facade_invoke__2, "__facade_invoke__");
+
+// .wrangler/tmp/bundle-hGDLfd/middleware-loader.entry.ts
+var __Facade_ScheduledController__2 = class {
+  constructor(scheduledTime, cron, noRetry) {
+    this.scheduledTime = scheduledTime;
+    this.cron = cron;
+    this.#noRetry = noRetry;
+  }
+  #noRetry;
+  noRetry() {
+    if (!(this instanceof __Facade_ScheduledController__2)) {
+      throw new TypeError("Illegal invocation");
+    }
+    this.#noRetry();
+  }
+};
+__name(__Facade_ScheduledController__2, "__Facade_ScheduledController__");
+function wrapExportedHandler2(worker) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return worker;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+    if (worker.fetch === void 0) {
+      throw new Error("Handler does not export a fetch() function.");
+    }
+    return worker.fetch(request, env, ctx);
+  }, "fetchDispatcher");
+  return {
+    ...worker,
+    fetch(request, env, ctx) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+        if (type === "scheduled" && worker.scheduled !== void 0) {
+          const controller = new __Facade_ScheduledController__2(
+            Date.now(),
+            init.cron ?? "",
+            () => {
+            }
+          );
+          return worker.scheduled(controller, env, ctx);
+        }
+      }, "dispatcher");
+      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
+    }
+  };
+}
+__name(wrapExportedHandler2, "wrapExportedHandler");
+function wrapWorkerEntrypoint2(klass) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return klass;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  return class extends klass {
+    #fetchDispatcher = (request, env, ctx) => {
+      this.env = env;
+      this.ctx = ctx;
+      if (super.fetch === void 0) {
+        throw new Error("Entrypoint class does not define a fetch() function.");
+      }
+      return super.fetch(request);
+    };
+    #dispatcher = (type, init) => {
+      if (type === "scheduled" && super.scheduled !== void 0) {
+        const controller = new __Facade_ScheduledController__2(
+          Date.now(),
+          init.cron ?? "",
+          () => {
+          }
+        );
+        return super.scheduled(controller);
+      }
+    };
+    fetch(request) {
+      return __facade_invoke__2(
+        request,
+        this.env,
+        this.ctx,
+        this.#dispatcher,
+        this.#fetchDispatcher
+      );
+    }
+  };
+}
+__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
+var WRAPPED_ENTRY2;
+if (typeof middleware_insertion_facade_default2 === "object") {
+  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
+} else if (typeof middleware_insertion_facade_default2 === "function") {
+  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
+}
+var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
+export {
+  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default2 as default
+};
+//# sourceMappingURL=6tnlxhyn5k5.js.map

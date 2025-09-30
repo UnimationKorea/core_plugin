@@ -237,7 +237,8 @@ class LessonPlatformApp {
         }
         
         // Import orchestrator dynamically
-        const { LessonOrchestrator } = await import('/static/js/orchestrator.js')
+        const orchestratorModule = await import('./orchestrator.js')
+        const LessonOrchestrator = orchestratorModule.LessonOrchestrator
         
         this.orchestrator = new LessonOrchestrator({
           container,
