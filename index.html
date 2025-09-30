@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>교육용 레슨 플랫폼 · 플러그인 템플릿 스타터 (Fixed)</title>
+  <style>
+    :root {
+      --bg:#0b1220; --panel:#121a2b; --muted:#9aa4b2; --text:#e6edf7; --accent:#7dd3fc; --ok:#34d399; --warn:#f59e0b; --err:#ef4444;
+      --card:#0f172a; --stroke:#1f2a44; --chip:#17213a;
+    }
+    * { box-sizing:border-box; }
+    html, body { height:100%; }
+    body {
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, "Helvetica Neue", sans-serif;
+      background: radial-gradient(1200px 800px at 10% -10%, #13243f 0%, #0b1220 40%), var(--bg);
+      color:var(--text);
+    }
+    .shell { display:grid; grid-template-columns: 300px 1fr; grid-template-rows: 60px 1fr 56px; height:100%; }
+    header { grid-column:1/3; display:flex; align-items:center; gap:12px; padding:0 16px; border-bottom:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.02), transparent); }
+    header h1 { font-size:18px; margin:0; letter-spacing:.2px; }
+    header .badge { font-size:12px; padding:2px 8px; border:1px solid var(--stroke); border-radius:10px; background:var(--chip); color:var(--muted); }
+    aside { border-right:1px solid var(--stroke); padding:12px; overflow:auto; background:linear-gradient(180deg, rgba(255,255,255,.02), transparent); }
+    main { padding:16px; overflow:auto; }
+    footer { grid-column:1/3; border-top:1px solid var(--stroke); display:flex; align-items:center; justify-content:space-between; padding:8px 12px; color:var(--muted); background:linear-gradient(0deg, rgba(255,255,255,.02), transparent); }
+    .card { background:rgba(17,24,39,.5); border:1px solid var(--stroke); border-radius:16px; padding:16px; }
+    .row { display:flex; align-items:center; gap:10px; }
+    .col { display:flex; flex-direction:column; gap:10px; }
+    .btn {
+      appearance:none; border:1px solid var(--stroke); background:var(--chip); color:var(--text);
+      padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; letter-spacing:.2px;
+    }
+    .btn:hover { filter:brightness(1.1); }
+    .btn.primary { border-color:#1d4ed8; background: #1e293b; }
+    .btn.ghost { background:transparent; }
+    .btn.ok { border-color:#065f46; background:#0b2a24; }
+    .btn.warn { border-color:#7c2d12; background:#2a1b0b; }
+    .label { font-size:12px; color:var(--muted); }
+    .list { display:flex; flex-direction:column; gap:8px; }
+    .chip { display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:4px 8px; border:1px solid var(--stroke); border-radius:999px; background:var(--chip); color:var(--muted); }
+    .divider { height:1px; background:var(--stroke); margin:12px 0; }
+    .activity-host { min-height: 360px; background:rgba(2,6,23,.5); border:1px dashed #304164; border-radius:16px; padding:16px; }
+    .progress { height:8px; border-radius:8px; background:#0b1220; border:1px solid var(--stroke); overflow:hidden; }
+    .progress > div { height:100%; width:0%; background:linear-gradient(90deg,#60a5fa,#7dd3fc); }
+    .grid { display:grid; gap:10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .kv { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; padding:8px 10px; background:rgba(2,6,23,.6); border:1px solid var(--stroke); border-radius:10px; }
+    .muted { color:var(--muted); }
+    .small { font-size:12px; }
+    .hidden { display:none !important; }
+    .center { display:flex; align-items:center; justify-content:center; }
+    .droppable { min-height:64px; border:2px dashed #334155; border-radius:12px; display:flex; align-items:center; justify-content:center; padding:8px; margin:8px 0; }
+    .choice { display:inline-flex; padding:8px 12px; margin:6px; border-radius:10px; border:1px solid var(--stroke); background:#111827; cursor:grab; user-select:none; }
+    .choice.dragging { opacity:.6; }
+    .pill { display:inline-flex; align-items:center; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid var(--stroke); font-size:12px; }
+    code.inline { background:rgba(255,255,255,.06); padding:2px 6px; border-radius:6px; border:1px solid var(--stroke); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .error { color:#fecaca; background:#2a0b0f; border:1px solid #7f1d1d; padding:8px 10px; border-radius:10px; }
+    .ok { color:#d1fae5; background:#0b2a24; border:1px solid #065f46; padding:8px 10px; border-radius:10px; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>레슨 오케스트레이터 (Fixed)</h1>
+      <span class="badge">강화된 JSON 로더 & 유효성 검사</span>
+    </header>
+
+    <aside>
+      <div class="card">
+        <div class="col">
+          <div class="row" style="justify-content:space-between">
+            <strong>레슨 로더</strong>
+            <button class="btn ghost small" id="btnLoadSample">샘플 불러오기</button>
+          </div>
+          <div class="label">JSON(.json / .json5) 파일을 선택하거나 샘플을 사용하세요.</div>
+          <input type="file" id="fileInput" accept=".json,.json5,application/json" />
+          <div class="divider"></div>
+          <strong>템플릿 카탈로그(예시 2종)</strong>
+          <div class="list">
+            <div class="kv"><span>video@1.0.0</span><span class="pill">간단 영상</span></div>
+            <div class="kv"><span>drag-drop-choices@1.2.0</span><span class="pill">드래그드랍 4지선다</span></div>
+          </div>
+          <div class="divider"></div>
+          <div class="col">
+            <strong>상태/로그</strong>
+            <label class="row small"><input type="checkbox" id="chkDev" /> 개발자 모드(상세 로그 표시)</label>
+            <pre id="log" class="small muted hidden" style="white-space:pre-wrap"></pre>
+            <div id="msg" class="small"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="card col">
+        <div class="row" style="justify-content:space-between; align-items:flex-end">
+          <div class="col">
+            <div class="row" style="align-items:center; gap:12px">
+              <strong id="lessonTitle">레슨 제목</strong>
+              <span class="pill" id="lessonLocale">ko</span>
+            </div>
+            <div class="small muted">활동: <span id="stepIdx">0</span> / <span id="stepTotal">0</span></div>
+          </div>
+          <div style="min-width:200px">
+            <div class="progress"><div id="progBar"></div></div>
+          </div>
+        </div>
+
+        <div id="host" class="activity-host center muted">레슨을 불러오세요.</div>
+
+        <div class="row" style="justify-content:space-between">
+          <div class="row" style="gap:6px">
+            <button class="btn" id="btnPrev">이전</button>
+            <button class="btn primary" id="btnNext">다음</button>
+          </div>
+          <div class="row" style="gap:6px">
+            <button class="btn ok" id="btnFinish">레슨 종료</button>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="col">
+            <strong>현재 활동 정보</strong>
+            <div class="kv"><span>activityId</span><code class="inline" id="curActivityId">-</code></div>
+            <div class="kv"><span>template</span><code class="inline" id="curTemplateId">-</code></div>
+          </div>
+          <div class="col">
+            <strong>결과 요약</strong>
+            <div class="kv"><span>누적 점수</span><span id="aggScore">0</span></div>
+            <div class="kv"><span>통과 기준</span><span id="passLine">-</span></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div>© Starter · Lesson Orchestrator</div>
+      <div class="small">템플릿은 샌드박스 내에서 실행되며, 공용 계약을 통해 Core와 통신합니다.</div>
+    </footer>
+  </div>
+
+  <!-- ================= Core SDK & Utilities ================= -->
+  <script>
+    const DEV = { enabled: false };
+    const logEl = () => document.getElementById('log');
+    const msgEl = () => document.getElementById('msg');
+    function setMsg(html, type=''){ msgEl().className = type ? type : 'small'; msgEl().innerHTML = html; }
+    function devlog(...args){ if(!DEV.enabled) return; const s = args.map(a => typeof a==='string'?a:JSON.stringify(a,null,2)).join(' '); logEl().textContent += s + "\\n"; }
+    function clearlog(){ logEl().textContent=''; }
+
+    function createEventBus(){
+      const handlers = {};
+      return {
+        emit(evt){ (handlers[evt.type]||[]).forEach(h=>h(evt)); devlog('event:', evt.type, evt.payload||''); },
+        on(type, h){ (handlers[type] ||= []).push(h); },
+        off(type, h){ handlers[type] = (handlers[type]||[]).filter(x=>x!==h); }
+      }
+    }
+    const storage = {
+      async get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch{ return null } },
+      async set(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+    };
+    const coreAudio = { async play(id){ const el = document.getElementById(id); if(el) await el.play(); } };
+
+    // ---------- Robust JSON handling ----------
+    function stripBOM(text){ return text.charCodeAt(0)===0xFEFF ? text.slice(1) : text; }
+    function removeComments(text){
+      // remove // line and /* block */ comments
+      return text
+        .replace(/\/\/[^\n\r]*/g, '')
+        .replace(/\/\*[\s\S]*?\*\//g, '');
+    }
+    function removeTrailingCommas(text){
+      // remove trailing commas in objects/arrays
+      return text
+        .replace(/,\s*([}\]])/g, '$1');
+    }
+    function safeParseJson(text){
+      const cleaned = removeTrailingCommas(removeComments(stripBOM(text)));
+      return JSON.parse(cleaned);
+    }
+
+    function validateLesson(json){
+      const errs = [];
+      function req(cond, msg){ if(!cond) errs.push(msg); }
+      req(json && typeof json==='object', '루트가 object 여야 합니다.');
+      req(typeof json.lessonId==='string' && json.lessonId.length>0, 'lessonId(string) 필수');
+      req(Array.isArray(json.flow) && json.flow.length>0, 'flow(array) 최소 1개 이상 필수');
+      if(Array.isArray(json.flow)){
+        json.flow.forEach((s, i)=>{
+          req(typeof s.activityId==='string' && s.activityId, `flow[${i}].activityId 필수`);
+          req(typeof s.template==='string' && s.template, `flow[${i}].template 필수`);
+          req(s.params && typeof s.params==='object', `flow[${i}].params(object) 필수`);
+        });
+      }
+      const grading = json.grading || {};
+      if(grading.passLine!=null){
+        req(typeof grading.passLine==='number' && grading.passLine>=0 && grading.passLine<=1, 'grading.passLine은 0~1 사이 숫자');
+      }
+      return errs;
+    }
+  </script>
+
+  <!-- ================= Template Registry (Sandbox-ish) ================= -->
+  <script>
+    const TemplateRegistry = new Map();
+    function registerTemplate(id, factory){ TemplateRegistry.set(id, factory); }
+    function getTemplate(id){
+      const f = TemplateRegistry.get(id);
+      if(!f) throw new Error('템플릿을 찾을 수 없습니다: ' + id);
+      return f();
+    }
+  </script>
+
+  <!-- ================= Template: video@1.0.0 ================= -->
+  <script>
+    registerTemplate('video@1.0.0', () => {
+      let root, started=false, completed=false, startTs=0;
+      return {
+        id: 'video@1.0.0',
+        paramsSchema: { type:'object', properties:{ src:{type:'string'}, autoplay:{type:'boolean'} }, required:['src'] },
+        async preload(){ /* no-op */ },
+        async mount(el, params, ctx){
+          root = document.createElement('div');
+          root.innerHTML = `
+            <div class="col" style="width:100%">
+              <video id="tplVideo" controls style="max-width:100%; border-radius:12px; border:1px solid var(--stroke); background:#000">
+                <source src="${params.src}"/>
+              </video>
+              <div class="small muted">동영상 시청 후 다음을 눌러주세요.</div>
+            </div>`;
+          el.innerHTML = '';
+          el.classList.remove('center','muted');
+          el.appendChild(root);
+          const v = root.querySelector('#tplVideo');
+          if(params.autoplay) v.play().catch(()=>{});
+          v.addEventListener('play', ()=>{ if(!started){ started=true; startTs=Date.now(); ctx.eventBus.emit({type:'START', payload:{activityId:ctx.activityId}});} });
+          v.addEventListener('ended', ()=>{ completed=true; ctx.eventBus.emit({type:'COMPLETE', payload:{activityId:ctx.activityId}}); });
+        },
+        async unmount(){ root?.remove(); },
+        async getResult(){ 
+          const duration = startTs? (Date.now()-startTs):0;
+          return { score: completed?1:0, durationMs: duration, details:{ watched: completed } };
+        }
+      }
+    });
+  </script>
+
+  <!-- ================= Template: drag-drop-choices@1.2.0 ================= -->
+  <script>
+    registerTemplate('drag-drop-choices@1.2.0', () => {
+      let root, answer=null, picked=null, startTs=0;
+      function makeDraggable(el){
+        el.draggable = true;
+        el.addEventListener('dragstart', e=>{ el.classList.add('dragging'); e.dataTransfer.setData('text/plain', el.dataset.value); });
+        el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+      }
+      return {
+        id: 'drag-drop-choices@1.2.0',
+        paramsSchema: { type:'object', properties:{
+          prompt:{type:'string'}, choices:{type:'array', items:{type:'string'}}, answer:{type:'string'}, image:{type:'string'}
+        }, required:['prompt','choices','answer'] },
+        async mount(el, params, ctx){
+          answer = params.answer;
+          startTs = Date.now();
+          const img = params.image ? `<img alt="" src="${params.image}" style="max-height:160px; border-radius:12px; border:1px solid var(--stroke); background:#000; object-fit:contain" />` : '';
+          root = document.createElement('div');
+          root.innerHTML = `
+            <div class="col" style="width:100%">
+              <div class="row" style="gap:12px; align-items:flex-start">
+                <div class="col" style="flex:1">
+                  <div style="font-size:18px; margin-bottom:6px">${(params.prompt||'').replace('__','<span class=\'pill\'>______</span>')}</div>
+                  <div id="drop" class="droppable">정답을 여기로 드래그</div>
+                </div>
+                <div>${img}</div>
+              </div>
+              <div id="choices"></div>
+            </div>`;
+          el.innerHTML = '';
+          el.classList.remove('center','muted');
+          el.appendChild(root);
+          const drop = root.querySelector('#drop');
+          drop.addEventListener('dragover', e=> e.preventDefault());
+          drop.addEventListener('drop', e=>{
+            e.preventDefault();
+            const val = e.dataTransfer.getData('text/plain');
+            picked = val;
+            drop.textContent = '선택: ' + val;
+            ctx.eventBus.emit({type:'PROGRESS', payload:{activityId:ctx.activityId, picked}});
+          });
+          const box = root.querySelector('#choices');
+          (params.choices||[]).forEach(c=>{
+            const b = document.createElement('button');
+            b.className = 'choice'; b.textContent = c; b.dataset.value = c; makeDraggable(b);
+            b.addEventListener('click', ()=>{ picked = c; drop.textContent = '선택: ' + c; });
+            box.appendChild(b);
+          });
+          ctx.eventBus.emit({type:'START', payload:{activityId:ctx.activityId}});
+        },
+        async unmount(){ root?.remove(); },
+        async getResult(){
+          const ok = picked && picked===answer;
+          return { score: ok?1:0, durationMs: Date.now()-startTs, details:{ picked, answer } };
+        }
+      }
+    });
+  </script>
+
+  <!-- ================= Orchestrator ================= -->
+  <script>
+    const host = () => document.getElementById('host');
+    const prog = () => document.getElementById('progBar');
+    const lblTitle = () => document.getElementById('lessonTitle');
+    const lblLocale = () => document.getElementById('lessonLocale');
+    const stepIdx = () => document.getElementById('stepIdx');
+    const stepTotal = () => document.getElementById('stepTotal');
+    const curActivityId = () => document.getElementById('curActivityId');
+    const curTemplateId = () => document.getElementById('curTemplateId');
+    const aggScoreEl = () => document.getElementById('aggScore');
+    const passLineEl = () => document.getElementById('passLine');
+
+    const state = {
+      lesson: null, idx: 0, current: null,
+      results: [], eventBus: createEventBus(),
+    };
+
+    function showError(e){
+      console.error(e);
+      setMsg('오류: ' + (e?.message || e), 'error');
+      devlog('stack:', e?.stack||'');
+    }
+
+    async function mountActivity(step){
+      try{
+        if(state.current && state.current.unmount) await state.current.unmount();
+      }catch(e){ devlog('unmount error', e); }
+      host().innerHTML = '<div class="muted">로딩 중...</div>';
+
+      try {
+        const tpl = getTemplate(step.template);
+        state.current = tpl;
+        curActivityId().textContent = step.activityId || '-';
+        curTemplateId().textContent = tpl.id || '-';
+        if(tpl.preload) await tpl.preload(step.params||{});
+        await tpl.mount(host(), step.params||{}, {
+          lessonId: state.lesson.lessonId,
+          activityId: step.activityId,
+          userId: 'demo-user',
+          locale: state.lesson.locale || 'ko',
+          theme: {},
+          eventBus: state.eventBus,
+          storage, audio: coreAudio
+        });
+        host().focus?.();
+        setMsg('활동 로드 완료', 'ok');
+      } catch(e){
+        host().innerHTML = '<div class="error">활동 로드 실패: 템플릿/파라미터를 확인하세요.</div>';
+        showError(e);
+      }
+    }
+
+    function computeAgg(){
+      const totalWeight = state.lesson.flow.reduce((a,s)=> a+(s.rules?.scoreWeight||1), 0);
+      const weighted = state.results.reduce((a,res,i)=> a + ((res?.score||0) * (state.lesson.flow[i]?.rules?.scoreWeight||1)), 0);
+      return totalWeight? (weighted/totalWeight) : 0;
+    }
+
+    async function applyLesson(lesson){
+      const errs = validateLesson(lesson);
+      if(errs.length){
+        throw new Error('레슨 JSON 유효성 오류:\\n- ' + errs.join('\\n- '));
+      }
+      state.lesson = lesson; state.idx = 0; state.results = new Array(lesson.flow.length).fill({score:0});
+      lblTitle().textContent = lesson.title || lesson.lessonId;
+      lblLocale().textContent = lesson.locale || 'ko';
+      stepTotal().textContent = lesson.flow.length;
+      passLineEl().textContent = (lesson.grading?.passLine ?? 0.7);
+      await mountActivity(lesson.flow[state.idx]);
+      updateProgress();
+      setMsg('레슨 적용 완료', 'ok');
+    }
+
+    function updateProgress(){
+      stepIdx().textContent = (state.idx+1);
+      const ratio = (state.idx)/(state.lesson.flow.length);
+      prog().style.width = (ratio*100)+'%';
+      aggScoreEl().textContent = computeAgg().toFixed(2);
+    }
+
+    async function next(){
+      try{
+        if(state.current?.getResult){
+          const res = await state.current.getResult();
+          state.results[state.idx] = res;
+        }
+        if(state.idx < state.lesson.flow.length - 1){
+          state.idx += 1;
+          await mountActivity(state.lesson.flow[state.idx]);
+          updateProgress();
+        } else {
+          finish();
+        }
+      }catch(e){ showError(e); }
+    }
+
+    async function prev(){
+      try{
+        if(state.idx > 0){
+          state.idx -= 1;
+          await mountActivity(state.lesson.flow[state.idx]);
+          updateProgress();
+        }
+      }catch(e){ showError(e); }
+    }
+
+    function finish(){
+      try{
+        const passLine = (state.lesson.grading?.passLine ?? 0.7);
+        const agg = computeAgg();
+        alert((agg>=passLine?'통과':'미달') + ` (최종점수: ${agg.toFixed(2)})`);
+      }catch(e){ showError(e); }
+    }
+
+    // UI wiring
+    document.getElementById('btnNext').addEventListener('click', next);
+    document.getElementById('btnPrev').addEventListener('click', prev);
+    document.getElementById('btnFinish').addEventListener('click', finish);
+    document.getElementById('chkDev').addEventListener('change', e=>{
+      DEV.enabled = e.target.checked; logEl().classList.toggle('hidden', !DEV.enabled);
+      if(!DEV.enabled) clearlog();
+    });
+
+    // Sample loader (with robust fallback)
+    document.getElementById('btnLoadSample').addEventListener('click', async ()=>{
+      clearlog(); setMsg('샘플 로드 중...');
+      try{
+        const res = await fetch('./lessons/U15-L03.json');
+        if(!res.ok) throw new Error('샘플 fetch 실패 (로컬 file:// 일 수 있음)');
+        const txt = await res.text();
+        const data = safeParseJson(txt);
+        await applyLesson(data);
+      }catch(e){
+        devlog('샘플 fetch 실패, 내장 샘플 사용', e?.message||e);
+        await applyLesson(window.__EMBEDDED_SAMPLE__);
+      }
+    });
+
+    // File input loader with safe parsing
+    document.getElementById('fileInput').addEventListener('change', async (e)=>{
+      clearlog(); setMsg('파일 파싱 중...');
+      const f = e.target.files?.[0];
+      if(!f) return;
+      const txt = await f.text();
+      try{
+        const json = safeParseJson(txt);
+        await applyLesson(json);
+      }catch(err){
+        showError(err);
+        alert('레슨 JSON 로드 실패:\\n' + err.message + '\\n\\n해결 팁:\\n- JSON 주석/트레일링 콤마 제거\\n- 필수 필드 확인 (lessonId, flow[].activityId/template/params)');
+      }
+    });
+
+    // Embedded fallback sample
+    window.__EMBEDDED_SAMPLE__ = {
+      "lessonId":"U15-L03",
+      "title":"Comparatives 1 (샘플)",
+      "locale":"ko",
+      "flow":[
+        { "activityId":"intro-clip","template":"video@1.0.0","params":{"src":"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4","autoplay":false},"rules":{"scoreWeight":1}},
+        { "activityId":"dd-1","template":"drag-drop-choices@1.2.0","params":{"prompt":"He is ___.","choices":["tall","short","smart","strong"],"answer":"tall","image":""},"rules":{"scoreWeight":2}}
+      ],
+      "grading":{"mode":"weighted-sum","passLine":0.7}
+    };
+  </script>
+</body>
+</html>
