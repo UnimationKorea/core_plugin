@@ -1,0 +1,467 @@
+{
+  "lessons": [
+    {
+      "id": "memory-game-basic-korean",
+      "title": "한국어 단어 기억 게임 - 기초",
+      "description": "기초 한국어 단어와 영어 번역을 매칭하는 메모리 게임",
+      "category": "language",
+      "difficulty": "beginner",
+      "estimatedDuration": 300,
+      "tags": ["korean", "english", "vocabulary", "memory-game", "beginner"],
+      "activities": [
+        {
+          "id": "activity-1",
+          "templateId": "memory-game@1.0.0",
+          "title": "가족 단어 매칭 게임",
+          "params": {
+            "title": "🏠 가족 관련 단어 기억하기",
+            "cards": [
+              {
+                "id": "card-1",
+                "content": "아버지",
+                "type": "text",
+                "matchId": "father"
+              },
+              {
+                "id": "card-2",
+                "content": "Father",
+                "type": "text",
+                "matchId": "father"
+              },
+              {
+                "id": "card-3",
+                "content": "어머니",
+                "type": "text",
+                "matchId": "mother"
+              },
+              {
+                "id": "card-4",
+                "content": "Mother",
+                "type": "text",
+                "matchId": "mother"
+              },
+              {
+                "id": "card-5",
+                "content": "형/누나",
+                "type": "text",
+                "matchId": "sibling"
+              },
+              {
+                "id": "card-6",
+                "content": "Brother/Sister",
+                "type": "text",
+                "matchId": "sibling"
+              },
+              {
+                "id": "card-7",
+                "content": "할아버지",
+                "type": "text",
+                "matchId": "grandfather"
+              },
+              {
+                "id": "card-8",
+                "content": "Grandfather",
+                "type": "text",
+                "matchId": "grandfather"
+              }
+            ],
+            "gridSize": "4x4",
+            "timeLimit": 120,
+            "allowRetries": true,
+            "maxAttempts": 5,
+            "showTimer": true,
+            "successMessage": "🎉 축하합니다! 가족 단어를 모두 매칭했습니다!",
+            "failureMessage": "😅 시간이 부족했네요. 다시 한 번 도전해보세요!",
+            "hints": [
+              "한국어와 영어 단어의 의미를 연결해보세요.",
+              "가족 관계를 생각하면서 매칭해보세요."
+            ],
+            "difficulty": "easy",
+            "shuffle": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "memory-game-math-symbols",
+      "title": "수학 기호와 의미 매칭 게임",
+      "description": "수학 기호와 그 의미를 매칭하는 중급 메모리 게임",
+      "category": "mathematics",
+      "difficulty": "intermediate",
+      "estimatedDuration": 450,
+      "tags": ["mathematics", "symbols", "memory-game", "intermediate"],
+      "activities": [
+        {
+          "id": "activity-1",
+          "templateId": "memory-game@1.0.0",
+          "title": "수학 기호 기억 게임",
+          "params": {
+            "title": "🔢 수학 기호와 의미 매칭",
+            "cards": [
+              {
+                "id": "card-1",
+                "content": "∑",
+                "type": "text",
+                "matchId": "summation"
+              },
+              {
+                "id": "card-2",
+                "content": "합계 (Sum)",
+                "type": "text", 
+                "matchId": "summation"
+              },
+              {
+                "id": "card-3",
+                "content": "∫",
+                "type": "text",
+                "matchId": "integral"
+              },
+              {
+                "id": "card-4",
+                "content": "적분 (Integral)",
+                "type": "text",
+                "matchId": "integral"
+              },
+              {
+                "id": "card-5",
+                "content": "∞",
+                "type": "text",
+                "matchId": "infinity"
+              },
+              {
+                "id": "card-6",
+                "content": "무한대 (Infinity)",
+                "type": "text",
+                "matchId": "infinity"
+              },
+              {
+                "id": "card-7",
+                "content": "√",
+                "type": "text",
+                "matchId": "sqrt"
+              },
+              {
+                "id": "card-8",
+                "content": "제곱근 (Square Root)",
+                "type": "text",
+                "matchId": "sqrt"
+              },
+              {
+                "id": "card-9",
+                "content": "π",
+                "type": "text",
+                "matchId": "pi"
+              },
+              {
+                "id": "card-10",
+                "content": "원주율 (Pi)",
+                "type": "text",
+                "matchId": "pi"
+              },
+              {
+                "id": "card-11", 
+                "content": "≠",
+                "type": "text",
+                "matchId": "not-equal"
+              },
+              {
+                "id": "card-12",
+                "content": "같지 않음 (Not Equal)",
+                "type": "text",
+                "matchId": "not-equal"
+              }
+            ],
+            "gridSize": "4x6",
+            "timeLimit": 180,
+            "allowRetries": true,
+            "maxAttempts": 3,
+            "showTimer": true,
+            "successMessage": "🎯 훌륭합니다! 모든 수학 기호를 올바르게 매칭했습니다!",
+            "failureMessage": "📚 수학 기호를 더 공부한 후 다시 도전해보세요!",
+            "hints": [
+              "수학 기호의 모양과 의미를 연관지어 기억해보세요.",
+              "자주 사용되는 기호부터 매칭해보세요."
+            ],
+            "difficulty": "medium",
+            "shuffle": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "memory-game-animals-emoji",
+      "title": "동물 이모지 매칭 게임 - 고급",
+      "description": "다양한 동물 이모지와 이름을 매칭하는 고급 메모리 게임",
+      "category": "general",
+      "difficulty": "advanced",
+      "estimatedDuration": 600,
+      "tags": ["animals", "emoji", "memory-game", "advanced"],
+      "activities": [
+        {
+          "id": "activity-1",
+          "templateId": "memory-game@1.0.0", 
+          "title": "동물 이모지 대매칭",
+          "params": {
+            "title": "🦁 동물 이모지와 이름 매칭 도전!",
+            "cards": [
+              {
+                "id": "card-1",
+                "content": "🐘",
+                "type": "emoji",
+                "matchId": "elephant"
+              },
+              {
+                "id": "card-2",
+                "content": "코끼리",
+                "type": "text",
+                "matchId": "elephant"
+              },
+              {
+                "id": "card-3",
+                "content": "🦒",
+                "type": "emoji",
+                "matchId": "giraffe"
+              },
+              {
+                "id": "card-4",
+                "content": "기린",
+                "type": "text",
+                "matchId": "giraffe"
+              },
+              {
+                "id": "card-5",
+                "content": "🦓",
+                "type": "emoji", 
+                "matchId": "zebra"
+              },
+              {
+                "id": "card-6",
+                "content": "얼룩말",
+                "type": "text",
+                "matchId": "zebra"
+              },
+              {
+                "id": "card-7",
+                "content": "🦏",
+                "type": "emoji",
+                "matchId": "rhino"
+              },
+              {
+                "id": "card-8",
+                "content": "코뿔소",
+                "type": "text",
+                "matchId": "rhino"
+              },
+              {
+                "id": "card-9",
+                "content": "🦘",
+                "type": "emoji",
+                "matchId": "kangaroo"
+              },
+              {
+                "id": "card-10",
+                "content": "캥거루",
+                "type": "text",
+                "matchId": "kangaroo"
+              },
+              {
+                "id": "card-11",
+                "content": "🦝",
+                "type": "emoji",
+                "matchId": "raccoon"
+              },
+              {
+                "id": "card-12",
+                "content": "너구리",
+                "type": "text",
+                "matchId": "raccoon"
+              },
+              {
+                "id": "card-13",
+                "content": "🦔",
+                "type": "emoji",
+                "matchId": "hedgehog"
+              },
+              {
+                "id": "card-14",
+                "content": "고슴도치",
+                "type": "text",
+                "matchId": "hedgehog"
+              },
+              {
+                "id": "card-15",
+                "content": "🦆",
+                "type": "emoji",
+                "matchId": "duck"
+              },
+              {
+                "id": "card-16",
+                "content": "오리",
+                "type": "text",
+                "matchId": "duck"
+              }
+            ],
+            "gridSize": "4x4",
+            "timeLimit": 240,
+            "allowRetries": true,
+            "maxAttempts": 2,
+            "showTimer": true,
+            "cardBackImage": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzMzNzNEQyIgcng9IjEwIi8+CiAgPHRleHQgeD0iNTAiIHk9IjU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzAiIGZpbGw9IndoaXRlIj4/PC90ZXh0Pgo8L3N2Zz4=",
+            "successMessage": "🏆 놀라워요! 모든 동물을 완벽하게 매칭했습니다!",
+            "failureMessage": "🐾 동물들이 숨바꼭질을 잘하네요. 다시 도전해보세요!",
+            "hints": [
+              "이모지의 특징을 자세히 관찰해보세요.",
+              "동물의 독특한 특징을 기억해보세요.",
+              "비슷한 동물들을 구별하는 포인트를 찾아보세요."
+            ],
+            "difficulty": "hard",
+            "shuffle": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "memory-game-science-formulas", 
+      "title": "과학 공식 매칭 게임",
+      "description": "물리/화학 공식과 그 의미를 매칭하는 전문가 수준 게임",
+      "category": "science",
+      "difficulty": "expert",
+      "estimatedDuration": 720,
+      "tags": ["physics", "chemistry", "formulas", "memory-game", "expert"],
+      "activities": [
+        {
+          "id": "activity-1",
+          "templateId": "memory-game@1.0.0",
+          "title": "물리/화학 공식 마스터",
+          "params": {
+            "title": "⚗️ 과학 공식 완전정복!",
+            "cards": [
+              {
+                "id": "card-1",
+                "content": "E = mc²",
+                "type": "text",
+                "matchId": "einstein"
+              },
+              {
+                "id": "card-2",
+                "content": "아인슈타인 질량-에너지 등가식",
+                "type": "text",
+                "matchId": "einstein"
+              },
+              {
+                "id": "card-3",
+                "content": "F = ma",
+                "type": "text",
+                "matchId": "newton2"
+              },
+              {
+                "id": "card-4",
+                "content": "뉴턴 제2법칙 (운동방정식)",
+                "type": "text",
+                "matchId": "newton2"
+              },
+              {
+                "id": "card-5",
+                "content": "PV = nRT",
+                "type": "text",
+                "matchId": "ideal-gas"
+              },
+              {
+                "id": "card-6",
+                "content": "이상기체 상태방정식",
+                "type": "text",
+                "matchId": "ideal-gas"
+              },
+              {
+                "id": "card-7",
+                "content": "v = λf",
+                "type": "text",
+                "matchId": "wave"
+              },
+              {
+                "id": "card-8",
+                "content": "파동의 속도공식",
+                "type": "text",
+                "matchId": "wave"
+              },
+              {
+                "id": "card-9",
+                "content": "Q = mcΔT",
+                "type": "text",
+                "matchId": "heat"
+              },
+              {
+                "id": "card-10",
+                "content": "열량 공식",
+                "type": "text",
+                "matchId": "heat"
+              },
+              {
+                "id": "card-11",
+                "content": "V = IR",
+                "type": "text",
+                "matchId": "ohm"
+              },
+              {
+                "id": "card-12",
+                "content": "옴의 법칙",
+                "type": "text",
+                "matchId": "ohm"
+              },
+              {
+                "id": "card-13",
+                "content": "W = Fd",
+                "type": "text",
+                "matchId": "work"
+              },
+              {
+                "id": "card-14",
+                "content": "일의 정의",
+                "type": "text",
+                "matchId": "work"
+              },
+              {
+                "id": "card-15",
+                "content": "p = mv",
+                "type": "text",
+                "matchId": "momentum"
+              },
+              {
+                "id": "card-16",
+                "content": "운동량 공식",
+                "type": "text",
+                "matchId": "momentum"
+              },
+              {
+                "id": "card-17",
+                "content": "KE = ½mv²",
+                "type": "text",
+                "matchId": "kinetic"
+              },
+              {
+                "id": "card-18",
+                "content": "운동에너지 공식",
+                "type": "text",
+                "matchId": "kinetic"
+              }
+            ],
+            "gridSize": "6x6",
+            "timeLimit": 300,
+            "allowRetries": true,
+            "maxAttempts": 1,
+            "showTimer": true,
+            "successMessage": "🧬 과학자 수준입니다! 모든 공식을 완벽하게 매칭했습니다!",
+            "failureMessage": "📖 더 많은 공부가 필요해 보입니다. 공식을 복습한 후 다시 도전하세요!",
+            "hints": [
+              "각 공식의 물리적/화학적 의미를 생각해보세요.",
+              "변수들의 의미를 연관지어 기억해보세요.",
+              "유명한 과학자들의 이름과 연결해서 기억해보세요."
+            ],
+            "difficulty": "hard",
+            "shuffle": true
+          }
+        }
+      ]
+    }
+  ]
+}

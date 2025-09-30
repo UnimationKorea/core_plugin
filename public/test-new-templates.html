@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새 템플릿 테스트 - Multiple Choice & Memory Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #dbeafe;
+            --primary-alpha: rgba(59, 130, 246, 0.1);
+            --success: #22c55e;
+            --success-dark: #16a34a;
+            --success-light: #dcfce7;
+            --error: #ef4444;
+            --error-dark: #dc2626;
+            --error-light: #fef2f2;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --warning-light: #fef3c7;
+            --surface: #ffffff;
+            --surface-variant: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 24px;
+            --font-primary: 'Arial', sans-serif;
+            --transition-fast: 0.15s ease-out;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e6edf7;
+            min-height: 100vh;
+            font-family: var(--font-primary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .lesson-container {
+            background: #1e293b;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background: #475569;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #334155;
+        }
+        
+        .activity-container {
+            background: #334155;
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            min-height: 400px;
+        }
+        
+        .template-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .sample-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .sample-card {
+            background: #475569;
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+        }
+        
+        .sample-card:hover {
+            background: #64748b;
+            border-color: var(--primary);
+        }
+        
+        .sample-card.active {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .sample-title {
+            font-weight: 600;
+            color: #e6edf7;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sample-description {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: var(--border-radius-md);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-ready { background: #22c55e; }
+        .status-active { background: #3b82f6; }
+        .status-complete { background: #f59e0b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4">
+                <i class="fas fa-puzzle-piece mr-3"></i>
+                새 템플릿 테스트
+            </h1>
+            <p class="text-xl text-gray-300">Multiple Choice & Memory Game 템플릿</p>
+        </header>
+
+        <!-- Multiple Choice Template Test -->
+        <div class="lesson-container">
+            <div class="template-info">
+                <h2 class="text-2xl font-bold mb-2">
+                    <i class="fas fa-check-square mr-2"></i>
+                    Multiple Choice Template (4지 선다형)
+                </h2>
+                <p>단일/다중 선택, 타이머, 힌트, 해설 기능을 포함한 객관식 문제 템플릿</p>
+            </div>
+
+            <div class="sample-selection" id="mc-samples">
+                <div class="sample-card" data-sample="korean-grammar">
+                    <div class="sample-title">한국어 문법 문제</div>
+                    <div class="sample-description">조사 '은/는' 사용법을 다루는 기초 문법 문제 (30초 제한)</div>
+                </div>
+                <div class="sample-card" data-sample="math-multiple">
+                    <div class="sample-title">수학 다중 선택</div>
+                    <div class="sample-description">소수 찾기 문제 - 다중 선택 허용 (45초 제한)</div>
+                </div>
+                <div class="sample-card" data-sample="science-chemistry">
+                    <div class="sample-title">화학 공식 문제</div>
+                    <div class="sample-description">물의 화학식 관련 문제 (이미지 포함, 60초 제한)</div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <div class="status-indicator">
+                    <span class="status-dot status-ready" id="mc-status-dot"></span>
+                    <span id="mc-status">준비됨</span>
+                </div>
+                <button class="btn btn-primary" onclick="startMultipleChoice()">
+                    <i class="fas fa-play mr-1"></i>선택한 샘플 시작
+                </button>
+                <button class="btn btn-secondary" onclick="resetMultipleChoice()">
+                    <i class="fas fa-redo mr-1"></i>초기화
+                </button>
+            </div>
+
+            <div class="activity-container" id="mc-container">
+                <div class="text-center text-gray-400">
+                    <i class="fas fa-mouse-pointer text-4xl mb-4"></i>
+                    <p>위에서 샘플을 선택하고 시작 버튼을 클릭하세요.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Memory Game Template Test -->
+        <div class="lesson-container">
+            <div class="template-info">
+                <h2 class="text-2xl font-bold mb-2">
+                    <i class="fas fa-brain mr-2"></i>
+                    Memory Game Template (메모리 게임)
+                </h2>
+                <p>카드 매칭 기억 게임 - 텍스트, 이미지, 이모지 카드 지원</p>
+            </div>
+
+            <div class="sample-selection" id="mg-samples">
+                <div class="sample-card" data-sample="korean-family">
+                    <div class="sample-title">한국어 가족 단어</div>
+                    <div class="sample-description">한국어-영어 가족 단어 매칭 (4x4 그리드, 120초)</div>
+                </div>
+                <div class="sample-card" data-sample="math-symbols">
+                    <div class="sample-title">수학 기호 매칭</div>
+                    <div class="sample-description">수학 기호와 의미 매칭 (4x6 그리드, 180초)</div>
+                </div>
+                <div class="sample-card" data-sample="animal-emoji">
+                    <div class="sample-title">동물 이모지 게임</div>
+                    <div class="sample-description">동물 이모지와 이름 매칭 (4x4 그리드, 240초)</div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <div class="status-indicator">
+                    <span class="status-dot status-ready" id="mg-status-dot"></span>
+                    <span id="mg-status">준비됨</span>
+                </div>
+                <button class="btn btn-primary" onclick="startMemoryGame()">
+                    <i class="fas fa-play mr-1"></i>선택한 샘플 시작
+                </button>
+                <button class="btn btn-secondary" onclick="resetMemoryGame()">
+                    <i class="fas fa-redo mr-1"></i>초기화
+                </button>
+            </div>
+
+            <div class="activity-container" id="mg-container">
+                <div class="text-center text-gray-400">
+                    <i class="fas fa-mouse-pointer text-4xl mb-4"></i>
+                    <p>위에서 샘플을 선택하고 시작 버튼을 클릭하세요.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Orchestrator -->
+    <script src="/static/js/orchestrator.js"></script>
+
+    <script>
+        // Sample data
+        const mcSamples = {
+            'korean-grammar': {
+                question: "다음 문장에서 빈 칸에 들어갈 적절한 조사는 무엇입니까?\\n\\n'이 책___ 매우 재미있습니다.'",
+                choices: [
+                    { id: "choice-a", text: "은" },
+                    { id: "choice-b", text: "는" },
+                    { id: "choice-c", text: "이" },
+                    { id: "choice-d", text: "가" }
+                ],
+                correctAnswer: "choice-a",
+                allowMultiple: false,
+                shuffle: true,
+                timeLimit: 30,
+                explanation: "'책'은 받침이 있으므로 '은'을 사용합니다. '은/는'은 주제를 나타내는 조사입니다.",
+                showFeedback: true,
+                hints: ["'책'에 받침이 있는지 확인해보세요.", "주제를 나타내는 조사는 '은/는'입니다."]
+            },
+            'math-multiple': {
+                question: "다음 중 소수(Prime Number)에 해당하는 것을 모두 선택하세요.",
+                choices: [
+                    { id: "choice-a", text: "2" },
+                    { id: "choice-b", text: "3" },
+                    { id: "choice-c", text: "4" },
+                    { id: "choice-d", text: "5" }
+                ],
+                correctAnswer: ["choice-a", "choice-b", "choice-d"],
+                allowMultiple: true,
+                shuffle: true,
+                timeLimit: 45,
+                explanation: "소수는 1과 자기 자신으로만 나누어지는 1보다 큰 자연수입니다. 2, 3, 5가 소수입니다. 4는 2×2이므로 소수가 아닙니다.",
+                showFeedback: true,
+                hints: ["소수의 정의를 다시 생각해보세요.", "4는 2로 나누어집니다."]
+            },
+            'science-chemistry': {
+                question: "물(H₂O)에서 수소와 산소의 원자 개수 비는 몇 대 몇입니까?",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iI0ZGNjY2NiIgLz4KICA8dGV4dCB4PSI1MCIgeT0iNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPkg8L3RleHQ+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iNTAiIHI9IjMwIiBmaWxsPSIjNjY5OUZGIiAvPgogIDx0ZXh0IHg9IjEwMCIgeT0iNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPk88L3RleHQ+CiAgPGNpcmNsZSBjeD0iMTUwIiBjeT0iNTAiIHI9IjIwIiBmaWxsPSIjRkY2NjY2IiAvPgogIDx0ZXh0IHg9IjE1MCIgeT0iNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPkg8L3RleHQ+Cjwvc3ZnPg==",
+                choices: [
+                    { id: "choice-a", text: "1 : 1" },
+                    { id: "choice-b", text: "2 : 1" },
+                    { id: "choice-c", text: "1 : 2" },
+                    { id: "choice-d", text: "3 : 1" }
+                ],
+                correctAnswer: "choice-b",
+                allowMultiple: false,
+                shuffle: true,
+                timeLimit: 60,
+                explanation: "H₂O에서 수소(H) 원자는 2개, 산소(O) 원자는 1개이므로 비율은 2:1입니다.",
+                showFeedback: true,
+                hints: ["H₂O에서 아래 첨자 숫자를 확인하세요.", "H의 아래 첨자는 2, O는 1(생략됨)입니다."]
+            }
+        };
+
+        const mgSamples = {
+            'korean-family': {
+                title: "🏠 가족 관련 단어 기억하기",
+                cards: [
+                    { id: "card-1", content: "아버지", type: "text", matchId: "father" },
+                    { id: "card-2", content: "Father", type: "text", matchId: "father" },
+                    { id: "card-3", content: "어머니", type: "text", matchId: "mother" },
+                    { id: "card-4", content: "Mother", type: "text", matchId: "mother" },
+                    { id: "card-5", content: "형/누나", type: "text", matchId: "sibling" },
+                    { id: "card-6", content: "Brother/Sister", type: "text", matchId: "sibling" },
+                    { id: "card-7", content: "할아버지", type: "text", matchId: "grandfather" },
+                    { id: "card-8", content: "Grandfather", type: "text", matchId: "grandfather" }
+                ],
+                gridSize: "4x4",
+                timeLimit: 120,
+                allowRetries: true,
+                maxAttempts: 5,
+                showTimer: true,
+                successMessage: "🎉 축하합니다! 가족 단어를 모두 매칭했습니다!",
+                failureMessage: "😅 시간이 부족했네요. 다시 한 번 도전해보세요!",
+                shuffle: true
+            },
+            'math-symbols': {
+                title: "🔢 수학 기호와 의미 매칭",
+                cards: [
+                    { id: "card-1", content: "∑", type: "text", matchId: "summation" },
+                    { id: "card-2", content: "합계 (Sum)", type: "text", matchId: "summation" },
+                    { id: "card-3", content: "∫", type: "text", matchId: "integral" },
+                    { id: "card-4", content: "적분 (Integral)", type: "text", matchId: "integral" },
+                    { id: "card-5", content: "∞", type: "text", matchId: "infinity" },
+                    { id: "card-6", content: "무한대 (Infinity)", type: "text", matchId: "infinity" },
+                    { id: "card-7", content: "√", type: "text", matchId: "sqrt" },
+                    { id: "card-8", content: "제곱근 (Square Root)", type: "text", matchId: "sqrt" },
+                    { id: "card-9", content: "π", type: "text", matchId: "pi" },
+                    { id: "card-10", content: "원주율 (Pi)", type: "text", matchId: "pi" },
+                    { id: "card-11", content: "≠", type: "text", matchId: "not-equal" },
+                    { id: "card-12", content: "같지 않음 (Not Equal)", type: "text", matchId: "not-equal" }
+                ],
+                gridSize: "4x6",
+                timeLimit: 180,
+                allowRetries: true,
+                maxAttempts: 3,
+                showTimer: true,
+                successMessage: "🎯 훌륭합니다! 모든 수학 기호를 올바르게 매칭했습니다!",
+                failureMessage: "📚 수학 기호를 더 공부한 후 다시 도전해보세요!",
+                shuffle: true
+            },
+            'animal-emoji': {
+                title: "🦁 동물 이모지와 이름 매칭 도전!",
+                cards: [
+                    { id: "card-1", content: "🐘", type: "emoji", matchId: "elephant" },
+                    { id: "card-2", content: "코끼리", type: "text", matchId: "elephant" },
+                    { id: "card-3", content: "🦒", type: "emoji", matchId: "giraffe" },
+                    { id: "card-4", content: "기린", type: "text", matchId: "giraffe" },
+                    { id: "card-5", content: "🦓", type: "emoji", matchId: "zebra" },
+                    { id: "card-6", content: "얼룩말", type: "text", matchId: "zebra" },
+                    { id: "card-7", content: "🦏", type: "emoji", matchId: "rhino" },
+                    { id: "card-8", content: "코뿔소", type: "text", matchId: "rhino" },
+                    { id: "card-9", content: "🦘", type: "emoji", matchId: "kangaroo" },
+                    { id: "card-10", content: "캥거루", type: "text", matchId: "kangaroo" },
+                    { id: "card-11", content: "🦝", type: "emoji", matchId: "raccoon" },
+                    { id: "card-12", content: "너구리", type: "text", matchId: "raccoon" },
+                    { id: "card-13", content: "🦔", type: "emoji", matchId: "hedgehog" },
+                    { id: "card-14", content: "고슴도치", type: "text", matchId: "hedgehog" },
+                    { id: "card-15", content: "🦆", type: "emoji", matchId: "duck" },
+                    { id: "card-16", content: "오리", type: "text", matchId: "duck" }
+                ],
+                gridSize: "4x4",
+                timeLimit: 240,
+                allowRetries: true,
+                maxAttempts: 2,
+                showTimer: true,
+                successMessage: "🏆 놀라워요! 모든 동물을 완벽하게 매칭했습니다!",
+                failureMessage: "🐾 동물들이 숨바꼭질을 잘하네요. 다시 도전해보세요!",
+                shuffle: true
+            }
+        };
+
+        // State management
+        let currentMCSample = null;
+        let currentMGSample = null;
+        let mcOrchestrator = null;
+        let mgOrchestrator = null;
+
+        // Sample selection handlers
+        document.getElementById('mc-samples').addEventListener('click', (e) => {
+            const card = e.target.closest('.sample-card');
+            if (card) {
+                // Remove active class from all cards
+                document.querySelectorAll('#mc-samples .sample-card').forEach(c => c.classList.remove('active'));
+                // Add active class to clicked card
+                card.classList.add('active');
+                currentMCSample = card.dataset.sample;
+            }
+        });
+
+        document.getElementById('mg-samples').addEventListener('click', (e) => {
+            const card = e.target.closest('.sample-card');
+            if (card) {
+                // Remove active class from all cards
+                document.querySelectorAll('#mg-samples .sample-card').forEach(c => c.classList.remove('active'));
+                // Add active class to clicked card
+                card.classList.add('active');
+                currentMGSample = card.dataset.sample;
+            }
+        });
+
+        // Multiple Choice functions
+        async function startMultipleChoice() {
+            if (!currentMCSample) {
+                alert('먼저 샘플을 선택해주세요.');
+                return;
+            }
+
+            updateStatus('mc', 'active', '실행 중');
+
+            const container = document.getElementById('mc-container');
+            const params = mcSamples[currentMCSample];
+
+            try {
+                // Get template from registry
+                const template = window.TemplateRegistry.get('multiple-choice@1.0.0');
+                if (!template) {
+                    throw new Error('Multiple Choice 템플릿을 찾을 수 없습니다.');
+                }
+
+                // Create simple event bus for testing
+                const eventBus = {
+                    handlers: new Map(),
+                    emit(event) {
+                        console.log('Event:', event);
+                        const handlers = this.handlers.get(event.type) || [];
+                        handlers.forEach(handler => handler(event));
+                        
+                        if (event.type === 'COMPLETE') {
+                            setTimeout(() => {
+                                updateStatus('mc', 'complete', '완료됨');
+                            }, 100);
+                        }
+                    },
+                    on(type, handler) {
+                        if (!this.handlers.has(type)) {
+                            this.handlers.set(type, []);
+                        }
+                        this.handlers.get(type).push(handler);
+                    }
+                };
+
+                const context = {
+                    activityId: 'test-mc-' + currentMCSample,
+                    eventBus: eventBus
+                };
+
+                // Clear container and mount template
+                container.innerHTML = '';
+                await template.mount(container, params, context);
+
+            } catch (error) {
+                console.error('Multiple Choice 시작 오류:', error);
+                container.innerHTML = `
+                    <div class="text-center text-red-400">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                        <p>오류가 발생했습니다: ${error.message}</p>
+                    </div>
+                `;
+                updateStatus('mc', 'ready', '오류 발생');
+            }
+        }
+
+        async function startMemoryGame() {
+            if (!currentMGSample) {
+                alert('먼저 샘플을 선택해주세요.');
+                return;
+            }
+
+            updateStatus('mg', 'active', '실행 중');
+
+            const container = document.getElementById('mg-container');
+            const params = mgSamples[currentMGSample];
+
+            try {
+                // Get template from registry
+                const template = window.TemplateRegistry.get('memory-game@1.0.0');
+                if (!template) {
+                    throw new Error('Memory Game 템플릿을 찾을 수 없습니다.');
+                }
+
+                // Create simple event bus for testing
+                const eventBus = {
+                    handlers: new Map(),
+                    emit(event) {
+                        console.log('Event:', event);
+                        const handlers = this.handlers.get(event.type) || [];
+                        handlers.forEach(handler => handler(event));
+                        
+                        if (event.type === 'COMPLETE') {
+                            setTimeout(() => {
+                                updateStatus('mg', 'complete', '완료됨');
+                            }, 100);
+                        }
+                    },
+                    on(type, handler) {
+                        if (!this.handlers.has(type)) {
+                            this.handlers.set(type, []);
+                        }
+                        this.handlers.get(type).push(handler);
+                    }
+                };
+
+                const context = {
+                    activityId: 'test-mg-' + currentMGSample,
+                    eventBus: eventBus
+                };
+
+                // Clear container and mount template
+                container.innerHTML = '';
+                await template.mount(container, params, context);
+
+            } catch (error) {
+                console.error('Memory Game 시작 오류:', error);
+                container.innerHTML = `
+                    <div class="text-center text-red-400">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                        <p>오류가 발생했습니다: ${error.message}</p>
+                    </div>
+                `;
+                updateStatus('mg', 'ready', '오류 발생');
+            }
+        }
+
+        function resetMultipleChoice() {
+            const container = document.getElementById('mc-container');
+            container.innerHTML = `
+                <div class="text-center text-gray-400">
+                    <i class="fas fa-mouse-pointer text-4xl mb-4"></i>
+                    <p>위에서 샘플을 선택하고 시작 버튼을 클릭하세요.</p>
+                </div>
+            `;
+            updateStatus('mc', 'ready', '준비됨');
+        }
+
+        function resetMemoryGame() {
+            const container = document.getElementById('mg-container');
+            container.innerHTML = `
+                <div class="text-center text-gray-400">
+                    <i class="fas fa-mouse-pointer text-4xl mb-4"></i>
+                    <p>위에서 샘플을 선택하고 시작 버튼을 클릭하세요.</p>
+                </div>
+            `;
+            updateStatus('mg', 'ready', '준비됨');
+        }
+
+        function updateStatus(type, status, text) {
+            const dot = document.getElementById(`${type}-status-dot`);
+            const statusText = document.getElementById(`${type}-status`);
+            
+            dot.className = `status-dot status-${status}`;
+            statusText.textContent = text;
+        }
+
+        // Initialize
+        console.log('Template Registry:', window.TemplateRegistry);
+        console.log('Available templates:', Array.from(window.TemplateRegistry.keys()));
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "properties": {
+    "word": {
+      "type": "string",
+      "description": "맞춰야 할 단어",
+      "minLength": 3,
+      "maxLength": 15,
+      "pattern": "^[가-힣a-zA-Z]+$"
+    },
+    "hint": {
+      "type": "string",
+      "description": "단어에 대한 힌트",
+      "maxLength": 200
+    },
+    "category": {
+      "type": "string",
+      "description": "단어 카테고리",
+      "enum": ["동물", "음식", "직업", "색깔", "나라", "기타"],
+      "default": "기타"
+    },
+    "maxAttempts": {
+      "type": "number",
+      "description": "최대 시도 횟수",
+      "minimum": 3,
+      "maximum": 10,
+      "default": 6
+    },
+    "showHintAfter": {
+      "type": "number",
+      "description": "몇 번 틀린 후 힌트 표시",
+      "minimum": 1,
+      "maximum": 5,
+      "default": 3
+    },
+    "timeLimit": {
+      "type": "number",
+      "description": "제한 시간(초), 0이면 무제한",
+      "minimum": 0,
+      "maximum": 600,
+      "default": 0
+    },
+    "difficulty": {
+      "type": "string",
+      "description": "난이도",
+      "enum": ["쉬움", "보통", "어려움"],
+      "default": "보통"
+    }
+  },
+  "required": ["word", "hint"],
+  "additionalProperties": false
+}

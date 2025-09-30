@@ -1,0 +1,96 @@
+{
+  "lessonId": "word-guess-demo-001",
+  "title": "단어 맞추기 게임 모음",
+  "locale": "ko",
+  "version": "1.0.0",
+  "description": "다양한 주제의 단어 맞추기 게임으로 어휘력을 향상시키세요",
+  "flow": [
+    {
+      "activityId": "word-game-animals",
+      "template": "word-guess@1.0.0",
+      "params": {
+        "word": "코끼리",
+        "hint": "아프리카에 사는 큰 귀를 가진 회색 동물",
+        "category": "동물",
+        "maxAttempts": 6,
+        "showHintAfter": 3,
+        "timeLimit": 120,
+        "difficulty": "쉬움"
+      },
+      "rules": {
+        "scoreWeight": 1,
+        "required": true,
+        "retryLimit": 3
+      }
+    },
+    {
+      "activityId": "word-game-food",
+      "template": "word-guess@1.0.0", 
+      "params": {
+        "word": "파스타",
+        "hint": "이탈리아에서 온 면 요리",
+        "category": "음식",
+        "maxAttempts": 7,
+        "showHintAfter": 2,
+        "timeLimit": 90,
+        "difficulty": "보통"
+      },
+      "rules": {
+        "scoreWeight": 2,
+        "required": true,
+        "retryLimit": 2
+      }
+    },
+    {
+      "activityId": "word-game-job",
+      "template": "word-guess@1.0.0",
+      "params": {
+        "word": "프로그래머",
+        "hint": "컴퓨터 코드를 작성하는 사람",
+        "category": "직업",
+        "maxAttempts": 8,
+        "showHintAfter": 3,
+        "timeLimit": 180,
+        "difficulty": "어려움"
+      },
+      "rules": {
+        "scoreWeight": 3,
+        "required": true,
+        "retryLimit": 1
+      }
+    },
+    {
+      "activityId": "word-game-english",
+      "template": "word-guess@1.0.0",
+      "params": {
+        "word": "rainbow",
+        "hint": "Seven colors appear in the sky after rain",
+        "category": "기타",
+        "maxAttempts": 8,
+        "showHintAfter": 4,
+        "timeLimit": 150,
+        "difficulty": "보통"
+      },
+      "rules": {
+        "scoreWeight": 2,
+        "required": true,
+        "retryLimit": 2
+      }
+    }
+  ],
+  "grading": {
+    "mode": "weighted-sum",
+    "passLine": 0.6,
+    "showScores": true,
+    "showProgress": true
+  },
+  "metadata": {
+    "author": "Educational Platform Team",
+    "createdAt": "2024-09-30T12:00:00.000Z",
+    "tags": ["어휘", "게임", "한국어", "영어", "교육"],
+    "difficulty": "mixed",
+    "estimatedTime": 15,
+    "targetAge": "10+",
+    "subject": "language"
+  }
+}
