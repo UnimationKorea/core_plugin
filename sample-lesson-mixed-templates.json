@@ -1,0 +1,138 @@
+{
+  "lessonId": "mixed-templates-demo-001",
+  "title": "혼합 템플릿 종합 데모",
+  "locale": "ko",
+  "version": "1.0.0",
+  "flow": [
+    {
+      "activityId": "intro-video",
+      "template": "video@2.0.0",
+      "params": {
+        "src": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+        "autoplay": false,
+        "controls": true
+      },
+      "rules": {
+        "scoreWeight": 1,
+        "required": true
+      }
+    },
+    {
+      "activityId": "vocabulary-memory-game",
+      "template": "memory-game@1.0.0",
+      "params": {
+        "title": "📚 영어 단어 기억 게임",
+        "cards": [
+          { "id": "card-1", "content": "Apple", "type": "text", "matchId": "apple" },
+          { "id": "card-2", "content": "🍎", "type": "emoji", "matchId": "apple" },
+          { "id": "card-3", "content": "Book", "type": "text", "matchId": "book" },
+          { "id": "card-4", "content": "📖", "type": "emoji", "matchId": "book" },
+          { "id": "card-5", "content": "Car", "type": "text", "matchId": "car" },
+          { "id": "card-6", "content": "🚗", "type": "emoji", "matchId": "car" },
+          { "id": "card-7", "content": "House", "type": "text", "matchId": "house" },
+          { "id": "card-8", "content": "🏠", "type": "emoji", "matchId": "house" }
+        ],
+        "gridSize": "4x4",
+        "timeLimit": 90,
+        "allowRetries": true,
+        "maxAttempts": 3,
+        "showTimer": true,
+        "successMessage": "🎉 영단어를 잘 기억했습니다!",
+        "failureMessage": "💪 다시 한 번 도전해보세요!",
+        "shuffle": true
+      },
+      "rules": {
+        "scoreWeight": 2,
+        "required": true
+      }
+    },
+    {
+      "activityId": "grammar-quiz",
+      "template": "multiple-choice@1.0.0",
+      "params": {
+        "question": "다음 중 올바른 영어 문장은?",
+        "choices": [
+          { "id": "choice-a", "text": "I have a apple." },
+          { "id": "choice-b", "text": "I have an apple." },
+          { "id": "choice-c", "text": "I have apple." },
+          { "id": "choice-d", "text": "I has an apple." }
+        ],
+        "correctAnswer": "choice-b",
+        "allowMultiple": false,
+        "shuffle": true,
+        "timeLimit": 30,
+        "explanation": "'apple'은 모음으로 시작하므로 부정관사 'an'을 사용합니다.",
+        "showFeedback": true,
+        "hints": [
+          "부정관사 'a'와 'an'의 사용법을 생각해보세요.",
+          "'apple'의 첫 글자를 확인해보세요."
+        ]
+      },
+      "rules": {
+        "scoreWeight": 3,
+        "required": true
+      }
+    },
+    {
+      "activityId": "drag-drop-exercise",
+      "template": "drag-drop-choices@2.0.0",
+      "params": {
+        "prompt": "올바른 단어를 빈 칸에 드래그하세요: She ___ to school every day.",
+        "choices": ["go", "goes", "going", "gone"],
+        "answer": "goes",
+        "allowMultiple": false,
+        "shuffleChoices": true,
+        "maxAttempts": 3,
+        "showFeedback": true,
+        "hints": [
+          "주語가 3인칭 단수일 때의 동사 변화를 생각해보세요.",
+          "'She'는 3인칭 단수입니다."
+        ]
+      },
+      "rules": {
+        "scoreWeight": 2,
+        "required": true
+      }
+    },
+    {
+      "activityId": "comprehensive-quiz",
+      "template": "multiple-choice@1.0.0",
+      "params": {
+        "question": "다음 중 복수형이 올바른 것을 모두 선택하세요.",
+        "choices": [
+          { "id": "choice-a", "text": "child → children" },
+          { "id": "choice-b", "text": "foot → foots" },
+          { "id": "choice-c", "text": "mouse → mice" },
+          { "id": "choice-d", "text": "book → books" }
+        ],
+        "correctAnswer": ["choice-a", "choice-c", "choice-d"],
+        "allowMultiple": true,
+        "shuffle": true,
+        "timeLimit": 60,
+        "explanation": "불규칙 복수형: child→children, mouse→mice, foot→feet. 규칙 복수형: book→books.",
+        "showFeedback": true,
+        "hints": [
+          "규칙 복수형과 불규칙 복수형을 구분해보세요.",
+          "'foot'의 복수형은 'feet'입니다."
+        ]
+      },
+      "rules": {
+        "scoreWeight": 3,
+        "required": true
+      }
+    }
+  ],
+  "grading": {
+    "mode": "weighted-sum",
+    "passLine": 0.7,
+    "showScores": true,
+    "showProgress": true
+  },
+  "metadata": {
+    "author": "Education Team",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "tags": ["mixed", "english", "vocabulary", "grammar", "comprehensive"],
+    "difficulty": "intermediate",
+    "estimatedTime": 25
+  }
+}

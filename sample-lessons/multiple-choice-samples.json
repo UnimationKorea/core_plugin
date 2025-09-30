@@ -1,0 +1,255 @@
+{
+  "lessons": [
+    {
+      "id": "multiple-choice-basic-korean",
+      "title": "한국어 기초 문법 - 4지 선다형",
+      "description": "한국어 조사 사용법을 배우는 기초 문법 문제",
+      "category": "language",
+      "difficulty": "beginner",
+      "estimatedDuration": 300,
+      "tags": ["korean", "grammar", "multiple-choice", "beginner"],
+      "activities": [
+        {
+          "id": "activity-1",
+          "templateId": "multiple-choice@1.0.0",
+          "title": "조사 '은/는' 사용법",
+          "params": {
+            "question": "다음 문장에서 빈 칸에 들어갈 적절한 조사는 무엇입니까?\n\n'이 책___ 매우 재미있습니다.'",
+            "choices": [
+              {
+                "id": "choice-a",
+                "text": "은"
+              },
+              {
+                "id": "choice-b", 
+                "text": "는"
+              },
+              {
+                "id": "choice-c",
+                "text": "이"
+              },
+              {
+                "id": "choice-d",
+                "text": "가"
+              }
+            ],
+            "correctAnswer": "choice-a",
+            "allowMultiple": false,
+            "shuffle": true,
+            "timeLimit": 30,
+            "explanation": "'책'은 받침이 있으므로 '은'을 사용합니다. '은/는'은 주제를 나타내는 조사입니다.",
+            "showFeedback": true,
+            "hints": [
+              "'책'에 받침이 있는지 확인해보세요.",
+              "주제를 나타내는 조사는 '은/는'입니다."
+            ]
+          }
+        },
+        {
+          "id": "activity-2", 
+          "templateId": "multiple-choice@1.0.0",
+          "title": "수학 기초 - 다중 선택",
+          "params": {
+            "question": "다음 중 소수(Prime Number)에 해당하는 것을 모두 선택하세요.",
+            "choices": [
+              {
+                "id": "choice-a",
+                "text": "2"
+              },
+              {
+                "id": "choice-b",
+                "text": "3" 
+              },
+              {
+                "id": "choice-c",
+                "text": "4"
+              },
+              {
+                "id": "choice-d",
+                "text": "5"
+              }
+            ],
+            "correctAnswer": ["choice-a", "choice-b", "choice-d"],
+            "allowMultiple": true,
+            "shuffle": true,
+            "timeLimit": 45,
+            "explanation": "소수는 1과 자기 자신으로만 나누어지는 1보다 큰 자연수입니다. 2, 3, 5가 소수입니다. 4는 2×2이므로 소수가 아닙니다.",
+            "showFeedback": true,
+            "hints": [
+              "소수의 정의를 다시 생각해보세요.",
+              "4는 2로 나누어집니다."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "multiple-choice-science-intermediate",
+      "title": "중학 과학 - 화학 반응식",
+      "description": "화학 반응식과 원소 기호를 학습하는 중급 문제",
+      "category": "science", 
+      "difficulty": "intermediate",
+      "estimatedDuration": 600,
+      "tags": ["science", "chemistry", "multiple-choice", "intermediate"],
+      "activities": [
+        {
+          "id": "activity-1",
+          "templateId": "multiple-choice@1.0.0", 
+          "title": "물의 화학식",
+          "params": {
+            "question": "물(H₂O)에서 수소와 산소의 원자 개수 비는 몇 대 몇입니까?",
+            "image": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iI0ZGNjY2NiIgLz4KICA8dGV4dCB4PSI1MCIgeT0iNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPkg8L3RleHQ+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iNTAiIHI9IjMwIiBmaWxsPSIjNjY5OUZGIiAvPgogIDx0ZXh0IHg9IjEwMCIgeT0iNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPk88L3RleHQ+CiAgPGNpcmNsZSBjeD0iMTUwIiBjeT0iNTAiIHI9IjIwIiBmaWxsPSIjRkY2NjY2IiAvPgogIDx0ZXh0IHg9IjE1MCIgeT0iNTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPkg8L3RleHQ+Cjwvc3ZnPg==",
+            "choices": [
+              {
+                "id": "choice-a",
+                "text": "1 : 1"
+              },
+              {
+                "id": "choice-b",
+                "text": "2 : 1"
+              },
+              {
+                "id": "choice-c", 
+                "text": "1 : 2"
+              },
+              {
+                "id": "choice-d",
+                "text": "3 : 1"
+              }
+            ],
+            "correctAnswer": "choice-b",
+            "allowMultiple": false,
+            "shuffle": true,
+            "timeLimit": 60,
+            "explanation": "H₂O에서 수소(H) 원자는 2개, 산소(O) 원자는 1개이므로 비율은 2:1입니다.",
+            "showFeedback": true,
+            "hints": [
+              "H₂O에서 아래 첨자 숫자를 확인하세요.",
+              "H의 아래 첨자는 2, O는 1(생략됨)입니다."
+            ]
+          }
+        },
+        {
+          "id": "activity-2",
+          "templateId": "multiple-choice@1.0.0",
+          "title": "산소의 성질",
+          "params": {
+            "question": "산소(O₂)의 성질로 옳은 것을 모두 선택하세요.",
+            "choices": [
+              {
+                "id": "choice-a",
+                "text": "무색, 무취의 기체"
+              },
+              {
+                "id": "choice-b",
+                "text": "연소를 돕는 성질이 있음"
+              },
+              {
+                "id": "choice-c",
+                "text": "물에 잘 녹음"
+              },
+              {
+                "id": "choice-d",
+                "text": "공기보다 무거움"
+              }
+            ],
+            "correctAnswer": ["choice-a", "choice-b", "choice-d"],
+            "allowMultiple": true,
+            "shuffle": true,
+            "timeLimit": 90,
+            "explanation": "산소는 무색무취의 기체이며, 연소를 돕고, 공기보다 약간 무겁습니다. 하지만 물에는 잘 녹지 않습니다.",
+            "showFeedback": true,
+            "hints": [
+              "산소의 물리적 성질과 화학적 성질을 구분해보세요.",
+              "산소는 물에 잘 녹지 않습니다."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "multiple-choice-english-advanced",
+      "title": "영어 고급 - 문법과 어휘",
+      "description": "고급 영어 문법과 어휘력을 측정하는 문제",
+      "category": "language",
+      "difficulty": "advanced", 
+      "estimatedDuration": 900,
+      "tags": ["english", "grammar", "vocabulary", "advanced"],
+      "activities": [
+        {
+          "id": "activity-1",
+          "templateId": "multiple-choice@1.0.0",
+          "title": "가정법 과거 완료",
+          "params": {
+            "question": "다음 문장을 가정법 과거완료로 올바르게 완성하세요.\n\n'If I _______ harder, I would have passed the exam.'",
+            "audio": "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+            "choices": [
+              {
+                "id": "choice-a",
+                "text": "studied"
+              },
+              {
+                "id": "choice-b", 
+                "text": "had studied"
+              },
+              {
+                "id": "choice-c",
+                "text": "have studied"
+              },
+              {
+                "id": "choice-d",
+                "text": "would study"
+              }
+            ],
+            "correctAnswer": "choice-b",
+            "allowMultiple": false,
+            "shuffle": true,
+            "timeLimit": 120,
+            "explanation": "가정법 과거완료는 'If + 주어 + had + 과거분사, 주어 + would have + 과거분사' 구조를 사용합니다.",
+            "showFeedback": true,
+            "hints": [
+              "가정법 과거완료의 if절에는 had + 과거분사를 사용합니다.",
+              "주절에 'would have + 과거분사'가 있으면 if절은 과거완료입니다."
+            ]
+          }
+        },
+        {
+          "id": "activity-2",
+          "templateId": "multiple-choice@1.0.0", 
+          "title": "고급 어휘 - 유의어",
+          "params": {
+            "question": "다음 문장에서 'ubiquitous'와 가장 비슷한 의미의 단어는?",
+            "choices": [
+              {
+                "id": "choice-a",
+                "text": "rare"
+              },
+              {
+                "id": "choice-b",
+                "text": "omnipresent"
+              },
+              {
+                "id": "choice-c",
+                "text": "obvious"
+              },
+              {
+                "id": "choice-d",
+                "text": "unique"
+              }
+            ],
+            "correctAnswer": "choice-b",
+            "allowMultiple": false,
+            "shuffle": true,
+            "timeLimit": 90,
+            "explanation": "'Ubiquitous'는 '어디에나 존재하는'이라는 뜻으로, 'omnipresent'(편재하는)와 같은 의미입니다.",
+            "showFeedback": true,
+            "hints": [
+              "'Ubiquitous'는 '어디든지 있는'이라는 의미입니다.",
+              "'Omni-'는 '모든, 전체'라는 뜻의 접두사입니다."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -114,9 +114,23 @@ class LessonPlatformApp {
   }
 
   setupLessonLoader() {
-    // Sample lesson loader
-    const sampleBtn = document.getElementById('load-sample-btn')
-    sampleBtn?.addEventListener('click', () => this.loadSampleLesson())
+    // Sample lesson selector
+    const sampleSelect = document.getElementById('sample-lesson-select')
+    const loadSelectedSampleBtn = document.getElementById('load-selected-sample-btn')
+    
+    sampleSelect?.addEventListener('change', (e) => {
+      const isSelected = e.target.value !== ''
+      if (loadSelectedSampleBtn) {
+        loadSelectedSampleBtn.disabled = !isSelected
+      }
+    })
+    
+    loadSelectedSampleBtn?.addEventListener('click', () => {
+      const selectedFile = sampleSelect?.value
+      if (selectedFile) {
+        this.loadSampleLessonFromFile(selectedFile)
+      }
+    })
     
     // File input loader
     const fileInput = document.getElementById('lesson-file-input')
@@ -141,6 +155,11 @@ class LessonPlatformApp {
         if (file && file.type === 'application/json') {
           this.loadLessonFromFile(file)
         }
+      })
+      
+      // Add click handler for drop zone
+      dropZone.addEventListener('click', () => {
+        document.getElementById('lesson-file-input')?.click()
       })
     }
   }
@@ -209,6 +228,25 @@ class LessonPlatformApp {
     await this.loadLesson(sampleLesson)
   }
 
+  async loadSampleLessonFromFile(filename) {
+    try {
+      this.showLoading('샘플 레슨을 불러오는 중...')
+      
+      const response = await fetch(`/${filename}`)
+      if (!response.ok) {
+        throw new Error(`샘플 레슨 파일을 찾을 수 없습니다: ${filename}`)
+      }
+      
+      const lessonData = await response.json()
+      await this.loadLesson(lessonData)
+      
+    } catch (error) {
+      console.error('Failed to load sample lesson from file:', error)
+      this.hideLoading()
+      this.showError(`샘플 레슨 로드 실패: ${error.message}`)
+    }
+  }
+
   async loadLessonFromFile(file) {
     if (!file) return
     
@@ -238,7 +276,7 @@ class LessonPlatformApp {
         
         // Import orchestrator dynamically
         const orchestratorModule = await import('./orchestrator.js')
-        const LessonOrchestrator = orchestratorModule.LessonOrchestrator
+        const LessonOrchestrator = orchestratorModule.LessonOrchestrator || orchestratorModule.default
         
         this.orchestrator = new LessonOrchestrator({
           container,
@@ -297,8 +335,14 @@ class LessonPlatformApp {
     if (!this.orchestrator) return
     
     this.orchestrator.eventBus.on('activity-loaded', (event) => {
-      console.log('Activity loaded:', event.payload)
+      console.log('🔄 Activity loaded event received:', event.payload)
+      console.log('📋 Current orchestrator index:', this.orchestrator?.state?.currentIndex)
       this.updateActivityInfo(event.payload)
+      // Update activities list with current status
+      if (this.currentLesson) {
+        console.log('🔄 Updating activities list with current status')
+        this.updateActivitiesList(this.currentLesson)
+      }
     })
     
     this.orchestrator.eventBus.on('progress', (event) => {
@@ -308,6 +352,10 @@ class LessonPlatformApp {
     this.orchestrator.eventBus.on('completed', (event) => {
       console.log('Lesson completed:', event.payload)
       this.showLessonResults(event.payload)
+      // Update activities list to show completion
+      if (this.currentLesson) {
+        this.updateActivitiesList(this.currentLesson)
+      }
     })
     
     this.orchestrator.eventBus.on('*', (event) => {
@@ -322,6 +370,8 @@ class LessonPlatformApp {
     const titleEl = document.getElementById('lesson-title')
     const subtitleEl = document.getElementById('lesson-subtitle')
     const progressEl = document.getElementById('lesson-progress')
+    const lessonInfoSection = document.getElementById('lesson-info-section')
+    const lessonControls = document.getElementById('lesson-controls')
     
     if (titleEl) titleEl.textContent = lessonData.title || lessonData.lessonId
     if (subtitleEl) {
@@ -334,6 +384,231 @@ class LessonPlatformApp {
         </div>
       `
     }
+    
+    // Show lesson info and controls sections
+    if (lessonInfoSection) {
+      lessonInfoSection.style.display = 'block'
+    }
+    if (lessonControls) {
+      lessonControls.style.display = 'block'
+    }
+    
+    // Update activities list
+    this.updateActivitiesList(lessonData)
+    
+    // Setup lesson actions
+    this.setupLessonActions(lessonData)
+  }
+
+  updateActivitiesList(lessonData) {
+    const activitiesListEl = document.getElementById('activities-list')
+    if (!activitiesListEl) return
+    
+    const currentActivityIndex = this.orchestrator?.getCurrentActivityIndex ? 
+      this.orchestrator.getCurrentActivityIndex() : 
+      (this.orchestrator?.state?.currentIndex || 0)
+    console.log('📊 Updating activities list - currentIndex:', currentActivityIndex)
+    
+    // Add compact activity summary
+    const totalActivities = lessonData.flow.length
+    const completedActivities = Math.max(0, currentActivityIndex)
+    const summaryHTML = `
+      <div class="activity-summary">
+        📋 ${completedActivities}/${totalActivities} 완료 (${Math.round((completedActivities/totalActivities)*100)}%)
+      </div>
+    `
+    
+    // Create compact text-based list
+    const activitiesHTML = lessonData.flow.map((activity, index) => {
+      let statusIcon = '⚪'
+      let statusClass = 'pending'
+      
+      if (index < currentActivityIndex) {
+        statusIcon = '✓'
+        statusClass = 'completed'
+      } else if (index === currentActivityIndex) {
+        statusIcon = '▶'
+        statusClass = 'current'
+      }
+      
+      // Extract template name (short version)
+      const templateName = this.getTemplateDisplayName(activity.template, true)
+      
+      return `
+        <div class="activity-item ${statusClass}" data-activity-index="${index}">
+          <span class="activity-status ${statusClass}">${statusIcon}</span>
+          <span class="activity-title">${index + 1}. ${templateName}</span>
+        </div>
+      `
+    }).join('')
+    
+    activitiesListEl.innerHTML = summaryHTML + activitiesHTML
+  }
+
+  getTemplateDisplayName(templateId, isShort = false) {
+    const templateNames = {
+      'video@2.0.0': isShort ? '영상' : '비디오',
+      'drag-drop-choices@2.0.0': isShort ? '드래그' : '드래그&드롭',
+      'multiple-choice@1.0.0': isShort ? '선택' : '4지선다',
+      'memory-game@1.0.0': isShort ? '메모리' : '메모리게임',
+      'word-guess@1.0.0': isShort ? '단어' : '단어맞추기'
+    }
+    return templateNames[templateId] || (isShort ? templateId.split('@')[0] : templateId)
+  }
+
+  setupLessonActions(lessonData) {
+    const downloadBtn = document.getElementById('download-lesson-json')
+    const summaryBtn = document.getElementById('show-lesson-summary')
+    
+    // Download JSON functionality
+    if (downloadBtn) {
+      downloadBtn.onclick = () => this.downloadLessonJSON(lessonData)
+    }
+    
+    // Show summary functionality  
+    if (summaryBtn) {
+      summaryBtn.onclick = () => this.showLessonSummary(lessonData)
+    }
+  }
+
+  downloadLessonJSON(lessonData) {
+    try {
+      const blob = new Blob([JSON.stringify(lessonData, null, 2)], {
+        type: 'application/json'
+      })
+      
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${lessonData.lessonId || 'lesson'}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      
+      this.showSuccess('레슨 JSON 파일이 다운로드되었습니다.')
+      
+    } catch (error) {
+      console.error('Failed to download lesson JSON:', error)
+      this.showError('JSON 다운로드에 실패했습니다.')
+    }
+  }
+
+  showLessonSummary(lessonData) {
+    const modal = document.createElement('div')
+    modal.className = 'modal-overlay'
+    modal.innerHTML = `
+      <div class="modal-content card">
+        <div class="card-header">
+          <h3 class="card-title">📊 레슨 요약</h3>
+        </div>
+        <div class="lesson-summary-content">
+          <div class="summary-section">
+            <h4>📋 기본 정보</h4>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <span class="summary-label">레슨 ID:</span>
+                <span class="summary-value">${lessonData.lessonId}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">제목:</span>
+                <span class="summary-value">${lessonData.title}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">버전:</span>
+                <span class="summary-value">${lessonData.version || '1.0.0'}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">언어:</span>
+                <span class="summary-value">${lessonData.locale || 'ko'}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="summary-section">
+            <h4>🎯 활동 구성</h4>
+            <div class="activities-summary">
+              ${lessonData.flow.map((activity, index) => `
+                <div class="activity-summary-item">
+                  <div class="activity-number">${index + 1}</div>
+                  <div class="activity-details">
+                    <div class="activity-id">${activity.activityId}</div>
+                    <div class="activity-template-info">${this.getTemplateDisplayName(activity.template)}</div>
+                    <div class="activity-params">
+                      ${Object.keys(activity.params).length}개 파라미터 설정
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          
+          <div class="summary-section">
+            <h4>📈 평가 설정</h4>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <span class="summary-label">평가 방식:</span>
+                <span class="summary-value">${lessonData.grading?.mode || 'weighted-sum'}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">합격 기준:</span>
+                <span class="summary-value">${Math.round((lessonData.grading?.passLine || 0.7) * 100)}%</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">점수 표시:</span>
+                <span class="summary-value">${lessonData.grading?.showScores ? 'O' : 'X'}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">진행률 표시:</span>
+                <span class="summary-value">${lessonData.grading?.showProgress ? 'O' : 'X'}</span>
+              </div>
+            </div>
+          </div>
+          
+          ${lessonData.metadata ? `
+          <div class="summary-section">
+            <h4>ℹ️ 메타데이터</h4>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <span class="summary-label">작성자:</span>
+                <span class="summary-value">${lessonData.metadata.author || '-'}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">난이도:</span>
+                <span class="summary-value">${lessonData.metadata.difficulty || '-'}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">예상 시간:</span>
+                <span class="summary-value">${lessonData.metadata.estimatedTime || '-'}분</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">태그:</span>
+                <span class="summary-value">${lessonData.metadata.tags?.join(', ') || '-'}</span>
+              </div>
+            </div>
+          </div>
+          ` : ''}
+        </div>
+        
+        <div class="modal-actions">
+          <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">
+            닫기
+          </button>
+          <button class="btn btn-primary" onclick="app.downloadLessonJSON(${JSON.stringify(lessonData).replace(/"/g, '&quot;')}); this.closest('.modal-overlay').remove()">
+            JSON 다운로드
+          </button>
+        </div>
+      </div>
+    `
+    
+    document.body.appendChild(modal)
+    
+    // Auto close after clicking outside
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove()
+      }
+    })
   }
 
   updateActivityInfo(activityData) {
@@ -353,6 +628,7 @@ class LessonPlatformApp {
     const progressBar = document.getElementById('progress-bar')
     if (progressBar) {
       progressBar.style.width = `${progress * 100}%`
+      console.log('📈 Progress updated to:', Math.round(progress * 100) + '%')
     }
   }
 
@@ -546,12 +822,170 @@ class LessonPlatformApp {
   // Template management methods
   async previewTemplate(templateId) {
     console.log('Previewing template:', templateId)
-    // TODO: Implement template preview
+    
+    const template = this.templates.get(templateId)
+    if (!template) {
+      this.showError('템플릿을 찾을 수 없습니다.')
+      return
+    }
+    
+    // Create a sample lesson with just this template
+    const sampleLesson = {
+      lessonId: `preview-${templateId}-${Date.now()}`,
+      title: `${template.name} 미리보기`,
+      locale: 'ko',
+      version: '1.0.0',
+      flow: [
+        {
+          activityId: 'preview-activity',
+          template: templateId,
+          params: this.generateSampleParams(template),
+          rules: {
+            scoreWeight: 1,
+            required: false
+          }
+        }
+      ],
+      grading: {
+        mode: 'pass-fail',
+        passLine: 0.5,
+        showScores: false,
+        showProgress: false
+      },
+      metadata: {
+        author: 'System',
+        createdAt: new Date().toISOString(),
+        tags: ['preview'],
+        difficulty: 'sample',
+        estimatedTime: 1
+      }
+    }
+    
+    // Load the preview lesson
+    await this.loadLesson(sampleLesson)
+    this.showInfo(`${template.name} 템플릿 미리보기를 시작합니다.`)
   }
 
   async useTemplate(templateId) {
     console.log('Using template:', templateId)
-    // TODO: Navigate to builder with selected template
+    
+    const template = this.templates.get(templateId)
+    if (!template) {
+      this.showError('템플릿을 찾을 수 없습니다.')
+      return
+    }
+    
+    // Navigate to builder tab
+    const builderTab = document.querySelector('[data-tab="builder"]')
+    if (builderTab) {
+      builderTab.click()
+    }
+    
+    // Initialize builder with selected template
+    await this.initializeBuilderwithTemplate(templateId)
+    
+    this.showInfo(`${template.name} 템플릿으로 레슨을 만들어보세요.`)
+  }
+  
+  generateSampleParams(template) {
+    const params = {}
+    const schema = template.paramsSchema
+    
+    if (schema.properties) {
+      Object.entries(schema.properties).forEach(([key, prop]) => {
+        if (key === 'question' || key === 'prompt' || key === 'title') {
+          params[key] = `${template.name} 샘플 문제입니다.`
+        } else if (key === 'choices') {
+          params[key] = [
+            { id: 'choice-a', text: '첫 번째 선택지' },
+            { id: 'choice-b', text: '두 번째 선택지' },
+            { id: 'choice-c', text: '세 번째 선택지' },
+            { id: 'choice-d', text: '네 번째 선택지' }
+          ]
+        } else if (key === 'correctAnswer') {
+          params[key] = 'choice-a'
+        } else if (key === 'cards' && template.id === 'memory-game@1.0.0') {
+          params[key] = [
+            { id: 'card-1', content: 'A', type: 'text', matchId: 'pair1' },
+            { id: 'card-2', content: 'Apple', type: 'text', matchId: 'pair1' },
+            { id: 'card-3', content: 'B', type: 'text', matchId: 'pair2' },
+            { id: 'card-4', content: 'Banana', type: 'text', matchId: 'pair2' }
+          ]
+        } else if (key === 'src' && template.id === 'video@2.0.0') {
+          params[key] = 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4'
+        } else if (key === 'answer' && template.id === 'drag-drop-choices@2.0.0') {
+          params[key] = '첫 번째 선택지'
+        } else if (prop.default !== undefined) {
+          params[key] = prop.default
+        } else if (prop.type === 'string') {
+          params[key] = `샘플 ${key}`
+        } else if (prop.type === 'number') {
+          params[key] = 30
+        } else if (prop.type === 'boolean') {
+          params[key] = true
+        } else if (prop.type === 'array') {
+          params[key] = ['샘플 항목 1', '샘플 항목 2']
+        } else {
+          params[key] = {}
+        }
+      })
+    }
+    
+    return params
+  }
+  
+  async initializeBuilderwithTemplate(templateId) {
+    // Wait for builder panel to be visible
+    setTimeout(async () => {
+      const builderPanel = document.querySelector('[data-panel="builder"]')
+      if (!builderPanel) return
+      
+      // Initialize lesson builder if not already done
+      if (!window.builder) {
+        try {
+          // Import builder module dynamically
+          const builderModule = await import('./builder.js')
+          const LessonBuilder = builderModule.LessonBuilder || builderModule.default
+          const initializeLessonBuilder = builderModule.initializeLessonBuilder
+          
+          // Find builder container in the panel
+          let builderContainer = builderPanel.querySelector('.builder-container')
+          if (!builderContainer) {
+            // Create builder container if it doesn't exist
+            builderContainer = document.createElement('div')
+            builderContainer.className = 'builder-container'
+            
+            const placeholder = builderPanel.querySelector('.builder-placeholder')
+            if (placeholder) {
+              placeholder.replaceWith(builderContainer)
+            } else {
+              builderPanel.appendChild(builderContainer)
+            }
+          }
+          
+          // Use the exported initialization function if available, fallback to direct instantiation
+          if (initializeLessonBuilder) {
+            window.builder = initializeLessonBuilder(builderContainer)
+          } else {
+            window.builder = new LessonBuilder(builderContainer)
+          }
+          
+          // Wait for builder to initialize
+          await new Promise(resolve => setTimeout(resolve, 500))
+          
+        } catch (error) {
+          console.error('Failed to initialize lesson builder:', error)
+          this.showError('레슨 빌더를 초기화할 수 없습니다.')
+          return
+        }
+      }
+      
+      // Add template to builder
+      if (window.builder && window.builder.addActivity) {
+        window.builder.addActivity(templateId)
+      }
+      
+    }, 300)
   }
 }
 
