@@ -1,0 +1,40 @@
+{
+  "lessonId": "U15-L03",
+  "title": "Comparatives 1",
+  "locale": "ko",
+  "flow": [
+    {
+      "activityId": "intro-clip",
+      "template": "video@1.0.0",
+      "params": {
+        "src": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+        "autoplay": false
+      },
+      "rules": {
+        "scoreWeight": 1
+      }
+    },
+    {
+      "activityId": "dd-1",
+      "template": "drag-drop-choices@1.2.0",
+      "params": {
+        "prompt": "He is ___.",
+        "choices": [
+          "tall",
+          "short",
+          "smart",
+          "strong"
+        ],
+        "answer": "tall",
+        "image": ""
+      },
+      "rules": {
+        "scoreWeight": 2
+      }
+    }
+  ],
+  "grading": {
+    "mode": "weighted-sum",
+    "passLine": 0.7
+  }
+}
