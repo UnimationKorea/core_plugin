@@ -1121,4 +1121,43 @@ app.get('/', (c) => {
   `)
 })
 
+// 애플리케이션 종료 시 정리
+process.on('SIGTERM', async () => {
+  console.log('🛑 Received SIGTERM, cleaning up...')
+  if (templateRegistry) {
+    await templateRegistry.cleanup()
+  }
+  process.exit(0)
+})
+
+process.on('SIGINT', async () => {
+  console.log('🛑 Received SIGINT, cleaning up...')
+  if (templateRegistry) {
+    await templateRegistry.cleanup()
+  }
+  process.exit(0)
+})
+
+// 에러 핸들링
+app.onError((err, c) => {
+  console.error('🚨 Application error:', err)
+  return c.json({
+    success: false,
+    error: 'Internal server error',
+    message: 'An unexpected error occurred'
+  }, 500)
+})
+
+// 404 핸들링
+app.notFound((c) => {
+  return c.json({
+    success: false,
+    error: 'Not found',
+    message: `Endpoint ${c.req.url} not found`
+  }, 404)
+})
+
+console.log('🚀 Enhanced Educational Platform API v2.0 initialized')
+console.log('📋 Features: Modular Sandbox, Guardrail System, Dynamic Templates')
+
 export default app
