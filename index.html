@@ -16,12 +16,12 @@
       background: radial-gradient(1200px 800px at 10% -10%, #13243f 0%, #0b1220 40%), var(--bg);
       color:var(--text);
     }
-    .shell { display:grid; grid-template-columns: 300px 1fr; grid-template-rows: 60px 1fr 56px; height:100%; }
+    .shell { display:grid; grid-template-columns: 300px 1fr; grid-template-rows: 60px 1fr 56px; height:100vh; min-height: 100vh; }
     header { grid-column:1/3; display:flex; align-items:center; gap:12px; padding:0 16px; border-bottom:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.02), transparent); }
     header h1 { font-size:18px; margin:0; letter-spacing:.2px; }
     header .badge { font-size:12px; padding:2px 8px; border:1px solid var(--stroke); border-radius:10px; background:var(--chip); color:var(--muted); }
     aside { border-right:1px solid var(--stroke); padding:12px; overflow:auto; background:linear-gradient(180deg, rgba(255,255,255,.02), transparent); }
-    main { padding:16px; overflow:auto; }
+    main { padding:16px; overflow:auto; display: flex; flex-direction: column; }
     footer { grid-column:1/3; border-top:1px solid var(--stroke); display:flex; align-items:center; justify-content:space-between; padding:8px 12px; color:var(--muted); background:linear-gradient(0deg, rgba(255,255,255,.02), transparent); }
     .card { background:rgba(17,24,39,.5); border:1px solid var(--stroke); border-radius:16px; padding:16px; }
     .row { display:flex; align-items:center; gap:10px; }
@@ -39,7 +39,7 @@
     .list { display:flex; flex-direction:column; gap:8px; }
     .chip { display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:4px 8px; border:1px solid var(--stroke); border-radius:999px; background:var(--chip); color:var(--muted); }
     .divider { height:1px; background:var(--stroke); margin:12px 0; }
-    .activity-host { min-height: 360px; background:rgba(2,6,23,.5); border:1px dashed #304164; border-radius:16px; padding:16px; }
+    .activity-host { min-height: 480px; height: 480px; background:rgba(2,6,23,.5); border:1px dashed #304164; border-radius:16px; padding:16px; }
     .progress { height:8px; border-radius:8px; background:#0b1220; border:1px solid var(--stroke); overflow:hidden; }
     .progress > div { height:100%; width:0%; background:linear-gradient(90deg,#60a5fa,#7dd3fc); }
     .grid { display:grid; gap:10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -69,7 +69,15 @@
         <div class="col">
           <div class="row" style="justify-content:space-between">
             <strong>레슨 로더</strong>
-            <button class="btn ghost small" id="btnLoadSample">샘플 불러오기</button>
+            <select id="lessonSelect" style="padding: 4px 8px; border: 1px solid var(--stroke); background: var(--chip); color: var(--text); border-radius: 6px; margin-right: 8px;">
+              <option value="">-- 레슨 선택 --</option>
+              <option value="U15-L03.json">Comparatives 1</option>
+              <option value="sample-lesson-multiple-choice.json">Multiple Choice 샘플</option>
+              <option value="sample-lesson-memory-game.json">Memory Game 샘플</option>
+              <option value="sample-lesson-word-guess.json">Word Guess 샘플</option>
+              <option value="sample-lesson-mixed-templates.json">Mixed Templates 샘플</option>
+            </select>
+            <button class="btn ghost small" id="btnLoadSample">로드</button>
           </div>
           <div class="label">JSON(.json / .json5) 파일을 선택하거나 샘플을 사용하세요.</div>
           <input type="file" id="fileInput" accept=".json,.json5,application/json" />
@@ -91,7 +99,7 @@
     </aside>
 
     <main>
-      <div class="card col">
+      <div class="card col" style="flex: 1; display: flex; flex-direction: column;">
         <div class="row" style="justify-content:space-between; align-items:flex-end">
           <div class="col">
             <div class="row" style="align-items:center; gap:12px">
@@ -105,7 +113,7 @@
           </div>
         </div>
 
-        <div id="host" class="activity-host center muted">레슨을 불러오세요.</div>
+        <div id="host" class="activity-host center muted" style="flex: 1; min-height: 480px;">레슨을 불러오세요.</div>
 
         <div class="row" style="justify-content:space-between">
           <div class="row" style="gap:6px">
@@ -223,8 +231,9 @@
           root = document.createElement('div');
           root.innerHTML = `
             <div class="col" style="width:100%">
-              <video id="tplVideo" controls style="max-width:100%; border-radius:12px; border:1px solid var(--stroke); background:#000">
-                <source src="${params.src}"/>
+              <video id="tplVideo" controls style="max-width:100%; max-height: 300px; border-radius:12px; border:1px solid var(--stroke); background:#000">
+                <source src="${params.src}" type="video/mp4"/>
+                동영상을 불러올 수 없습니다.
               </video>
               <div class="small muted">동영상 시청 후 다음을 눌러주세요.</div>
             </div>`;
@@ -431,15 +440,31 @@
 
     // Sample loader (with robust fallback)
     document.getElementById('btnLoadSample').addEventListener('click', async ()=>{
-      clearlog(); setMsg('샘플 로드 중...');
+      const select = document.getElementById('lessonSelect');
+      const selectedLesson = select.value;
+      
+      if (!selectedLesson) {
+        alert('레슨을 선택해주세요.');
+        return;
+      }
+      
+      clearlog(); setMsg('레슨 로드 중...');
       try{
-        const res = await fetch('./lessons/U15-L03.json');
-        if(!res.ok) throw new Error('샘플 fetch 실패 (로컬 file:// 일 수 있음)');
+        let url;
+        if (selectedLesson === 'U15-L03.json') {
+          url = '/lessons/' + selectedLesson;
+        } else {
+          url = '/' + selectedLesson; // Sample lessons are in root
+        }
+        
+        const res = await fetch(url);
+        if(!res.ok) throw new Error(`레슨 fetch 실패: ${res.status} ${res.statusText}`);
         const txt = await res.text();
         const data = safeParseJson(txt);
         await applyLesson(data);
       }catch(e){
-        devlog('샘플 fetch 실패, 내장 샘플 사용', e?.message||e);
+        devlog('레슨 fetch 실패, 내장 샘플 사용', e?.message||e);
+        setMsg('레슨 로드 실패, 내장 샘플을 사용합니다: ' + (e?.message || e), 'error');
         await applyLesson(window.__EMBEDDED_SAMPLE__);
       }
     });
