@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>간단한 레슨 플레이어</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1e1e2e;
+            color: #cdd6f4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #313244;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #45475a;
+        }
+        
+        .header h1 {
+            color: #cba6f7;
+            font-size: 1.5rem;
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: #313244;
+            padding: 1.5rem;
+            border-right: 1px solid #45475a;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .activity-area {
+            flex: 1;
+            background: #313244;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            padding: 1rem;
+            background: #313244;
+            border-radius: 12px;
+        }
+        
+        .btn {
+            background: #89b4fa;
+            color: #1e1e2e;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #74c7ec;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #6c7086;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-danger {
+            background: #f38ba8;
+        }
+        
+        .btn-danger:hover {
+            background: #eba0ac;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #a6adc8;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #45475a;
+            border: 1px solid #6c7086;
+            border-radius: 6px;
+            color: #cdd6f4;
+            font-size: 0.9rem;
+        }
+        
+        .card {
+            background: #45475a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #fab387;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success { background: #a6e3a1; color: #1e1e2e; }
+        .notification.error { background: #f38ba8; }
+        .notification.info { background: #89b4fa; color: #1e1e2e; }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .video-container {
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .video-container video {
+            width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            background: black;
+        }
+        
+        .quiz-container {
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #cba6f7;
+        }
+        
+        .choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .choice {
+            background: #89b4fa;
+            color: #1e1e2e;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .choice:hover {
+            background: #74c7ec;
+            transform: scale(1.05);
+        }
+        
+        .drop-zone {
+            background: #45475a;
+            border: 2px dashed #6c7086;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: #89b4fa;
+            background: rgba(137, 180, 250, 0.1);
+        }
+        
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .result.correct {
+            background: rgba(166, 227, 161, 0.2);
+            color: #a6e3a1;
+        }
+        
+        .result.incorrect {
+            background: rgba(243, 139, 168, 0.2);
+            color: #f38ba8;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 간단한 레슨 플레이어</h1>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="card">
+                <div class="card-title">레슨 선택</div>
+                
+                <div class="form-group">
+                    <label class="form-label">샘플 레슨</label>
+                    <select class="form-select" id="lesson-select">
+                        <option value="">-- 레슨을 선택하세요 --</option>
+                        <option value="english">기초 영어 회화</option>
+                        <option value="math">수학 기초 연산</option>
+                        <option value="science">과학 실험</option>
+                    </select>
+                </div>
+                
+                <button class="btn" id="load-btn" disabled>레슨 시작</button>
+            </div>
+            
+            <div class="card" id="lesson-info" style="display: none;">
+                <div class="card-title">현재 레슨</div>
+                <div id="lesson-title">-</div>
+                <div style="font-size: 0.9rem; color: #a6adc8; margin-top: 0.5rem;">
+                    <span id="activity-counter">0/0</span> 활동
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="activity-area" id="activity-area">
+                <div>
+                    <h2 style="color: #cba6f7; margin-bottom: 1rem;">👋 환영합니다!</h2>
+                    <p>좌측에서 레슨을 선택하여 시작하세요.</p>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" id="prev-btn" disabled>⬅️ 이전</button>
+                <button class="btn" id="next-btn" disabled>다음 ➡️</button>
+                <button class="btn btn-danger" id="restart-btn" disabled>🔄 다시 시작</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 전역 상태
+        let currentLesson = null;
+        let currentActivity = 0;
+        let activities = [];
+        let results = [];
+        
+        // 샘플 레슨 데이터
+        const sampleLessons = {
+            english: {
+                title: "기초 영어 회화",
+                activities: [
+                    {
+                        type: "video",
+                        title: "인사말 배우기",
+                        content: {
+                            src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+                            description: "기본 인사말을 배워보세요"
+                        }
+                    },
+                    {
+                        type: "quiz",
+                        title: "단어 맞추기", 
+                        content: {
+                            question: "알맞은 인사말을 선택하세요: Good ____",
+                            choices: ["morning", "night", "bye", "hello"],
+                            correct: "morning"
+                        }
+                    }
+                ]
+            },
+            math: {
+                title: "수학 기초 연산",
+                activities: [
+                    {
+                        type: "quiz",
+                        title: "덧셈 문제",
+                        content: {
+                            question: "2 + 3 = ?",
+                            choices: ["4", "5", "6", "7"],
+                            correct: "5"
+                        }
+                    }
+                ]
+            },
+            science: {
+                title: "과학 실험",
+                activities: [
+                    {
+                        type: "video",
+                        title: "물의 순환",
+                        content: {
+                            src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+                            description: "물의 순환 과정을 알아보세요"
+                        }
+                    }
+                ]
+            }
+        };
+        
+        // DOM 요소들
+        const lessonSelect = document.getElementById('lesson-select');
+        const loadBtn = document.getElementById('load-btn');
+        const activityArea = document.getElementById('activity-area');
+        const lessonInfo = document.getElementById('lesson-info');
+        const lessonTitle = document.getElementById('lesson-title');
+        const activityCounter = document.getElementById('activity-counter');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        // 이벤트 리스너 설정
+        lessonSelect.addEventListener('change', function() {
+            loadBtn.disabled = !lessonSelect.value;
+            console.log('레슨 선택:', lessonSelect.value);
+        });
+        
+        loadBtn.addEventListener('click', function() {
+            const selectedLesson = lessonSelect.value;
+            if (selectedLesson) {
+                loadLesson(selectedLesson);
+            }
+        });
+        
+        prevBtn.addEventListener('click', function() {
+            if (currentActivity > 0) {
+                currentActivity--;
+                loadActivity(currentActivity);
+                updateControls();
+            }
+        });
+        
+        nextBtn.addEventListener('click', function() {
+            if (currentActivity < activities.length - 1) {
+                currentActivity++;
+                loadActivity(currentActivity);
+                updateControls();
+            } else {
+                finishLesson();
+            }
+        });
+        
+        restartBtn.addEventListener('click', function() {
+            if (confirm('레슨을 다시 시작하시겠습니까?')) {
+                currentActivity = 0;
+                results = [];
+                loadActivity(0);
+                updateControls();
+                showNotification('레슨을 다시 시작했습니다.', 'info');
+            }
+        });
+        
+        // 레슨 로드 함수
+        function loadLesson(lessonId) {
+            console.log('레슨 로드:', lessonId);
+            
+            const lesson = sampleLessons[lessonId];
+            if (!lesson) {
+                showNotification('레슨을 찾을 수 없습니다.', 'error');
+                return;
+            }
+            
+            currentLesson = lesson;
+            activities = lesson.activities;
+            currentActivity = 0;
+            results = [];
+            
+            // UI 업데이트
+            lessonTitle.textContent = lesson.title;
+            lessonInfo.style.display = 'block';
+            
+            // 첫 번째 활동 로드
+            loadActivity(0);
+            updateControls();
+            
+            showNotification('레슨이 로드되었습니다!', 'success');
+            console.log('레슨 로드 완료:', lesson);
+        }
+        
+        // 활동 로드 함수
+        function loadActivity(index) {
+            console.log('활동 로드:', index);
+            
+            if (!activities || index < 0 || index >= activities.length) {
+                console.error('유효하지 않은 활동 인덱스:', index);
+                return;
+            }
+            
+            const activity = activities[index];
+            console.log('활동 정보:', activity);
+            
+            // 카운터 업데이트
+            activityCounter.textContent = `${index + 1}/${activities.length}`;
+            
+            // 활동 타입에 따라 렌더링
+            if (activity.type === 'video') {
+                renderVideoActivity(activity);
+            } else if (activity.type === 'quiz') {
+                renderQuizActivity(activity);
+            } else {
+                console.error('지원하지 않는 활동 타입:', activity.type);
+                activityArea.innerHTML = '<div>지원하지 않는 활동 타입입니다.</div>';
+            }
+        }
+        
+        // 비디오 활동 렌더링
+        function renderVideoActivity(activity) {
+            console.log('비디오 활동 렌더링:', activity);
+            
+            activityArea.innerHTML = `
+                <div class="video-container">
+                    <h3 style="margin-bottom: 1rem; color: #fab387;">${activity.title}</h3>
+                    <video controls>
+                        <source src="${activity.content.src}" type="video/mp4">
+                        비디오를 지원하지 않는 브라우저입니다.
+                    </video>
+                    <p style="margin-top: 1rem; color: #a6adc8;">${activity.content.description}</p>
+                </div>
+            `;
+        }
+        
+        // 퀴즈 활동 렌더링
+        function renderQuizActivity(activity) {
+            console.log('퀴즈 활동 렌더링:', activity);
+            
+            const choicesHtml = activity.content.choices.map(choice => 
+                `<button class="choice" onclick="selectAnswer('${choice}')">${choice}</button>`
+            ).join('');
+            
+            activityArea.innerHTML = `
+                <div class="quiz-container">
+                    <h3 style="margin-bottom: 1rem; color: #fab387;">${activity.title}</h3>
+                    <div class="question">${activity.content.question}</div>
+                    <div class="choices">${choicesHtml}</div>
+                    <div class="drop-zone" id="drop-zone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        정답을 여기에 드래그하거나 위의 버튼을 클릭하세요
+                    </div>
+                    <div class="result" id="result" style="display: none;"></div>
+                </div>
+            `;
+            
+            // 드래그 가능하게 만들기
+            const choices = document.querySelectorAll('.choice');
+            choices.forEach(choice => {
+                choice.draggable = true;
+                choice.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', choice.textContent);
+                });
+            });
+        }
+        
+        // 답안 선택 처리
+        function selectAnswer(answer) {
+            console.log('답안 선택:', answer);
+            checkAnswer(answer);
+        }
+        
+        // 드래그앤드롭 처리
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('drop-zone').classList.add('drag-over');
+        }
+        
+        function handleDragLeave(e) {
+            document.getElementById('drop-zone').classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.classList.remove('drag-over');
+            
+            const answer = e.dataTransfer.getData('text/plain');
+            console.log('드롭된 답안:', answer);
+            checkAnswer(answer);
+        }
+        
+        // 답안 확인
+        function checkAnswer(selectedAnswer) {
+            const activity = activities[currentActivity];
+            const correctAnswer = activity.content.correct;
+            const isCorrect = selectedAnswer === correctAnswer;
+            
+            console.log('답안 확인:', selectedAnswer, '정답:', correctAnswer, '결과:', isCorrect);
+            
+            const dropZone = document.getElementById('drop-zone');
+            const result = document.getElementById('result');
+            
+            dropZone.textContent = `선택한 답: ${selectedAnswer}`;
+            
+            if (isCorrect) {
+                dropZone.style.background = 'rgba(166, 227, 161, 0.2)';
+                dropZone.style.borderColor = '#a6e3a1';
+                result.textContent = '🎉 정답입니다!';
+                result.className = 'result correct';
+                showNotification('정답입니다!', 'success');
+            } else {
+                dropZone.style.background = 'rgba(243, 139, 168, 0.2)';
+                dropZone.style.borderColor = '#f38ba8';
+                result.textContent = '❌ 틀렸습니다. 다시 시도해보세요.';
+                result.className = 'result incorrect';
+                showNotification('틀렸습니다. 다시 시도해보세요.', 'error');
+            }
+            
+            result.style.display = 'block';
+            
+            // 결과 저장
+            results[currentActivity] = {
+                selected: selectedAnswer,
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            };
+        }
+        
+        // 컨트롤 버튼 상태 업데이트
+        function updateControls() {
+            prevBtn.disabled = currentActivity <= 0;
+            nextBtn.disabled = !currentLesson;
+            restartBtn.disabled = !currentLesson;
+        }
+        
+        // 레슨 완료
+        function finishLesson() {
+            const correctCount = results.filter(r => r && r.isCorrect).length;
+            const totalCount = results.filter(r => r).length;
+            const percentage = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+            
+            setTimeout(() => {
+                alert(`🎉 레슨 완료!
+                
+📊 결과:
+정답률: ${percentage}% (${correctCount}/${totalCount})
+
+수고하셨습니다! 👏`);
+            }, 100);
+        }
+        
+        // 알림 표시
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+        
+        // 초기화
+        console.log('🚀 간단한 레슨 플레이어가 준비되었습니다!');
+        updateControls();
+    </script>
+</body>
+</html>
