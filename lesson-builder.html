@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>📚 레슨 빌더</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1e1e2e;
+            color: #cdd6f4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #313244;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #45475a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #cba6f7;
+            font-size: 1.5rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+        
+        .sidebar {
+            width: 320px;
+            background: #313244;
+            border-right: 1px solid #45475a;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .toolbar {
+            background: #45475a;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #6c7086;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .workspace {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .card {
+            background: #45475a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #6c7086;
+        }
+        
+        .card-title {
+            color: #fab387;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: #a6adc8;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: #313244;
+            border: 1px solid #6c7086;
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: #cdd6f4;
+            font-size: 0.95rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #89b4fa;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            width: 100%;
+            background: #313244;
+            border: 1px solid #6c7086;
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: #cdd6f4;
+            cursor: pointer;
+        }
+        
+        .btn {
+            background: #89b4fa;
+            color: #1e1e2e;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background: #74c7ec;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #6c7086;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-success {
+            background: #a6e3a1;
+        }
+        
+        .btn-success:hover {
+            background: #94e2d5;
+        }
+        
+        .btn-danger {
+            background: #f38ba8;
+        }
+        
+        .btn-danger:hover {
+            background: #eba0ac;
+        }
+        
+        .btn-secondary {
+            background: #6c7086;
+        }
+        
+        .btn-secondary:hover {
+            background: #585b70;
+        }
+        
+        .activity-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .activity-item {
+            background: #585b70;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .activity-item:hover {
+            background: #6c7086;
+        }
+        
+        .activity-item.selected {
+            border-color: #89b4fa;
+            background: rgba(137, 180, 250, 0.1);
+        }
+        
+        .activity-type {
+            color: #fab387;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        
+        .activity-description {
+            color: #a6adc8;
+            font-size: 0.9rem;
+        }
+        
+        .template-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .template-card {
+            background: #313244;
+            border: 2px solid #6c7086;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-card:hover {
+            border-color: #89b4fa;
+            background: #45475a;
+        }
+        
+        .template-card.selected {
+            border-color: #a6e3a1;
+            background: rgba(166, 227, 161, 0.1);
+        }
+        
+        .template-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .template-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .template-desc {
+            color: #a6adc8;
+            font-size: 0.8rem;
+        }
+        
+        .choice-builder {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .choice-item {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .choice-input {
+            flex: 1;
+        }
+        
+        .choice-correct {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .json-preview {
+            background: #1e1e2e;
+            border: 1px solid #45475a;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #cdd6f4;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #89b4fa;
+            color: #1e1e2e;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #a6e3a1;
+        }
+        
+        .notification.error {
+            background: #f38ba8;
+        }
+        
+        .notification.warning {
+            background: #fab387;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #313244;
+            border-bottom: 1px solid #45475a;
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: #45475a;
+        }
+        
+        .tab.active {
+            border-bottom-color: #89b4fa;
+            color: #89b4fa;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c7086;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* 숨김 요소 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 레슨 빌더</h1>
+        <div class="header-actions">
+            <button class="btn btn-success" id="save-lesson-btn" disabled>💾 레슨 저장</button>
+            <button class="btn" id="preview-lesson-btn" disabled>👁️ 미리보기</button>
+            <button class="btn btn-secondary" id="export-json-btn" disabled>📤 JSON 내보내기</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <!-- 레슨 정보 -->
+            <div class="card" style="margin-bottom: 0;">
+                <div class="card-title">레슨 정보</div>
+                
+                <div class="form-group">
+                    <label class="form-label">레슨 제목</label>
+                    <input type="text" class="form-input" id="lesson-title" placeholder="레슨 제목을 입력하세요">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">설명</label>
+                    <textarea class="form-input form-textarea" id="lesson-description" placeholder="레슨에 대한 설명을 입력하세요"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">난이도</label>
+                    <select class="form-select" id="lesson-difficulty">
+                        <option value="beginner">초급</option>
+                        <option value="intermediate">중급</option>
+                        <option value="advanced">고급</option>
+                        <option value="mixed">혼합</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">예상 시간 (분)</label>
+                    <input type="number" class="form-input" id="lesson-time" placeholder="15" min="1" max="120">
+                </div>
+            </div>
+            
+            <!-- 활동 목록 -->
+            <div style="border-top: 1px solid #45475a; padding-top: 1rem;">
+                <div style="padding: 0 1.5rem; margin-bottom: 1rem; display: flex; justify-content: between; align-items: center;">
+                    <div class="card-title" style="margin: 0;">활동 목록</div>
+                    <button class="btn" id="add-activity-btn">➕ 활동 추가</button>
+                </div>
+                
+                <div class="activity-list" id="activity-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>활동을 추가해보세요</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="toolbar">
+                <select class="form-select" id="template-select" style="width: 250px;">
+                    <option value="">템플릿을 선택하세요</option>
+                    <option value="multiple-choice">🔘 4지 선다형</option>
+                    <option value="word-guess">🔤 단어 맞추기</option>
+                    <option value="memory-game">🧠 메모리 게임</option>
+                    <option value="video">🎥 비디오</option>
+                    <option value="quiz">❓ 퀴즈</option>
+                </select>
+                
+                <button class="btn" id="create-activity-btn" disabled>활동 생성</button>
+                
+                <div style="flex: 1;"></div>
+                
+                <button class="btn btn-secondary" id="delete-activity-btn" disabled>🗑️ 삭제</button>
+            </div>
+            
+            <div class="workspace" id="workspace">
+                <!-- 기본 상태 -->
+                <div id="welcome-state">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🚀</div>
+                        <h2>레슨 빌더에 오신 것을 환영합니다!</h2>
+                        <p>좌측에서 레슨 정보를 입력하고 활동을 추가해보세요.</p>
+                    </div>
+                </div>
+                
+                <!-- 활동 편집기 -->
+                <div id="activity-editor" class="hidden">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="edit">✏️ 편집</div>
+                        <div class="tab" data-tab="preview">👁️ 미리보기</div>
+                        <div class="tab" data-tab="json">🔧 JSON</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="edit-tab">
+                        <!-- 동적으로 생성될 편집 폼 -->
+                    </div>
+                    
+                    <div class="tab-content" id="preview-tab">
+                        <!-- 활동 미리보기 -->
+                    </div>
+                    
+                    <div class="tab-content" id="json-tab">
+                        <div class="card">
+                            <div class="card-title">JSON 미리보기</div>
+                            <div class="json-preview" id="json-preview"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 전역 상태
+        let currentLesson = {
+            lessonId: '',
+            title: '',
+            description: '',
+            locale: 'ko',
+            version: '1.0.0',
+            flow: [],
+            grading: {
+                mode: 'weighted-sum',
+                passLine: 0.7,
+                showScores: true,
+                showProgress: true
+            },
+            metadata: {
+                author: 'Lesson Builder',
+                createdAt: new Date().toISOString(),
+                tags: [],
+                difficulty: 'intermediate',
+                estimatedTime: 15
+            }
+        };
+        
+        let selectedActivityIndex = -1;
+        let activities = [];
+        
+        // DOM 요소들
+        const lessonTitle = document.getElementById('lesson-title');
+        const lessonDescription = document.getElementById('lesson-description');
+        const lessonDifficulty = document.getElementById('lesson-difficulty');
+        const lessonTime = document.getElementById('lesson-time');
+        const activityList = document.getElementById('activity-list');
+        const addActivityBtn = document.getElementById('add-activity-btn');
+        const templateSelect = document.getElementById('template-select');
+        const createActivityBtn = document.getElementById('create-activity-btn');
+        const deleteActivityBtn = document.getElementById('delete-activity-btn');
+        const saveLessonBtn = document.getElementById('save-lesson-btn');
+        const previewLessonBtn = document.getElementById('preview-lesson-btn');
+        const exportJsonBtn = document.getElementById('export-json-btn');
+        const workspace = document.getElementById('workspace');
+        const welcomeState = document.getElementById('welcome-state');
+        const activityEditor = document.getElementById('activity-editor');
+        
+        // 이벤트 리스너 설정
+        lessonTitle.addEventListener('input', updateLessonInfo);
+        lessonDescription.addEventListener('input', updateLessonInfo);
+        lessonDifficulty.addEventListener('change', updateLessonInfo);
+        lessonTime.addEventListener('input', updateLessonInfo);
+        
+        addActivityBtn.addEventListener('click', showTemplateSelector);
+        templateSelect.addEventListener('change', function() {
+            createActivityBtn.disabled = !templateSelect.value;
+        });
+        createActivityBtn.addEventListener('click', createNewActivity);
+        deleteActivityBtn.addEventListener('click', deleteActivity);
+        
+        saveLessonBtn.addEventListener('click', saveLesson);
+        previewLessonBtn.addEventListener('click', previewLesson);
+        exportJsonBtn.addEventListener('click', exportJson);
+        
+        // 탭 전환
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('tab')) {
+                switchTab(e.target.dataset.tab);
+            }
+        });
+        
+        // 레슨 정보 업데이트
+        function updateLessonInfo() {
+            currentLesson.title = lessonTitle.value;
+            currentLesson.description = lessonDescription.value;
+            currentLesson.metadata.difficulty = lessonDifficulty.value;
+            currentLesson.metadata.estimatedTime = parseInt(lessonTime.value) || 15;
+            currentLesson.lessonId = generateLessonId(lessonTitle.value);
+            
+            updateButtonStates();
+        }
+        
+        // 레슨 ID 생성
+        function generateLessonId(title) {
+            return title.toLowerCase()
+                .replace(/[^a-z0-9가-힣\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 50) + '-' + Date.now().toString(36);
+        }
+        
+        // 템플릿 선택기 표시
+        function showTemplateSelector() {
+            // 템플릿 선택 모달이나 사이드바 표시
+            templateSelect.focus();
+            showNotification('템플릿을 선택하고 "활동 생성" 버튼을 클릭하세요', 'info');
+        }
+        
+        // 새 활동 생성
+        function createNewActivity() {
+            const templateType = templateSelect.value;
+            if (!templateType) return;
+            
+            const newActivity = createActivityTemplate(templateType);
+            activities.push(newActivity);
+            currentLesson.flow.push(newActivity);
+            
+            renderActivityList();
+            selectActivity(activities.length - 1);
+            
+            templateSelect.value = '';
+            createActivityBtn.disabled = true;
+            
+            showNotification('새 활동이 추가되었습니다!', 'success');
+        }
+        
+        // 활동 템플릿 생성
+        function createActivityTemplate(type) {
+            const activityId = `activity-${Date.now()}`;
+            
+            const baseActivity = {
+                activityId: activityId,
+                template: `${type}@1.0.0`,
+                rules: {
+                    scoreWeight: 1,
+                    required: true
+                }
+            };
+            
+            switch (type) {
+                case 'multiple-choice':
+                    return {
+                        ...baseActivity,
+                        params: {
+                            question: '새로운 질문을 입력하세요',
+                            choices: [
+                                { id: 'choice-a', text: '선택지 1' },
+                                { id: 'choice-b', text: '선택지 2' },
+                                { id: 'choice-c', text: '선택지 3' },
+                                { id: 'choice-d', text: '선택지 4' }
+                            ],
+                            correctAnswer: 'choice-a',
+                            allowMultiple: false,
+                            shuffle: true,
+                            timeLimit: 30,
+                            explanation: '정답에 대한 설명을 입력하세요',
+                            showFeedback: true,
+                            hints: []
+                        }
+                    };
+                    
+                case 'word-guess':
+                    return {
+                        ...baseActivity,
+                        params: {
+                            word: '단어',
+                            hint: '힌트를 입력하세요',
+                            category: '카테고리',
+                            maxAttempts: 6,
+                            showHintAfter: 3,
+                            timeLimit: 120,
+                            difficulty: '보통'
+                        }
+                    };
+                    
+                case 'memory-game':
+                    return {
+                        ...baseActivity,
+                        params: {
+                            title: '메모리 게임',
+                            cards: [
+                                { id: 'card-1', content: '카드 1', type: 'text', matchId: 'pair1' },
+                                { id: 'card-2', content: '카드 1 매치', type: 'text', matchId: 'pair1' },
+                                { id: 'card-3', content: '카드 2', type: 'text', matchId: 'pair2' },
+                                { id: 'card-4', content: '카드 2 매치', type: 'text', matchId: 'pair2' }
+                            ],
+                            gridSize: '2x2',
+                            timeLimit: 120,
+                            allowRetries: true,
+                            maxAttempts: 5,
+                            showTimer: true,
+                            successMessage: '축하합니다!',
+                            failureMessage: '다시 시도해보세요',
+                            hints: [],
+                            shuffle: true
+                        }
+                    };
+                    
+                case 'video':
+                    return {
+                        ...baseActivity,
+                        params: {
+                            title: '비디오 활동',
+                            src: '',
+                            description: '비디오 설명을 입력하세요',
+                            autoplay: false,
+                            controls: true
+                        }
+                    };
+                    
+                case 'quiz':
+                    return {
+                        ...baseActivity,
+                        params: {
+                            question: '퀴즈 질문을 입력하세요',
+                            choices: ['선택지 1', '선택지 2', '선택지 3', '선택지 4'],
+                            correct: '선택지 1'
+                        }
+                    };
+                    
+                default:
+                    return baseActivity;
+            }
+        }
+        
+        // 활동 목록 렌더링
+        function renderActivityList() {
+            if (activities.length === 0) {
+                activityList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>활동을 추가해보세요</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            activityList.innerHTML = activities.map((activity, index) => {
+                const templateType = activity.template.split('@')[0];
+                const typeLabels = {
+                    'multiple-choice': '4지 선다형',
+                    'word-guess': '단어 맞추기',
+                    'memory-game': '메모리 게임',
+                    'video': '비디오',
+                    'quiz': '퀴즈'
+                };
+                
+                return `
+                    <div class="activity-item ${index === selectedActivityIndex ? 'selected' : ''}" 
+                         onclick="selectActivity(${index})">
+                        <div class="activity-type">${typeLabels[templateType] || templateType}</div>
+                        <div class="activity-title">${activity.params.question || activity.params.title || activity.activityId}</div>
+                        <div class="activity-description">활동 ${index + 1}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 활동 선택
+        function selectActivity(index) {
+            selectedActivityIndex = index;
+            renderActivityList();
+            
+            if (index >= 0 && index < activities.length) {
+                showActivityEditor(activities[index]);
+                deleteActivityBtn.disabled = false;
+            } else {
+                hideActivityEditor();
+                deleteActivityBtn.disabled = true;
+            }
+        }
+        
+        // 활동 편집기 표시
+        function showActivityEditor(activity) {
+            welcomeState.classList.add('hidden');
+            activityEditor.classList.remove('hidden');
+            
+            renderActivityEditor(activity);
+        }
+        
+        // 활동 편집기 숨김
+        function hideActivityEditor() {
+            welcomeState.classList.remove('hidden');
+            activityEditor.classList.add('hidden');
+        }
+        
+        // 활동 편집기 렌더링
+        function renderActivityEditor(activity) {
+            const editTab = document.getElementById('edit-tab');
+            const templateType = activity.template.split('@')[0];
+            
+            let editorHtml = '';
+            
+            switch (templateType) {
+                case 'multiple-choice':
+                    editorHtml = renderMultipleChoiceEditor(activity);
+                    break;
+                case 'word-guess':
+                    editorHtml = renderWordGuessEditor(activity);
+                    break;
+                case 'memory-game':
+                    editorHtml = renderMemoryGameEditor(activity);
+                    break;
+                case 'video':
+                    editorHtml = renderVideoEditor(activity);
+                    break;
+                case 'quiz':
+                    editorHtml = renderQuizEditor(activity);
+                    break;
+                default:
+                    editorHtml = '<div class="card"><div class="card-title">지원하지 않는 템플릿</div></div>';
+            }
+            
+            editTab.innerHTML = editorHtml;
+            
+            // 이벤트 리스너 연결
+            attachEditorEvents();
+            updateJsonPreview();
+        }
+        
+        // 4지 선다형 편집기
+        function renderMultipleChoiceEditor(activity) {
+            const params = activity.params;
+            
+            return `
+                <div class="card">
+                    <div class="card-title">🔘 4지 선다형 문제 편집</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">질문</label>
+                        <textarea class="form-input form-textarea" id="question" placeholder="질문을 입력하세요">${params.question}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">선택지</label>
+                        <div class="choice-builder" id="choice-builder">
+                            ${params.choices.map((choice, index) => `
+                                <div class="choice-item">
+                                    <input type="text" class="form-input choice-input" 
+                                           value="${choice.text}" 
+                                           data-choice-id="${choice.id}"
+                                           placeholder="선택지 ${index + 1}">
+                                    <input type="checkbox" class="choice-correct" 
+                                           ${(Array.isArray(params.correctAnswer) ? params.correctAnswer.includes(choice.id) : params.correctAnswer === choice.id) ? 'checked' : ''}
+                                           data-choice-id="${choice.id}">
+                                    <button class="btn btn-danger" onclick="removeChoice('${choice.id}')">🗑️</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="btn" onclick="addChoice()">➕ 선택지 추가</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="allow-multiple" ${params.allowMultiple ? 'checked' : ''}>
+                            다중 선택 허용
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">시간 제한 (초)</label>
+                        <input type="number" class="form-input" id="time-limit" value="${params.timeLimit}" min="10" max="300">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">설명</label>
+                        <textarea class="form-input form-textarea" id="explanation" placeholder="정답 설명을 입력하세요">${params.explanation}</textarea>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 단어 맞추기 편집기
+        function renderWordGuessEditor(activity) {
+            const params = activity.params;
+            
+            return `
+                <div class="card">
+                    <div class="card-title">🔤 단어 맞추기 편집</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">정답 단어</label>
+                        <input type="text" class="form-input" id="word" value="${params.word}" placeholder="정답 단어를 입력하세요">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">힌트</label>
+                        <textarea class="form-input form-textarea" id="hint" placeholder="힌트를 입력하세요">${params.hint}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">카테고리</label>
+                        <input type="text" class="form-input" id="category" value="${params.category}" placeholder="카테고리를 입력하세요">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">최대 시도 횟수</label>
+                        <input type="number" class="form-input" id="max-attempts" value="${params.maxAttempts}" min="3" max="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">시간 제한 (초)</label>
+                        <input type="number" class="form-input" id="time-limit" value="${params.timeLimit}" min="30" max="300">
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 메모리 게임 편집기
+        function renderMemoryGameEditor(activity) {
+            const params = activity.params;
+            
+            return `
+                <div class="card">
+                    <div class="card-title">🧠 메모리 게임 편집</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">게임 제목</label>
+                        <input type="text" class="form-input" id="game-title" value="${params.title}" placeholder="게임 제목을 입력하세요">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">카드 쌍</label>
+                        <div id="card-builder">
+                            ${renderCardPairs(params.cards)}
+                        </div>
+                        <button class="btn" onclick="addCardPair()">➕ 카드 쌍 추가</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">시간 제한 (초)</label>
+                        <input type="number" class="form-input" id="time-limit" value="${params.timeLimit}" min="30" max="600">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">성공 메시지</label>
+                        <input type="text" class="form-input" id="success-message" value="${params.successMessage}">
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 카드 쌍 렌더링
+        function renderCardPairs(cards) {
+            const pairs = [];
+            const processedMatchIds = new Set();
+            
+            cards.forEach(card => {
+                if (!processedMatchIds.has(card.matchId)) {
+                    const matchingCards = cards.filter(c => c.matchId === card.matchId);
+                    if (matchingCards.length === 2) {
+                        pairs.push(matchingCards);
+                        processedMatchIds.add(card.matchId);
+                    }
+                }
+            });
+            
+            return pairs.map((pair, index) => `
+                <div class="card" style="margin-bottom: 1rem; background: #313244;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span>카드 쌍 ${index + 1}</span>
+                        <button class="btn btn-danger" onclick="removeCardPair('${pair[0].matchId}')">🗑️ 삭제</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label class="form-label">카드 A</label>
+                            <input type="text" class="form-input" value="${pair[0].content}" 
+                                   data-match-id="${pair[0].matchId}" data-card-index="0">
+                        </div>
+                        <div>
+                            <label class="form-label">카드 B</label>
+                            <input type="text" class="form-input" value="${pair[1].content}" 
+                                   data-match-id="${pair[0].matchId}" data-card-index="1">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 비디오 편집기
+        function renderVideoEditor(activity) {
+            const params = activity.params;
+            
+            return `
+                <div class="card">
+                    <div class="card-title">🎥 비디오 활동 편집</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">제목</label>
+                        <input type="text" class="form-input" id="video-title" value="${params.title}" placeholder="비디오 제목">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">비디오 URL</label>
+                        <input type="url" class="form-input" id="video-src" value="${params.src}" placeholder="https://example.com/video.mp4">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">설명</label>
+                        <textarea class="form-input form-textarea" id="video-description" placeholder="비디오 설명">${params.description}</textarea>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 퀴즈 편집기
+        function renderQuizEditor(activity) {
+            const params = activity.params;
+            
+            return `
+                <div class="card">
+                    <div class="card-title">❓ 퀴즈 편집</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">질문</label>
+                        <textarea class="form-input form-textarea" id="question" placeholder="질문을 입력하세요">${params.question}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">선택지</label>
+                        ${params.choices.map((choice, index) => `
+                            <input type="text" class="form-input" style="margin-bottom: 0.5rem;" 
+                                   value="${choice}" data-choice-index="${index}" placeholder="선택지 ${index + 1}">
+                        `).join('')}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">정답</label>
+                        <input type="text" class="form-input" id="correct-answer" value="${params.correct}" placeholder="정답">
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 편집기 이벤트 연결
+        function attachEditorEvents() {
+            // 모든 입력 필드에 change 이벤트 연결
+            const inputs = document.querySelectorAll('#edit-tab input, #edit-tab textarea, #edit-tab select');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateActivityFromEditor);
+                input.addEventListener('change', updateActivityFromEditor);
+            });
+        }
+        
+        // 편집기에서 활동 업데이트
+        function updateActivityFromEditor() {
+            if (selectedActivityIndex < 0) return;
+            
+            const activity = activities[selectedActivityIndex];
+            const templateType = activity.template.split('@')[0];
+            
+            switch (templateType) {
+                case 'multiple-choice':
+                    updateMultipleChoiceActivity(activity);
+                    break;
+                case 'word-guess':
+                    updateWordGuessActivity(activity);
+                    break;
+                case 'memory-game':
+                    updateMemoryGameActivity(activity);
+                    break;
+                case 'video':
+                    updateVideoActivity(activity);
+                    break;
+                case 'quiz':
+                    updateQuizActivity(activity);
+                    break;
+            }
+            
+            renderActivityList();
+            updateJsonPreview();
+            updateButtonStates();
+        }
+        
+        // 4지 선다형 업데이트
+        function updateMultipleChoiceActivity(activity) {
+            const question = document.getElementById('question')?.value || '';
+            const timeLimit = parseInt(document.getElementById('time-limit')?.value) || 30;
+            const explanation = document.getElementById('explanation')?.value || '';
+            const allowMultiple = document.getElementById('allow-multiple')?.checked || false;
+            
+            // 선택지 업데이트
+            const choiceInputs = document.querySelectorAll('.choice-input');
+            const choiceChecks = document.querySelectorAll('.choice-correct');
+            const choices = [];
+            const correctAnswers = [];
+            
+            choiceInputs.forEach((input, index) => {
+                const choiceId = input.dataset.choiceId;
+                const text = input.value;
+                const isCorrect = choiceChecks[index]?.checked;
+                
+                choices.push({ id: choiceId, text: text });
+                if (isCorrect) {
+                    correctAnswers.push(choiceId);
+                }
+            });
+            
+            activity.params = {
+                ...activity.params,
+                question: question,
+                choices: choices,
+                correctAnswer: allowMultiple ? correctAnswers : correctAnswers[0] || choices[0]?.id,
+                allowMultiple: allowMultiple,
+                timeLimit: timeLimit,
+                explanation: explanation
+            };
+        }
+        
+        // 단어 맞추기 업데이트
+        function updateWordGuessActivity(activity) {
+            activity.params = {
+                ...activity.params,
+                word: document.getElementById('word')?.value || '',
+                hint: document.getElementById('hint')?.value || '',
+                category: document.getElementById('category')?.value || '',
+                maxAttempts: parseInt(document.getElementById('max-attempts')?.value) || 6,
+                timeLimit: parseInt(document.getElementById('time-limit')?.value) || 120
+            };
+        }
+        
+        // 메모리 게임 업데이트
+        function updateMemoryGameActivity(activity) {
+            const title = document.getElementById('game-title')?.value || '';
+            const timeLimit = parseInt(document.getElementById('time-limit')?.value) || 120;
+            const successMessage = document.getElementById('success-message')?.value || '';
+            
+            // 카드 업데이트
+            const cardInputs = document.querySelectorAll('#card-builder input[data-match-id]');
+            const cards = [];
+            
+            cardInputs.forEach((input, index) => {
+                const matchId = input.dataset.matchId;
+                const cardIndex = input.dataset.cardIndex;
+                const content = input.value;
+                
+                cards.push({
+                    id: `card-${matchId}-${cardIndex}`,
+                    content: content,
+                    type: 'text',
+                    matchId: matchId
+                });
+            });
+            
+            activity.params = {
+                ...activity.params,
+                title: title,
+                cards: cards,
+                timeLimit: timeLimit,
+                successMessage: successMessage
+            };
+        }
+        
+        // 비디오 업데이트
+        function updateVideoActivity(activity) {
+            activity.params = {
+                ...activity.params,
+                title: document.getElementById('video-title')?.value || '',
+                src: document.getElementById('video-src')?.value || '',
+                description: document.getElementById('video-description')?.value || ''
+            };
+        }
+        
+        // 퀴즈 업데이트
+        function updateQuizActivity(activity) {
+            const question = document.getElementById('question')?.value || '';
+            const correctAnswer = document.getElementById('correct-answer')?.value || '';
+            const choiceInputs = document.querySelectorAll('[data-choice-index]');
+            const choices = [];
+            
+            choiceInputs.forEach(input => {
+                choices.push(input.value);
+            });
+            
+            activity.params = {
+                ...activity.params,
+                question: question,
+                choices: choices,
+                correct: correctAnswer
+            };
+        }
+        
+        // 선택지 추가
+        window.addChoice = function() {
+            const choiceBuilder = document.getElementById('choice-builder');
+            const choiceCount = choiceBuilder.children.length;
+            const choiceId = `choice-${String.fromCharCode(97 + choiceCount)}`;
+            
+            const choiceHtml = `
+                <div class="choice-item">
+                    <input type="text" class="form-input choice-input" 
+                           value="새 선택지" 
+                           data-choice-id="${choiceId}"
+                           placeholder="선택지 ${choiceCount + 1}">
+                    <input type="checkbox" class="choice-correct" 
+                           data-choice-id="${choiceId}">
+                    <button class="btn btn-danger" onclick="removeChoice('${choiceId}')">🗑️</button>
+                </div>
+            `;
+            
+            choiceBuilder.insertAdjacentHTML('beforeend', choiceHtml);
+            attachEditorEvents();
+        };
+        
+        // 선택지 제거
+        window.removeChoice = function(choiceId) {
+            const choiceItem = document.querySelector(`[data-choice-id="${choiceId}"]`).parentElement;
+            choiceItem.remove();
+            updateActivityFromEditor();
+        };
+        
+        // 카드 쌍 추가
+        window.addCardPair = function() {
+            const cardBuilder = document.getElementById('card-builder');
+            const pairCount = cardBuilder.children.length;
+            const matchId = `pair-${pairCount + 1}`;
+            
+            const pairHtml = `
+                <div class="card" style="margin-bottom: 1rem; background: #313244;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span>카드 쌍 ${pairCount + 1}</span>
+                        <button class="btn btn-danger" onclick="removeCardPair('${matchId}')">🗑️ 삭제</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label class="form-label">카드 A</label>
+                            <input type="text" class="form-input" value="카드 A" 
+                                   data-match-id="${matchId}" data-card-index="0">
+                        </div>
+                        <div>
+                            <label class="form-label">카드 B</label>
+                            <input type="text" class="form-input" value="카드 B" 
+                                   data-match-id="${matchId}" data-card-index="1">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            cardBuilder.insertAdjacentHTML('beforeend', pairHtml);
+            attachEditorEvents();
+        };
+        
+        // 카드 쌍 제거
+        window.removeCardPair = function(matchId) {
+            const pairElement = document.querySelector(`[data-match-id="${matchId}"]`).closest('.card');
+            pairElement.remove();
+            updateActivityFromEditor();
+        };
+        
+        // 활동 삭제
+        function deleteActivity() {
+            if (selectedActivityIndex < 0) return;
+            
+            if (confirm('이 활동을 삭제하시겠습니까?')) {
+                activities.splice(selectedActivityIndex, 1);
+                currentLesson.flow.splice(selectedActivityIndex, 1);
+                
+                selectedActivityIndex = -1;
+                renderActivityList();
+                hideActivityEditor();
+                updateButtonStates();
+                
+                showNotification('활동이 삭제되었습니다', 'warning');
+            }
+        }
+        
+        // 탭 전환
+        function switchTab(tabName) {
+            // 탭 활성화
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // 콘텐츠 표시
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // JSON 탭인 경우 미리보기 업데이트
+            if (tabName === 'json') {
+                updateJsonPreview();
+            }
+        }
+        
+        // JSON 미리보기 업데이트
+        function updateJsonPreview() {
+            if (selectedActivityIndex >= 0) {
+                const jsonPreview = document.getElementById('json-preview');
+                if (jsonPreview) {
+                    jsonPreview.textContent = JSON.stringify(activities[selectedActivityIndex], null, 2);
+                }
+            }
+        }
+        
+        // 버튼 상태 업데이트
+        function updateButtonStates() {
+            const hasTitle = currentLesson.title.trim().length > 0;
+            const hasActivities = activities.length > 0;
+            
+            saveLessonBtn.disabled = !(hasTitle && hasActivities);
+            previewLessonBtn.disabled = !(hasTitle && hasActivities);
+            exportJsonBtn.disabled = !(hasTitle && hasActivities);
+        }
+        
+        // 레슨 저장
+        function saveLesson() {
+            try {
+                currentLesson.flow = activities;
+                currentLesson.metadata.createdAt = new Date().toISOString();
+                
+                // 로컬 스토리지에 저장
+                const savedLessons = JSON.parse(localStorage.getItem('savedLessons') || '[]');
+                const existingIndex = savedLessons.findIndex(lesson => lesson.lessonId === currentLesson.lessonId);
+                
+                if (existingIndex >= 0) {
+                    savedLessons[existingIndex] = currentLesson;
+                    showNotification('레슨이 업데이트되었습니다!', 'success');
+                } else {
+                    savedLessons.push(currentLesson);
+                    showNotification('레슨이 저장되었습니다!', 'success');
+                }
+                
+                localStorage.setItem('savedLessons', JSON.stringify(savedLessons));
+                
+            } catch (error) {
+                console.error('레슨 저장 오류:', error);
+                showNotification('레슨 저장 중 오류가 발생했습니다', 'error');
+            }
+        }
+        
+        // 레슨 미리보기
+        function previewLesson() {
+            currentLesson.flow = activities;
+            
+            // 미리보기 창 열기
+            const previewWindow = window.open('', '_blank', 'width=1200,height=800');
+            previewWindow.document.write(`
+                <html>
+                    <head>
+                        <title>레슨 미리보기: ${currentLesson.title}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            .preview-header { background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+                            .activity { background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; }
+                            .activity-type { color: #666; font-size: 12px; text-transform: uppercase; font-weight: bold; }
+                            .activity-title { font-size: 18px; font-weight: bold; margin: 10px 0; }
+                            .choices { margin: 10px 0; }
+                            .choice { background: #f9f9f9; padding: 8px; margin: 5px 0; border-radius: 4px; }
+                            .correct { background: #d4edda; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="preview-header">
+                            <h1>${currentLesson.title}</h1>
+                            <p>${currentLesson.description}</p>
+                            <small>난이도: ${currentLesson.metadata.difficulty} | 예상 시간: ${currentLesson.metadata.estimatedTime}분</small>
+                        </div>
+                        
+                        ${activities.map((activity, index) => {
+                            const templateType = activity.template.split('@')[0];
+                            return `
+                                <div class="activity">
+                                    <div class="activity-type">${templateType}</div>
+                                    <div class="activity-title">활동 ${index + 1}: ${activity.params.question || activity.params.title || activity.activityId}</div>
+                                    ${renderActivityPreview(activity)}
+                                </div>
+                            `;
+                        }).join('')}
+                    </body>
+                </html>
+            `);
+        }
+        
+        // 활동 미리보기 렌더링
+        function renderActivityPreview(activity) {
+            const templateType = activity.template.split('@')[0];
+            const params = activity.params;
+            
+            switch (templateType) {
+                case 'multiple-choice':
+                    return `
+                        <div class="choices">
+                            ${params.choices.map(choice => {
+                                const isCorrect = Array.isArray(params.correctAnswer) 
+                                    ? params.correctAnswer.includes(choice.id)
+                                    : params.correctAnswer === choice.id;
+                                return `<div class="choice ${isCorrect ? 'correct' : ''}">${choice.text} ${isCorrect ? '(정답)' : ''}</div>`;
+                            }).join('')}
+                        </div>
+                        ${params.explanation ? `<p><strong>설명:</strong> ${params.explanation}</p>` : ''}
+                    `;
+                    
+                case 'word-guess':
+                    return `
+                        <p><strong>정답:</strong> ${params.word}</p>
+                        <p><strong>힌트:</strong> ${params.hint}</p>
+                        <p><strong>카테고리:</strong> ${params.category}</p>
+                        <p><strong>최대 시도:</strong> ${params.maxAttempts}회</p>
+                    `;
+                    
+                case 'memory-game':
+                    const pairs = [];
+                    const processedMatchIds = new Set();
+                    
+                    params.cards.forEach(card => {
+                        if (!processedMatchIds.has(card.matchId)) {
+                            const matchingCards = params.cards.filter(c => c.matchId === card.matchId);
+                            if (matchingCards.length === 2) {
+                                pairs.push(matchingCards);
+                                processedMatchIds.add(card.matchId);
+                            }
+                        }
+                    });
+                    
+                    return `
+                        <div class="choices">
+                            ${pairs.map((pair, index) => 
+                                `<div class="choice">쌍 ${index + 1}: "${pair[0].content}" ↔ "${pair[1].content}"</div>`
+                            ).join('')}
+                        </div>
+                    `;
+                    
+                case 'video':
+                    return `
+                        <p><strong>비디오 URL:</strong> ${params.src}</p>
+                        <p>${params.description}</p>
+                    `;
+                    
+                case 'quiz':
+                    return `
+                        <div class="choices">
+                            ${params.choices.map(choice => 
+                                `<div class="choice ${choice === params.correct ? 'correct' : ''}">${choice} ${choice === params.correct ? '(정답)' : ''}</div>`
+                            ).join('')}
+                        </div>
+                    `;
+                    
+                default:
+                    return '<p>미리보기를 사용할 수 없습니다.</p>';
+            }
+        }
+        
+        // JSON 내보내기
+        function exportJson() {
+            currentLesson.flow = activities;
+            const jsonData = JSON.stringify(currentLesson, null, 2);
+            
+            // 파일 다운로드
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentLesson.lessonId}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('JSON 파일이 다운로드되었습니다!', 'success');
+        }
+        
+        // 알림 표시
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // 초기화
+        console.log('📚 레슨 빌더가 준비되었습니다!');
+        updateButtonStates();
+    </script>
+</body>
+</html>
