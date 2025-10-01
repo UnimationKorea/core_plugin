@@ -1121,22 +1121,8 @@ app.get('/', (c) => {
   `)
 })
 
-// 애플리케이션 종료 시 정리
-process.on('SIGTERM', async () => {
-  console.log('🛑 Received SIGTERM, cleaning up...')
-  if (templateRegistry) {
-    await templateRegistry.cleanup()
-  }
-  process.exit(0)
-})
-
-process.on('SIGINT', async () => {
-  console.log('🛑 Received SIGINT, cleaning up...')
-  if (templateRegistry) {
-    await templateRegistry.cleanup()
-  }
-  process.exit(0)
-})
+// Cloudflare Workers runtime doesn't support process events
+// Cleanup will be handled by the Cloudflare Workers runtime automatically
 
 // 에러 핸들링
 app.onError((err, c) => {

@@ -409,40 +409,51 @@ class LessonPlatformApp {
       (this.orchestrator?.state?.currentIndex || 0)
     console.log('📊 Updating activities list - currentIndex:', currentActivityIndex)
     
-    activitiesListEl.innerHTML = lessonData.flow.map((activity, index) => {
-      let status = 'pending'
+    // Add compact activity summary
+    const totalActivities = lessonData.flow.length
+    const completedActivities = Math.max(0, currentActivityIndex)
+    const summaryHTML = `
+      <div class="activity-summary">
+        📋 ${completedActivities}/${totalActivities} 완료 (${Math.round((completedActivities/totalActivities)*100)}%)
+      </div>
+    `
+    
+    // Create compact text-based list
+    const activitiesHTML = lessonData.flow.map((activity, index) => {
       let statusIcon = '⚪'
+      let statusClass = 'pending'
       
       if (index < currentActivityIndex) {
-        status = 'completed'
-        statusIcon = '✅'
+        statusIcon = '✓'
+        statusClass = 'completed'
       } else if (index === currentActivityIndex) {
-        status = 'current'
-        statusIcon = '🔵'
+        statusIcon = '▶'
+        statusClass = 'current'
       }
       
-      // Extract template name
-      const templateName = this.getTemplateDisplayName(activity.template)
+      // Extract template name (short version)
+      const templateName = this.getTemplateDisplayName(activity.template, true)
       
       return `
-        <div class="activity-item ${status}" data-activity-index="${index}">
-          <div class="activity-status ${status}">${statusIcon}</div>
-          <div class="activity-title">${activity.activityId || `활동 ${index + 1}`}</div>
-          <div class="activity-template">${templateName}</div>
+        <div class="activity-item ${statusClass}" data-activity-index="${index}">
+          <span class="activity-status ${statusClass}">${statusIcon}</span>
+          <span class="activity-title">${index + 1}. ${templateName}</span>
         </div>
       `
     }).join('')
+    
+    activitiesListEl.innerHTML = summaryHTML + activitiesHTML
   }
 
-  getTemplateDisplayName(templateId) {
+  getTemplateDisplayName(templateId, isShort = false) {
     const templateNames = {
-      'video@2.0.0': '비디오',
-      'drag-drop-choices@2.0.0': '드래그&드롭',
-      'multiple-choice@1.0.0': '4지선다',
-      'memory-game@1.0.0': '메모리게임',
-      'word-guess@1.0.0': '단어맞추기'
+      'video@2.0.0': isShort ? '영상' : '비디오',
+      'drag-drop-choices@2.0.0': isShort ? '드래그' : '드래그&드롭',
+      'multiple-choice@1.0.0': isShort ? '선택' : '4지선다',
+      'memory-game@1.0.0': isShort ? '메모리' : '메모리게임',
+      'word-guess@1.0.0': isShort ? '단어' : '단어맞추기'
     }
-    return templateNames[templateId] || templateId
+    return templateNames[templateId] || (isShort ? templateId.split('@')[0] : templateId)
   }
 
   setupLessonActions(lessonData) {

@@ -156,16 +156,26 @@ class LessonBuilder {
 
         <!-- Builder Layout -->
         <div class="builder-layout">
-          <!-- Templates Palette -->
-          <aside class="templates-palette">
-            <div class="palette-header">
-              <h3>📦 액티비티 템플릿</h3>
-              <input type="search" placeholder="템플릿 검색..." class="search-input" id="template-search">
+          <!-- Live Preview Area -->
+          <div class="preview-area">
+            <div class="preview-header">
+              <h3>👁️ 실시간 미리보기</h3>
+              <div class="preview-controls">
+                <button class="btn btn-sm btn-secondary" id="refresh-preview-btn">🔄 새로고침</button>
+              </div>
             </div>
-            <div class="templates-list" id="templates-list">
-              ${this.renderTemplatesPalette()}
+            <div class="preview-container">
+              <div id="activity-preview-container" class="activity-preview">
+                <div class="preview-placeholder">
+                  <div class="placeholder-content">
+                    <div class="placeholder-icon">👁️</div>
+                    <h4>미리보기</h4>
+                    <p>활동을 선택하고 저장하면 여기에서 미리보기를 확인할 수 있습니다.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </aside>
+          </div>
 
           <!-- Lesson Canvas -->
           <main class="lesson-canvas">
@@ -181,8 +191,19 @@ class LessonBuilder {
                 <div class="placeholder-content">
                   <div class="placeholder-icon">🎯</div>
                   <h4>레슨을 구성하세요</h4>
-                  <p>왼쪽에서 템플릿을 끌어다 놓거나 클릭하여 액티비티를 추가하세요.</p>
+                  <p>아래 템플릿을 끌어다 놓거나 클릭하여 액티비티를 추가하세요.</p>
                 </div>
+              </div>
+            </div>
+            
+            <!-- Templates Palette (Moved under canvas) -->
+            <div class="templates-palette">
+              <div class="palette-header">
+                <h3>📦 액티비티 템플릿</h3>
+                <input type="search" placeholder="템플릿 검색..." class="search-input" id="template-search">
+              </div>
+              <div class="templates-list" id="templates-list">
+                ${this.renderTemplatesPalette()}
               </div>
             </div>
           </main>
@@ -283,6 +304,11 @@ class LessonBuilder {
     // Preview lesson
     document.getElementById('preview-lesson-btn')?.addEventListener('click', () => {
       this.previewLesson()
+    })
+
+    // Refresh preview
+    document.getElementById('refresh-preview-btn')?.addEventListener('click', () => {
+      this.previewCurrentActivity()
     })
 
     // Template search
@@ -494,6 +520,13 @@ class LessonBuilder {
     this.selectedActivity = index
     this.renderActivitiesFlow()
     this.renderPropertyEditor()
+    
+    // Update live preview when activity is selected
+    if (index >= 0 && this.currentLesson?.flow) {
+      this.updateLivePreview()
+    } else {
+      this.clearPreview()
+    }
   }
 
   renderActivitiesFlow() {
@@ -861,43 +894,376 @@ class LessonBuilder {
     // Show loading state
     const previewBtn = document.getElementById('preview-lesson-btn')
     if (previewBtn) {
-      previewBtn.textContent = '🔄 로딩 중...'
+      previewBtn.textContent = '🔄 미리보기 중...'
       previewBtn.disabled = true
     }
 
-    // Send lesson data to player via app instance
-    if (window.app && window.app.loadLesson) {
-      window.app.loadLesson(this.currentLesson)
-        .then(() => {
-          // Switch to player tab
-          document.querySelector('[data-tab="player"]')?.click()
-          this.showNotification(`✅ "${this.currentLesson.title}" 레슨이 플레이어에 로드되었습니다.`, 'success')
-        })
-        .catch(error => {
-          this.showNotification('❌ 레슨 로드 실패: ' + error.message, 'error')
-        })
-        .finally(() => {
-          // Restore button state
-          if (previewBtn) {
-            previewBtn.textContent = '👁️ 미리보기'
-            previewBtn.disabled = false
-          }
-        })
-    } else {
-      // Fallback: trigger custom event
-      window.dispatchEvent(new CustomEvent('load-lesson', {
-        detail: this.currentLesson
-      }))
-      
-      // Switch to player tab
-      document.querySelector('[data-tab="player"]')?.click()
-      this.showNotification(`📤 "${this.currentLesson.title}" 레슨이 플레이어에 전송되었습니다.`, 'info')
-      
-      // Restore button state
-      if (previewBtn) {
-        previewBtn.textContent = '👁️ 미리보기'
-        previewBtn.disabled = false
+    // NEW: Show full lesson preview in builder instead of switching tabs
+    this.showFullLessonPreview()
+      .then(() => {
+        this.showNotification(`✅ "${this.currentLesson.title}" 레슨 미리보기가 표시되었습니다.`, 'success')
+      })
+      .catch(error => {
+        this.showNotification('❌ 미리보기 로드 실패: ' + error.message, 'error')
+      })
+      .finally(() => {
+        // Restore button state
+        if (previewBtn) {
+          previewBtn.textContent = '👁️ 미리보기'
+          previewBtn.disabled = false
+        }
+      })
+  }
+
+  // NEW: Show full lesson preview in builder
+  async showFullLessonPreview() {
+    const previewContainer = document.getElementById('activity-preview-container')
+    if (!previewContainer) {
+      throw new Error('Preview container not found')
+    }
+
+    console.log('🎬 Showing full lesson preview in builder:', this.currentLesson)
+
+    try {
+      // Create lesson preview with navigation
+      previewContainer.innerHTML = `
+        <div class="full-lesson-preview">
+          <div class="lesson-preview-header">
+            <div class="lesson-info">
+              <h3>📚 ${this.currentLesson.title || 'Untitled Lesson'}</h3>
+              <p class="lesson-description">${this.currentLesson.description || 'No description'}</p>
+            </div>
+            <div class="lesson-nav">
+              <button id="prev-activity-btn" class="btn btn-sm btn-secondary" disabled>← 이전</button>
+              <span id="activity-counter" class="activity-counter">1 / ${this.currentLesson.flow.length}</span>
+              <button id="next-activity-btn" class="btn btn-sm btn-secondary">다음 →</button>
+            </div>
+          </div>
+          <div id="lesson-activity-container" class="lesson-activity-container">
+            <div class="loading-spinner"></div>
+            <p>첫 번째 활동을 로딩 중...</p>
+          </div>
+        </div>
+      `
+
+      // Initialize lesson preview orchestrator
+      this.initLessonPreview()
+
+    } catch (error) {
+      console.error('Full lesson preview error:', error)
+      previewContainer.innerHTML = `
+        <div class="preview-error">
+          <h4>❌ 레슨 미리보기 오류</h4>
+          <p>${error.message}</p>
+          <button class="btn btn-sm btn-secondary" onclick="window.builder.clearPreview()">미리보기 닫기</button>
+        </div>
+      `
+      throw error
+    }
+  }
+
+  // NEW: Initialize lesson preview with navigation
+  initLessonPreview() {
+    this.previewCurrentIndex = 0
+    this.previewFlow = this.currentLesson.flow || []
+
+    // Set up navigation buttons
+    const prevBtn = document.getElementById('prev-activity-btn')
+    const nextBtn = document.getElementById('next-activity-btn')
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => this.navigatePreview(-1))
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => this.navigatePreview(1))
+    }
+
+    // Load first activity
+    this.loadPreviewActivity(0)
+  }
+
+  // NEW: Navigate through preview activities
+  navigatePreview(direction) {
+    const newIndex = this.previewCurrentIndex + direction
+    
+    if (newIndex >= 0 && newIndex < this.previewFlow.length) {
+      this.previewCurrentIndex = newIndex
+      this.loadPreviewActivity(newIndex)
+      this.updatePreviewNavigation()
+    }
+  }
+
+  // NEW: Load specific activity in preview
+  async loadPreviewActivity(index) {
+    const activityContainer = document.getElementById('lesson-activity-container')
+    const counter = document.getElementById('activity-counter')
+    
+    if (!activityContainer || !this.previewFlow[index]) return
+
+    const activity = this.previewFlow[index]
+    
+    // Update counter
+    if (counter) {
+      counter.textContent = `${index + 1} / ${this.previewFlow.length}`
+    }
+
+    // Show loading
+    activityContainer.innerHTML = `
+      <div class="activity-loading">
+        <div class="loading-spinner"></div>
+        <p>${activity.activityId || `활동 ${index + 1}`} 로딩 중...</p>
+      </div>
+    `
+
+    try {
+      // Render the activity
+      await this.renderPreviewActivity(activity, activityContainer)
+      this.updatePreviewNavigation()
+    } catch (error) {
+      console.error('Load preview activity error:', error)
+      activityContainer.innerHTML = `
+        <div class="activity-error">
+          <h4>❌ 활동 로드 오류</h4>
+          <p>${error.message}</p>
+          <div class="activity-fallback">
+            <h5>${activity.activityId || `활동 ${index + 1}`}</h5>
+            ${this.renderActivityParamsPreview(activity.params || {})}
+          </div>
+        </div>
+      `
+    }
+  }
+
+  // NEW: Update navigation button states
+  updatePreviewNavigation() {
+    const prevBtn = document.getElementById('prev-activity-btn')
+    const nextBtn = document.getElementById('next-activity-btn')
+
+    if (prevBtn) {
+      prevBtn.disabled = this.previewCurrentIndex === 0
+    }
+    if (nextBtn) {
+      nextBtn.disabled = this.previewCurrentIndex === this.previewFlow.length - 1
+    }
+  }
+
+  // NEW: Render activity in preview container
+  async renderPreviewActivity(activity, container) {
+    try {
+      // Get template renderer
+      const response = await fetch(`/api/templates/${encodeURIComponent(activity.template)}/render`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(activity.params || {})
+      })
+
+      if (!response.ok) {
+        throw new Error(`Template render failed: ${response.statusText}`)
       }
+
+      const html = await response.text()
+      
+      container.innerHTML = `
+        <div class="preview-activity-wrapper">
+          <div class="activity-header">
+            <h4>${activity.activityId || 'Activity'}</h4>
+            <span class="template-badge">${activity.template}</span>
+          </div>
+          <div class="activity-content">
+            ${html}
+          </div>
+        </div>
+      `
+
+      // Initialize basic interactions
+      this.initPreviewActivityInteractions(container, activity)
+
+    } catch (error) {
+      throw new Error(`Failed to render activity: ${error.message}`)
+    }
+  }
+
+  // NEW: Initialize basic interactions for preview
+  initPreviewActivityInteractions(container, activity) {
+    // Handle buttons
+    container.querySelectorAll('button').forEach(btn => {
+      if (!btn.onclick && !btn.dataset.previewHandled) {
+        btn.dataset.previewHandled = 'true'
+        btn.addEventListener('click', (e) => {
+          e.preventDefault()
+          console.log('🎯 Preview button clicked:', btn.textContent, 'in activity:', activity.activityId)
+          
+          // Show feedback for button clicks
+          const originalText = btn.textContent
+          btn.textContent = '✓ 클릭됨'
+          btn.disabled = true
+          
+          setTimeout(() => {
+            btn.textContent = originalText
+            btn.disabled = false
+          }, 1000)
+        })
+      }
+    })
+
+    // Handle form inputs
+    container.querySelectorAll('input, select, textarea').forEach(input => {
+      if (!input.dataset.previewHandled) {
+        input.dataset.previewHandled = 'true'
+        input.addEventListener('change', (e) => {
+          console.log('🎯 Preview input changed:', e.target.name || e.target.type, '=', e.target.value)
+        })
+      }
+    })
+  }
+  }
+
+  // NEW: Preview current activity in builder
+  previewCurrentActivity() {
+    if (this.selectedActivity === -1 || !this.currentLesson?.flow) return
+
+    const activity = this.currentLesson.flow[this.selectedActivity]
+    if (!activity) return
+
+    // Sync current form values before preview
+    this.syncAllFormValues()
+
+    this.showActivityPreview(activity)
+  }
+
+  // NEW: Show activity preview in builder
+  showActivityPreview(activity) {
+    const previewContainer = document.getElementById('activity-preview-container')
+    if (!previewContainer) return
+
+    console.log('🎬 Showing activity preview:', activity)
+
+    try {
+      // Create a temporary orchestrator for preview
+      const previewData = {
+        lessonId: 'preview',
+        title: 'Preview',
+        description: 'Activity Preview',
+        flow: [activity]
+      }
+
+      previewContainer.innerHTML = `
+        <div class="preview-activity-header">
+          <h4>📋 ${activity.activityId || 'Activity'}</h4>
+          <span class="template-badge">${activity.template}</span>
+        </div>
+        <div id="preview-activity-content" class="preview-activity-content">
+          <div class="loading-spinner"></div>
+          <p>활동을 로딩 중...</p>
+        </div>
+      `
+
+      // Load the activity template and render
+      this.renderActivityPreview(activity)
+
+    } catch (error) {
+      console.error('Preview error:', error)
+      previewContainer.innerHTML = `
+        <div class="preview-error">
+          <h4>❌ 미리보기 오류</h4>
+          <p>${error.message}</p>
+        </div>
+      `
+    }
+  }
+
+  // NEW: Render activity preview using template
+  async renderActivityPreview(activity) {
+    const previewContent = document.getElementById('preview-activity-content')
+    if (!previewContent) return
+
+    try {
+      // Get template renderer
+      const response = await fetch(`/api/templates/${encodeURIComponent(activity.template)}/render`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(activity.params || {})
+      })
+
+      if (!response.ok) {
+        throw new Error(`Template render failed: ${response.statusText}`)
+      }
+
+      const html = await response.text()
+      previewContent.innerHTML = html
+
+      // Initialize the rendered activity
+      this.initializePreviewActivity(activity)
+
+    } catch (error) {
+      console.error('Render preview error:', error)
+      previewContent.innerHTML = `
+        <div class="preview-fallback">
+          <h4>📋 ${activity.activityId || 'Activity Preview'}</h4>
+          <div class="activity-params">
+            ${this.renderActivityParamsPreview(activity.params || {})}
+          </div>
+        </div>
+      `
+    }
+  }
+
+  // NEW: Fallback preview when template render fails
+  renderActivityParamsPreview(params) {
+    return Object.entries(params).map(([key, value]) => {
+      let displayValue = value
+      if (typeof value === 'object') {
+        displayValue = JSON.stringify(value, null, 2)
+      } else if (typeof value === 'string' && value.length > 100) {
+        displayValue = value.substring(0, 100) + '...'
+      }
+
+      return `
+        <div class="param-item">
+          <strong>${key}:</strong>
+          <span class="param-value">${displayValue}</span>
+        </div>
+      `
+    }).join('')
+  }
+
+  // NEW: Initialize preview activity (basic functionality)
+  initializePreviewActivity(activity) {
+    // Add basic event listeners for common elements
+    const previewContent = document.getElementById('preview-activity-content')
+    if (!previewContent) return
+
+    // Handle buttons
+    previewContent.querySelectorAll('button').forEach(btn => {
+      if (!btn.onclick) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault()
+          console.log('Preview button clicked:', btn.textContent)
+        })
+      }
+    })
+
+    // Handle form inputs
+    previewContent.querySelectorAll('input, select, textarea').forEach(input => {
+      input.addEventListener('change', (e) => {
+        console.log('Preview input changed:', e.target.name, e.target.value)
+      })
+    })
+  }
+
+  // NEW: Clear preview
+  clearPreview() {
+    const previewContainer = document.getElementById('activity-preview-container')
+    if (previewContainer) {
+      previewContainer.innerHTML = `
+        <div class="preview-placeholder">
+          <div class="placeholder-content">
+            <div class="placeholder-icon">👁️</div>
+            <h4>미리보기</h4>
+            <p>활동을 선택하고 저장하면 여기에서 미리보기를 확인할 수 있습니다.</p>
+          </div>
+        </div>
+      `
     }
   }
 
@@ -1034,6 +1400,20 @@ class LessonBuilder {
     console.log('  - Template:', activity.template)
     console.log('  - All Params:', activity.params)
     console.log('  - Choices specifically:', activity.params.choices)
+    
+    // Auto-update preview after syncing
+    this.updateLivePreview()
+  }
+
+  // NEW: Update live preview automatically
+  updateLivePreview() {
+    if (this.selectedActivity !== -1 && this.currentLesson?.flow) {
+      const activity = this.currentLesson.flow[this.selectedActivity]
+      if (activity) {
+        console.log('🔄 Auto-updating live preview...')
+        this.showActivityPreview(activity)
+      }
+    }
   }
 
   showNotification(message, type = 'info') {

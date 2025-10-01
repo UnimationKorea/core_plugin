@@ -64,8 +64,9 @@
 
 .content-panel {
   display: none;
-  padding: var(--space-6) 0;
-  min-height: calc(100vh - 120px);
+  padding: var(--space-4) 0;
+  min-height: auto;
+  height: auto;
 }
 
 .content-panel.active {
@@ -76,8 +77,9 @@
 .lesson-player-layout {
   display: grid;
   grid-template-columns: 320px 1fr;
-  gap: var(--space-6);
-  min-height: calc(100vh - 200px);
+  gap: var(--space-4);
+  min-height: auto;
+  height: auto;
 }
 
 .lesson-sidebar {
@@ -89,29 +91,35 @@
 .lesson-main {
   display: flex;
   flex-direction: column;
+  height: auto;
 }
 
 .activity-container-wrapper {
-  flex: 1;
+  flex: none;
   display: flex;
   flex-direction: column;
+  height: auto;
 }
 
 /* Activity Container */
 #activity-container {
-  flex: 1;
-  min-height: 500px;
+  flex: none;
+  min-height: 150px;
+  height: 180px;
+  max-height: 200px;
   border-radius: var(--radius-2xl);
-  overflow: hidden;
+  overflow: auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .activity-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  padding: var(--space-8);
+  height: 180px;
+  padding: var(--space-2);
   text-align: center;
 }
 
@@ -567,7 +575,8 @@
 @media (max-width: 1024px) {
   .lesson-player-layout {
     grid-template-columns: 280px 1fr;
-    gap: var(--space-4);
+    gap: var(--space-3);
+    min-height: auto;
   }
   
   .navigation {
@@ -586,7 +595,21 @@
   
   .lesson-player-layout {
     grid-template-columns: 1fr;
-    gap: var(--space-4);
+    gap: var(--space-3);
+    min-height: auto;
+  }
+  
+  #activity-container {
+    height: 160px;
+    min-height: 160px;
+    max-height: 160px;
+  }
+  
+  .activity-content,
+  .activity-placeholder {
+    height: 160px;
+    min-height: 160px;
+    max-height: 160px;
   }
   
   .lesson-sidebar {
@@ -703,57 +726,57 @@
   right: 0;
 }
 
-/* Lesson Activities Overview */
+/* Lesson Activities Overview - Compact Text Version */
 .lesson-activities-overview {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
   border-top: 1px solid var(--border-secondary);
 }
 
 .activities-title {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
 .activities-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
 }
 
 .activity-item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   transition: all var(--transition-fast);
+  min-height: 24px;
 }
 
 .activity-item:hover {
-  background: var(--bg-quaternary);
-  border-color: var(--primary-500);
+  background: var(--bg-tertiary);
 }
 
 .activity-item.current {
-  background: var(--primary-500-10);
-  border-color: var(--primary-500);
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary-400);
 }
 
 .activity-item.completed {
-  background: var(--success-500-10);
-  border-color: var(--success-500);
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--text-secondary);
 }
 
 .activity-status {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -779,21 +802,34 @@
 .activity-title {
   flex: 1;
   color: var(--text-primary);
-  font-weight: 500;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 .activity-template {
   color: var(--text-tertiary);
   font-size: var(--text-xs);
+  display: none; /* Hide template info to save space */
+}
+
+/* Compact Activity Summary */
+.activity-summary {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  padding: var(--space-1);
+  margin-bottom: var(--space-2);
+  text-align: center;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
 }
 
 /* Lesson Actions */
 .lesson-actions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
   border-top: 1px solid var(--border-secondary);
 }
 
@@ -898,6 +934,275 @@
 .activity-params {
   font-size: var(--text-xs);
   color: var(--text-tertiary);
+}
+
+/* Activity Templates Optimization */
+.video-activity-container {
+  padding: var(--space-2);
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+  overflow: hidden;
+}
+
+.video-activity-container .video-player {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 180px;
+  margin: 0 auto;
+}
+
+.memory-game-container {
+  padding: var(--space-2);
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+  overflow: hidden;
+}
+
+.memory-game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: var(--space-2);
+  max-width: 400px;
+  margin: 0 auto;
+  padding: var(--space-2);
+}
+
+.memory-game-card {
+  aspect-ratio: 1;
+  min-height: 60px;
+  max-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+}
+
+.multiple-choice-container {
+  padding: var(--space-2);
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+  overflow: auto;
+}
+
+.drag-drop-container {
+  padding: var(--space-2);
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+  overflow: auto;
+}
+
+.quiz-container {
+  padding: var(--space-2);
+  height: 180px !important;
+  min-height: 180px !important;
+  max-height: 180px !important;
+  overflow: auto;
+}
+
+/* Compact Activity Layout */
+.activity-content {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-2);
+  height: 180px;
+  min-height: 180px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.activity-content h2 {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xl);
+}
+
+.activity-content .content-wrapper {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Video Player Specific Styles */
+.video-player-wrapper {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.video-player-wrapper video {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  border-radius: var(--radius-lg);
+}
+
+/* Memory Game Specific Styles */
+.memory-game-wrapper {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.memory-cards-grid {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  justify-items: center;
+  align-items: center;
+}
+
+/* For 2-4 pairs: 2x2 or 2x4 grid */
+.memory-cards-grid.pairs-2,
+.memory-cards-grid.pairs-3,
+.memory-cards-grid.pairs-4 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* For 5-8 pairs: 3x3 or 4x4 grid */
+.memory-cards-grid.pairs-5,
+.memory-cards-grid.pairs-6,
+.memory-cards-grid.pairs-7,
+.memory-cards-grid.pairs-8 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* For 9+ pairs: 4x4+ grid */
+.memory-cards-grid.pairs-9,
+.memory-cards-grid.pairs-10 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.memory-card {
+  width: 60px;
+  height: 60px;
+  max-width: 80px;
+  max-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 2px solid var(--border-secondary);
+}
+
+/* Choice Options Layout */
+.choices-grid {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.choices-grid.two-choices {
+  grid-template-columns: 1fr 1fr;
+}
+
+.choices-grid.three-choices {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.choices-grid.four-choices {
+  grid-template-columns: 1fr 1fr;
+}
+
+.choice-button {
+  padding: var(--space-2) var(--space-3);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: var(--text-sm);
+  line-height: 1.3;
+}
+
+/* Responsive adjustments for activities */
+@media (max-width: 768px) {
+  .memory-cards-grid {
+    gap: var(--space-1);
+  }
+  
+  .memory-card {
+    width: 50px;
+    height: 50px;
+    font-size: var(--text-xs);
+  }
+  
+  .video-player-wrapper video {
+    max-height: 160px;
+  }
+  
+  .choices-grid.three-choices,
+  .choices-grid.four-choices {
+    grid-template-columns: 1fr;
+  }
+  
+  .choices-grid.two-choices {
+    grid-template-columns: 1fr;
+  }
+  
+  #activity-container {
+    height: 160px !important;
+    min-height: 160px !important;
+    max-height: 160px !important;
+  }
+  
+  .activity-content {
+    height: 160px !important;
+    min-height: 160px !important;
+    max-height: 160px !important;
+    padding: var(--space-1);
+  }
+}
+
+@media (max-width: 480px) {
+  .activity-content,
+  .activity-placeholder {
+    padding: var(--space-1);
+    height: 140px !important;
+    min-height: 140px !important;
+    max-height: 140px !important;
+  }
+  
+  .memory-card {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .video-player-wrapper video {
+    max-height: 100px;
+  }
+  
+  #activity-container {
+    height: 140px !important;
+    min-height: 140px !important;
+    max-height: 140px !important;
+  }
+  
+  .choice-button {
+    padding: var(--space-1) var(--space-2);
+    min-height: 30px;
+    font-size: var(--text-xs);
+  }
+  
+  .video-activity-container,
+  .memory-game-container,
+  .multiple-choice-container,
+  .drag-drop-container,
+  .quiz-container {
+    height: 140px !important;
+    min-height: 140px !important;
+    max-height: 140px !important;
+  }
 }
 
 /* Responsive adjustments for summary */
