@@ -794,6 +794,25 @@
                             showMeaning: true,
                             shuffleCharacters: true
                         }
+                    },
+                    {
+                        type: "chinese-pinyin-match",
+                        template: "chinese-pinyin-match@1.0.0",
+                        title: "중국어 병음-한자 매칭",
+                        params: {
+                            title: "🀄 중국어 병음-한자 연결하기",
+                            instruction: "한자를 올바른 병음으로 드래그해서 연결하세요!",
+                            pairs: [
+                                { hanzi: '学习', pinyin: 'xuéxí', meaning: '공부하다', category: '동사' },
+                                { hanzi: '朋友', pinyin: 'péngyǒu', meaning: '친구', category: '명사' },
+                                { hanzi: '学校', pinyin: 'xuéxiào', meaning: '학교', category: '명사' },
+                                { hanzi: '老师', pinyin: 'lǎoshī', meaning: '선생님', category: '명사' },
+                                { hanzi: '中国', pinyin: 'zhōngguó', meaning: '중국', category: '명사' }
+                            ],
+                            showMeaning: true,
+                            showCategory: true,
+                            shuffleCards: true
+                        }
                     }
                 ]
             },
@@ -1942,6 +1961,9 @@
                 
                 // Chinese Tone 플러그인 로드
                 await window.PluginSystem.loadExternalPlugin('plugins/chinese-tone-plugin.js');
+                
+                // Chinese Pinyin Match 플러그인 로드
+                await window.PluginSystem.loadExternalPlugin('plugins/chinese-pinyin-match-plugin.js');
                 
                 console.log('✅ 모든 외부 플러그인 로드 완료');
                 console.log('📋 등록된 템플릿:', window.PluginSystem.getRegisteredTemplates());
