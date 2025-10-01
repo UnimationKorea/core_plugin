@@ -516,6 +516,122 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* 팝업 플레이어 스타일 */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .popup-overlay.active {
+      display: flex;
+    }
+
+    .popup-player {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      height: 90%;
+      max-height: 600px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .popup-header {
+      background: var(--bg-secondary);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .popup-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .popup-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .popup-close:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .popup-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .popup-activity-area {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+      background: var(--bg-secondary);
+      margin: 20px;
+      border-radius: 8px;
+    }
+
+    .popup-controls {
+      background: var(--bg-secondary);
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .popup-progress {
+      flex: 1;
+      margin: 0 20px;
+    }
+
+    .popup-progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .popup-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
     /* 반응형 디자인 */
     @media (max-width: 768px) {
       .sidebar {
@@ -544,6 +660,22 @@
       .control-group {
         width: 100%;
         justify-content: center;
+      }
+
+      .popup-player {
+        width: 95%;
+        height: 95%;
+        max-height: 95vh;
+      }
+
+      .popup-controls {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .popup-progress {
+        order: -1;
+        margin: 0;
       }
     }
   </style>
@@ -579,9 +711,14 @@
                 </select>
               </div>
 
-              <button class="btn btn-primary" id="load-lesson-btn" disabled>
-                레슨 로드
-              </button>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary" id="load-lesson-btn" disabled>
+                  레슨 로드
+                </button>
+                <button class="btn btn-secondary" id="popup-player-btn" disabled>
+                  팝업 플레이어
+                </button>
+              </div>
             </div>
 
             <div class="card">
@@ -681,6 +818,43 @@
     </main>
   </div>
 
+  <!-- 팝업 플레이어 -->
+  <div class="popup-overlay" id="popup-overlay">
+    <div class="popup-player">
+      <div class="popup-header">
+        <h3 class="popup-title" id="popup-lesson-title">팝업 플레이어</h3>
+        <button class="popup-close" id="popup-close">×</button>
+      </div>
+      
+      <div class="popup-content">
+        <div class="popup-activity-area" id="popup-activity-area">
+          <div class="activity-placeholder">
+            <p>팝업 플레이어가 준비되었습니다.</p>
+            <p>레슨을 시작하려면 아래 컨트롤을 사용하세요.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="popup-controls">
+        <div class="control-group">
+          <button class="btn" id="popup-prev-btn" disabled>이전</button>
+          <button class="btn btn-primary" id="popup-next-btn" disabled>다음</button>
+        </div>
+        
+        <div class="popup-progress">
+          <div class="popup-progress-bar">
+            <div class="popup-progress-fill" id="popup-progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <button class="btn btn-secondary" id="popup-restart-btn" disabled>재시작</button>
+          <button class="btn btn-danger" id="popup-finish-btn" disabled>종료</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script>
     // 안전한 레슨 플랫폼 클래스
@@ -740,14 +914,22 @@
       setupLessonLoader() {
         const select = document.getElementById('lesson-select');
         const loadBtn = document.getElementById('load-lesson-btn');
+        const popupBtn = document.getElementById('popup-player-btn');
         const fileInput = document.getElementById('file-input');
 
         select.addEventListener('change', () => {
-          loadBtn.disabled = !select.value;
+          const hasValue = !!select.value;
+          loadBtn.disabled = !hasValue;
+          popupBtn.disabled = !hasValue;
         });
 
         loadBtn.addEventListener('click', () => {
           this.loadLesson(select.value);
+        });
+
+        // 팝업 플레이어 버튼
+        popupBtn.addEventListener('click', () => {
+          this.openPopupPlayer(select.value);
         });
 
         fileInput.addEventListener('change', (e) => {
@@ -756,6 +938,9 @@
             this.loadLessonFromFile(file);
           }
         });
+
+        // 팝업 컨트롤 설정
+        this.setupPopupControls();
       }
 
       // 플레이어 컨트롤 설정
@@ -1111,6 +1296,297 @@
         document.getElementById('next-btn').disabled = !hasNext;
         document.getElementById('restart-btn').disabled = !hasLesson;
         document.getElementById('finish-btn').disabled = !hasLesson;
+      }
+
+      // 팝업 컨트롤 설정
+      setupPopupControls() {
+        const overlay = document.getElementById('popup-overlay');
+        const closeBtn = document.getElementById('popup-close');
+        
+        // 팝업 닫기
+        closeBtn.addEventListener('click', () => {
+          this.closePopupPlayer();
+        });
+
+        // 배경 클릭으로 닫기
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            this.closePopupPlayer();
+          }
+        });
+
+        // ESC 키로 닫기
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            this.closePopupPlayer();
+          }
+        });
+
+        // 팝업 플레이어 컨트롤
+        document.getElementById('popup-prev-btn').addEventListener('click', () => {
+          this.popupPreviousActivity();
+        });
+        
+        document.getElementById('popup-next-btn').addEventListener('click', () => {
+          this.popupNextActivity();
+        });
+        
+        document.getElementById('popup-restart-btn').addEventListener('click', () => {
+          this.popupRestartLesson();
+        });
+        
+        document.getElementById('popup-finish-btn').addEventListener('click', () => {
+          this.popupFinishLesson();
+        });
+      }
+
+      // 팝업 플레이어 열기
+      openPopupPlayer(lessonId) {
+        try {
+          const lesson = this.sampleLessons[lessonId];
+          if (!lesson) {
+            throw new Error('레슨을 찾을 수 없습니다.');
+          }
+
+          // 팝업용 상태 초기화
+          this.popupLesson = lesson;
+          this.popupActivityIndex = 0;
+          this.popupResults = [];
+
+          // 팝업 UI 업데이트
+          document.getElementById('popup-lesson-title').textContent = lesson.title;
+          
+          // 팝업 표시
+          document.getElementById('popup-overlay').classList.add('active');
+          
+          // 첫 번째 활동 로드
+          this.loadPopupActivity(0);
+          this.updatePopupControls();
+          
+          this.showNotification('팝업 플레이어에서 레슨을 시작합니다.', 'success');
+          
+        } catch (error) {
+          console.error('팝업 플레이어 오류:', error);
+          this.showNotification('팝업 플레이어를 열 수 없습니다: ' + error.message, 'error');
+        }
+      }
+
+      // 팝업 플레이어 닫기
+      closePopupPlayer() {
+        document.getElementById('popup-overlay').classList.remove('active');
+        
+        // 상태 정리
+        this.popupLesson = null;
+        this.popupActivityIndex = 0;
+        this.popupResults = [];
+        
+        // 팝업 내용 초기화
+        document.getElementById('popup-activity-area').innerHTML = `
+          <div class="activity-placeholder">
+            <p>팝업 플레이어가 준비되었습니다.</p>
+            <p>레슨을 시작하려면 아래 컨트롤을 사용하세요.</p>
+          </div>
+        `;
+      }
+
+      // 팝업 활동 로드
+      loadPopupActivity(index) {
+        if (!this.popupLesson || index < 0 || index >= this.popupLesson.activities.length) {
+          return;
+        }
+
+        const activity = this.popupLesson.activities[index];
+        const container = document.getElementById('popup-activity-area');
+        
+        // 진행률 업데이트
+        const progress = ((index) / this.popupLesson.activities.length) * 100;
+        document.getElementById('popup-progress-fill').style.width = `${progress}%`;
+
+        try {
+          // 팝업 전용 렌더링
+          if (activity.type === 'video') {
+            this.renderPopupVideoActivity(container, activity);
+          } else if (activity.type === 'drag-drop') {
+            this.renderPopupDragDropActivity(container, activity);
+          } else {
+            throw new Error(`지원하지 않는 활동 유형: ${activity.type}`);
+          }
+        } catch (error) {
+          console.error('팝업 활동 로드 실패:', error);
+          container.innerHTML = `
+            <div class="activity-placeholder">
+              <p style="color: var(--danger);">활동을 로드할 수 없습니다</p>
+              <p>${error.message}</p>
+            </div>
+          `;
+        }
+      }
+
+      // 팝업용 비디오 활동 렌더링
+      renderPopupVideoActivity(container, activity) {
+        container.innerHTML = `
+          <div style="width: 100%; text-align: center;">
+            <h3 style="margin-bottom: 20px; color: var(--text-primary);">
+              ${activity.title}
+            </h3>
+            <video controls style="width: 100%; max-width: 500px; max-height: 300px; border-radius: 8px; background: black;">
+              <source src="${activity.content.src}" type="video/mp4">
+              이 브라우저는 비디오를 지원하지 않습니다.
+            </video>
+            <p style="margin-top: 16px; color: var(--text-secondary);">
+              ${activity.content.description || '비디오를 시청하고 다음 버튼을 클릭하세요.'}
+            </p>
+          </div>
+        `;
+      }
+
+      // 팝업용 드래그앤드롭 활동 렌더링
+      renderPopupDragDropActivity(container, activity) {
+        const popupId = 'popup-' + Date.now(); // 고유 ID 생성
+        
+        container.innerHTML = `
+          <div style="width: 100%; max-width: 600px; text-align: center;">
+            <h3 style="margin-bottom: 20px; color: var(--text-primary);">
+              ${activity.title}
+            </h3>
+            <div style="font-size: 18px; margin-bottom: 20px; color: var(--text-primary);">
+              ${activity.content.prompt}
+            </div>
+            <div class="drop-zone" id="popup-drop-zone-${popupId}" style="margin-bottom: 20px; min-height: 60px; display: flex; align-items: center; justify-content: center;">
+              정답을 여기에 드래그하세요
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;" id="popup-choices-${popupId}">
+              ${activity.content.choices.map(choice => `
+                <div class="choice-item" draggable="true" data-choice="${choice}" style="padding: 10px 16px; background: var(--primary); color: white; border-radius: 6px; cursor: pointer;">
+                  ${choice}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        // 팝업용 드래그앤드롭 이벤트 설정
+        this.setupPopupDragAndDrop(popupId, activity.content.answer);
+      }
+
+      // 팝업용 드래그앤드롭 이벤트 설정
+      setupPopupDragAndDrop(popupId, correctAnswer) {
+        const dropZone = document.getElementById(`popup-drop-zone-${popupId}`);
+        const choices = document.querySelectorAll(`#popup-choices-${popupId} .choice-item`);
+
+        choices.forEach(choice => {
+          choice.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.dataset.choice);
+          });
+          
+          // 클릭으로도 선택 가능
+          choice.addEventListener('click', (e) => {
+            const selectedChoice = e.target.dataset.choice;
+            this.handlePopupChoice(selectedChoice, correctAnswer, dropZone);
+          });
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+          dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('drag-over');
+          const selectedChoice = e.dataTransfer.getData('text/plain');
+          this.handlePopupChoice(selectedChoice, correctAnswer, dropZone);
+        });
+      }
+
+      // 팝업 선택 처리
+      handlePopupChoice(selectedChoice, correctAnswer, dropZone) {
+        const isCorrect = selectedChoice === correctAnswer;
+        
+        dropZone.textContent = `선택됨: ${selectedChoice}`;
+        dropZone.style.backgroundColor = isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+        dropZone.style.borderColor = isCorrect ? 'var(--secondary)' : 'var(--danger)';
+        
+        // 결과 저장
+        this.popupResults[this.popupActivityIndex] = {
+          selected: selectedChoice,
+          correct: correctAnswer,
+          isCorrect: isCorrect,
+          timestamp: Date.now()
+        };
+
+        if (isCorrect) {
+          setTimeout(() => {
+            this.showNotification('정답입니다! 🎉', 'success');
+          }, 500);
+        } else {
+          setTimeout(() => {
+            this.showNotification('다시 시도해보세요. 🤔', 'error');
+          }, 500);
+        }
+      }
+
+      // 팝업 플레이어 네비게이션 메소드들
+      popupPreviousActivity() {
+        if (this.popupActivityIndex > 0) {
+          this.popupActivityIndex--;
+          this.loadPopupActivity(this.popupActivityIndex);
+          this.updatePopupControls();
+        }
+      }
+
+      popupNextActivity() {
+        if (this.popupActivityIndex < this.popupLesson.activities.length - 1) {
+          this.popupActivityIndex++;
+          this.loadPopupActivity(this.popupActivityIndex);
+          this.updatePopupControls();
+        } else {
+          this.popupFinishLesson();
+        }
+      }
+
+      popupRestartLesson() {
+        if (confirm('레슨을 처음부터 다시 시작하시겠습니까?')) {
+          this.popupActivityIndex = 0;
+          this.popupResults = [];
+          this.loadPopupActivity(0);
+          this.updatePopupControls();
+          this.showNotification('팝업 레슨이 재시작되었습니다.', 'info');
+        }
+      }
+
+      popupFinishLesson() {
+        const correctAnswers = this.popupResults.filter(r => r && r.isCorrect).length;
+        const totalAnswers = this.popupResults.filter(r => r).length;
+        const percentage = totalAnswers > 0 ? Math.round((correctAnswers / totalAnswers) * 100) : 0;
+
+        setTimeout(() => {
+          alert(`🎉 팝업 레슨 완료!
+        
+📊 결과:
+정답률: ${percentage}% (${correctAnswers}/${totalAnswers})
+
+수고하셨습니다! 👏`);
+
+          this.closePopupPlayer();
+        }, 100);
+      }
+
+      // 팝업 컨트롤 상태 업데이트
+      updatePopupControls() {
+        if (!this.popupLesson) return;
+
+        const hasPrevious = this.popupActivityIndex > 0;
+        const hasNext = this.popupActivityIndex < this.popupLesson.activities.length - 1;
+
+        document.getElementById('popup-prev-btn').disabled = !hasPrevious;
+        document.getElementById('popup-next-btn').disabled = !hasNext;
+        document.getElementById('popup-restart-btn').disabled = false;
+        document.getElementById('popup-finish-btn').disabled = false;
       }
 
       // 알림 표시
