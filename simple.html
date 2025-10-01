@@ -390,9 +390,12 @@
             justify-content: center;
         }
         
-        .memory-grid.grid-2x2 { grid-template-columns: repeat(2, 1fr); }
-        .memory-grid.grid-4x2 { grid-template-columns: repeat(4, 1fr); }
-        .memory-grid.grid-4x4 { grid-template-columns: repeat(4, 1fr); }
+        .memory-grid.grid-2x2 { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+        .memory-grid.grid-3x2 { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); }
+        .memory-grid.grid-4x2 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); }
+        .memory-grid.grid-4x3 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); }
+        .memory-grid.grid-4x4 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); }
+        .memory-grid.grid-5x4 { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); }
         
         .memory-card {
             width: 100px;
@@ -443,6 +446,26 @@
         
         .memory-card.flipped .memory-card-back {
             transform: rotateY(180deg);
+            opacity: 0;
+        }
+        
+        .memory-card.flipped .memory-card-content {
+            opacity: 1;
+        }
+        
+        .memory-card-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         
         .memory-game-stats {
@@ -1004,8 +1027,28 @@
                 [cards[i], cards[j]] = [cards[j], cards[i]];
             }
             
-            const gridSize = Math.ceil(Math.sqrt(cards.length));
-            const gridClass = `grid-${gridSize}x${Math.ceil(cards.length / gridSize)}`;
+            // 그리드 크기 계산 (정사각형 또는 직사각형)
+            const totalCards = cards.length;
+            let rows, cols;
+            
+            if (totalCards <= 4) {
+                rows = 2; cols = 2;
+            } else if (totalCards <= 6) {
+                rows = 2; cols = 3; 
+            } else if (totalCards <= 8) {
+                rows = 2; cols = 4;
+            } else if (totalCards <= 12) {
+                rows = 3; cols = 4;
+            } else if (totalCards <= 16) {
+                rows = 4; cols = 4;
+            } else if (totalCards <= 20) {
+                rows = 4; cols = 5;
+            } else {
+                rows = Math.ceil(Math.sqrt(totalCards));
+                cols = Math.ceil(totalCards / rows);
+            }
+            
+            const gridClass = `grid-${cols}x${rows}`;
             
             const cardsHtml = cards.map(card => `
                 <div class="memory-card" data-card-id="${card.id}" data-match-id="${card.matchId}" onclick="flipMemoryCard('${card.id}')">
