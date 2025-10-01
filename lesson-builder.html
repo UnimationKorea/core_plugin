@@ -436,6 +436,7 @@
                     <option value="memory-game">🧠 메모리 게임</option>
                     <option value="video">🎥 비디오</option>
                     <option value="quiz">❓ 퀴즈</option>
+                    <option value="survey">📋 설문조사</option>
                 </select>
                 
                 <button class="btn" id="create-activity-btn" disabled>활동 생성</button>
@@ -688,6 +689,33 @@
                         }
                     };
                     
+                case 'survey':
+                    return {
+                        ...baseActivity,
+                        params: {
+                            questions: [
+                                {
+                                    type: 'multiple-choice',
+                                    question: '샘플 객관식 질문을 입력하세요',
+                                    options: ['옵션 1', '옵션 2', '옵션 3'],
+                                    required: true
+                                },
+                                {
+                                    type: 'rating',
+                                    question: '평점을 매겨주세요',
+                                    scale: 5,
+                                    scaleLabels: ['매우 나쁨', '매우 좋음'],
+                                    required: true
+                                },
+                                {
+                                    type: 'text',
+                                    question: '자유롭게 의견을 작성해주세요',
+                                    required: false
+                                }
+                            ]
+                        }
+                    };
+                    
                 default:
                     return baseActivity;
             }
@@ -712,7 +740,8 @@
                     'word-guess': '단어 맞추기',
                     'memory-game': '메모리 게임',
                     'video': '비디오',
-                    'quiz': '퀴즈'
+                    'quiz': '퀴즈',
+                    'survey': '설문조사'
                 };
                 
                 return `
@@ -776,6 +805,9 @@
                     break;
                 case 'quiz':
                     editorHtml = renderQuizEditor(activity);
+                    break;
+                case 'survey':
+                    editorHtml = renderSurveyEditor(activity);
                     break;
                 default:
                     editorHtml = '<div class="card"><div class="card-title">지원하지 않는 템플릿</div></div>';
@@ -1002,6 +1034,80 @@
             `;
         }
         
+        // Survey 편집기 - 새로운 템플릿!
+        function renderSurveyEditor(activity) {
+            const params = activity.params;
+            
+            return `
+                <div class="card">
+                    <div class="card-title">📋 설문조사 편집</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">질문 목록</label>
+                        <div id="survey-questions">
+                            ${params.questions.map((question, index) => `
+                                <div class="card" style="margin-bottom: 1rem; background: #313244;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <span>질문 ${index + 1}</span>
+                                        <button class="btn btn-danger" onclick="removeSurveyQuestion(${index})">🗑️ 삭제</button>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">질문 유형</label>
+                                        <select class="form-select" data-question-index="${index}" onchange="updateQuestionType(${index}, this.value)">
+                                            <option value="multiple-choice" ${question.type === 'multiple-choice' ? 'selected' : ''}>객관식</option>
+                                            <option value="rating" ${question.type === 'rating' ? 'selected' : ''}>평점</option>
+                                            <option value="text" ${question.type === 'text' ? 'selected' : ''}>주관식</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">질문</label>
+                                        <textarea class="form-input" data-question-index="${index}" 
+                                                 placeholder="질문을 입력하세요">${question.question}</textarea>
+                                    </div>
+                                    
+                                    ${question.type === 'multiple-choice' ? `
+                                        <div class="form-group">
+                                            <label class="form-label">선택지</label>
+                                            ${question.options.map((option, oIndex) => `
+                                                <input type="text" class="form-input" style="margin-bottom: 0.5rem;" 
+                                                       value="${option}" 
+                                                       data-question-index="${index}" 
+                                                       data-option-index="${oIndex}" 
+                                                       placeholder="선택지 ${oIndex + 1}">
+                                            `).join('')}
+                                            <button class="btn" onclick="addSurveyOption(${index})">➕ 선택지 추가</button>
+                                        </div>
+                                    ` : ''}
+                                    
+                                    ${question.type === 'rating' ? `
+                                        <div class="form-group">
+                                            <label class="form-label">평점 범위 (1-10)</label>
+                                            <input type="number" class="form-input" 
+                                                   value="${question.scale || 5}" 
+                                                   data-question-index="${index}"
+                                                   data-field="scale" min="3" max="10">
+                                        </div>
+                                    ` : ''}
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <input type="checkbox" ${question.required ? 'checked' : ''} 
+                                                   data-question-index="${index}" data-field="required">
+                                            필수 질문
+                                        </label>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button class="btn" onclick="addSurveyQuestion()">➕ 질문 추가</button>
+                    </div>
+                </div>
+            `;
+        }
+        
         // 편집기 이벤트 연결
         function attachEditorEvents() {
             // 모든 입력 필드에 change 이벤트 연결
@@ -1034,6 +1140,9 @@
                     break;
                 case 'quiz':
                     updateQuizActivity(activity);
+                    break;
+                case 'survey':
+                    updateSurveyActivity(activity);
                     break;
             }
             
@@ -1150,6 +1259,40 @@
             };
         }
         
+        // Survey 업데이트 - 새로운 템플릿!
+        function updateSurveyActivity(activity) {
+            const questions = [];
+            const questionElements = document.querySelectorAll('#survey-questions .card');
+            
+            questionElements.forEach((element, index) => {
+                const questionText = element.querySelector(`textarea[data-question-index="${index}"]`)?.value || '';
+                const questionType = element.querySelector(`select[data-question-index="${index}"]`)?.value || 'multiple-choice';
+                const required = element.querySelector(`input[data-question-index="${index}"][data-field="required"]`)?.checked || false;
+                
+                const question = {
+                    type: questionType,
+                    question: questionText,
+                    required: required
+                };
+                
+                if (questionType === 'multiple-choice') {
+                    const optionInputs = element.querySelectorAll(`input[data-question-index="${index}"][data-option-index]`);
+                    question.options = Array.from(optionInputs).map(input => input.value);
+                } else if (questionType === 'rating') {
+                    const scaleInput = element.querySelector(`input[data-question-index="${index}"][data-field="scale"]`);
+                    question.scale = parseInt(scaleInput?.value) || 5;
+                    question.scaleLabels = ['매우 나쁨', '매우 좋음'];
+                }
+                
+                questions.push(question);
+            });
+            
+            activity.params = {
+                ...activity.params,
+                questions: questions
+            };
+        }
+        
         // 선택지 추가
         window.addChoice = function() {
             const choiceBuilder = document.getElementById('choice-builder');
@@ -1215,6 +1358,51 @@
             const pairElement = document.querySelector(`[data-match-id="${matchId}"]`).closest('.card');
             pairElement.remove();
             updateActivityFromEditor();
+        };
+        
+        // Survey 편집 도우미 함수들 - 새로운 템플릿!
+        window.addSurveyQuestion = function() {
+            const activity = activities[selectedActivityIndex];
+            activity.params.questions.push({
+                type: 'multiple-choice',
+                question: '새 질문을 입력하세요',
+                options: ['옵션 1', '옵션 2'],
+                required: true
+            });
+            renderActivityEditor(activity);
+            attachEditorEvents();
+        };
+        
+        window.removeSurveyQuestion = function(index) {
+            const activity = activities[selectedActivityIndex];
+            activity.params.questions.splice(index, 1);
+            renderActivityEditor(activity);
+            attachEditorEvents();
+        };
+        
+        window.addSurveyOption = function(questionIndex) {
+            const activity = activities[selectedActivityIndex];
+            activity.params.questions[questionIndex].options.push('새 옵션');
+            renderActivityEditor(activity);
+            attachEditorEvents();
+        };
+        
+        window.updateQuestionType = function(index, newType) {
+            const activity = activities[selectedActivityIndex];
+            const question = activity.params.questions[index];
+            
+            question.type = newType;
+            
+            // 타입별 기본값 설정
+            if (newType === 'multiple-choice' && !question.options) {
+                question.options = ['옵션 1', '옵션 2'];
+            } else if (newType === 'rating' && !question.scale) {
+                question.scale = 5;
+                question.scaleLabels = ['매우 나쁨', '매우 좋음'];
+            }
+            
+            renderActivityEditor(activity);
+            attachEditorEvents();
         };
         
         // 활동 삭제
@@ -1404,6 +1592,19 @@
                             ${params.choices.map(choice => 
                                 `<div class="choice ${choice === params.correct ? 'correct' : ''}">${choice} ${choice === params.correct ? '(정답)' : ''}</div>`
                             ).join('')}
+                        </div>
+                    `;
+                    
+                case 'survey':
+                    return `
+                        <div class="choices">
+                            ${params.questions.map((question, index) => `
+                                <div class="choice">
+                                    <strong>Q${index + 1}:</strong> ${question.question} 
+                                    <span style="color: #fab387;">[${question.type}]</span>
+                                    ${question.required ? ' <span style="color: #f38ba8;">*</span>' : ''}
+                                </div>
+                            `).join('')}
                         </div>
                     `;
                     

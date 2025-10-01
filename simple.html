@@ -486,6 +486,111 @@
             font-weight: bold;
             color: #fab387;
         }
+        
+        /* Survey Template Styles */
+        .survey-container {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .survey-question {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #45475a;
+            border-radius: 8px;
+            border-left: 4px solid #f9e2af;
+        }
+        
+        .survey-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .survey-option {
+            background: #45475a;
+            border: 2px solid #6c7086;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .survey-option:hover {
+            border-color: #f9e2af;
+            background: #585b70;
+        }
+        
+        .survey-option.selected {
+            border-color: #a6e3a1;
+            background: rgba(166, 227, 161, 0.1);
+        }
+        
+        .survey-rating {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .rating-button {
+            flex: 1;
+            background: #45475a;
+            border: 2px solid #6c7086;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            color: #cdd6f4;
+            font-weight: 600;
+        }
+        
+        .rating-button:hover {
+            border-color: #f9e2af;
+            background: #585b70;
+        }
+        
+        .rating-button.selected {
+            border-color: #a6e3a1;
+            background: rgba(166, 227, 161, 0.2);
+            color: #a6e3a1;
+        }
+        
+        .survey-textarea {
+            width: 100%;
+            background: #45475a;
+            border: 2px solid #6c7086;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #cdd6f4;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .survey-textarea:focus {
+            outline: none;
+            border-color: #f9e2af;
+        }
+        
+        .survey-progress {
+            background: #313244;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -505,6 +610,7 @@
                         <option value="english">기초 영어 회화</option>
                         <option value="math">수학 기초 연산</option>
                         <option value="science">과학 실험</option>
+                        <option value="surveyDemo">🆕 설문조사 데모</option>
                         <option value="realMultipleChoice">✨ 4지 선다형 테스트</option>
                         <option value="realWordGuess">✨ 단어 맞추기 테스트</option>
                         <option value="realMemoryGame">✨ 메모리 게임 테스트</option>
@@ -596,6 +702,38 @@
                         content: {
                             src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
                             description: "물의 순환 과정을 알아보세요"
+                        }
+                    }
+                ]
+            },
+            // 새로운 설문조사 템플릿 테스트
+            surveyDemo: {
+                title: "사용자 만족도 설문조사",
+                activities: [
+                    {
+                        type: "survey",
+                        title: "서비스 만족도 조사",
+                        content: {
+                            questions: [
+                                {
+                                    type: "multiple-choice",
+                                    question: "이 플랫폼을 어떻게 알게 되셨나요?",
+                                    options: ["검색 엔진", "지인 추천", "광고", "SNS", "기타"],
+                                    required: true
+                                },
+                                {
+                                    type: "rating",
+                                    question: "전반적인 사용자 경험은 어떠셨나요?",
+                                    scale: 5,
+                                    scaleLabels: ["매우 불만족", "매우 만족"],
+                                    required: true
+                                },
+                                {
+                                    type: "text",
+                                    question: "개선하고 싶은 기능이나 추가 의견을 자유롭게 작성해주세요.",
+                                    required: false
+                                }
+                            ]
                         }
                     }
                 ]
@@ -876,6 +1014,8 @@
                 renderWordGuessActivity(activity);
             } else if (activity.type === 'memory-game') {
                 renderMemoryGameActivity(activity);
+            } else if (activity.type === 'survey') {
+                renderSurveyActivity(activity);
             } else {
                 console.error('지원하지 않는 활동 타입:', activity.type);
                 activityArea.innerHTML = '<div>지원하지 않는 활동 타입입니다: ' + activity.type + '</div>';
@@ -1101,6 +1241,97 @@
             if (content.timeLimit) {
                 startMemoryGameTimer();
             }
+        }
+        
+        // Survey 활동 렌더링 - 새로운 템플릿!
+        function renderSurveyActivity(activity) {
+            console.log('Survey 활동 렌더링:', activity);
+            
+            const content = activity.content;
+            const questions = content.questions || [];
+            
+            let questionsHtml = questions.map((question, qIndex) => {
+                let questionContent = '';
+                
+                switch (question.type) {
+                    case 'multiple-choice':
+                        questionContent = `
+                            <div class="survey-options">
+                                ${question.options.map((option, oIndex) => `
+                                    <div class="survey-option" onclick="selectSurveyOption(${qIndex}, ${oIndex}, '${question.type}')">
+                                        <div class="choice-checkbox"></div>
+                                        <span>${option}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                        break;
+                        
+                    case 'rating':
+                        questionContent = `
+                            <div class="survey-rating">
+                                ${Array.from({length: question.scale || 5}, (_, i) => `
+                                    <div class="rating-button" onclick="selectSurveyRating(${qIndex}, ${i + 1})">
+                                        ${i + 1}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #a6adc8; margin-top: 0.5rem;">
+                                <span>${question.scaleLabels?.[0] || '매우 나쁨'}</span>
+                                <span>${question.scaleLabels?.[1] || '매우 좋음'}</span>
+                            </div>
+                        `;
+                        break;
+                        
+                    case 'text':
+                        questionContent = `
+                            <textarea class="survey-textarea" 
+                                     placeholder="답변을 입력하세요..." 
+                                     onchange="updateSurveyText(${qIndex}, this.value)"></textarea>
+                        `;
+                        break;
+                        
+                    default:
+                        questionContent = '<p>지원하지 않는 질문 타입입니다.</p>';
+                }
+                
+                return `
+                    <div class="survey-question-block" style="margin-bottom: 2rem;">
+                        <div class="survey-question">
+                            <strong>Q${qIndex + 1}.</strong> ${question.question}
+                            ${question.required ? ' <span style="color: #f38ba8;">*</span>' : ''}
+                        </div>
+                        ${questionContent}
+                    </div>
+                `;
+            }).join('');
+            
+            activityArea.innerHTML = `
+                <div class="survey-container">
+                    <h3 style="margin-bottom: 1rem; color: #fab387;">${activity.title}</h3>
+                    
+                    <div class="survey-progress">
+                        <span>설문조사 진행률</span>
+                        <span id="survey-progress">0/${questions.length}</span>
+                    </div>
+                    
+                    <form id="survey-form">
+                        ${questionsHtml}
+                    </form>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn" onclick="submitSurvey()" id="submit-survey">설문 제출</button>
+                    </div>
+                    
+                    <div class="result" id="result" style="display: none;"></div>
+                </div>
+            `;
+            
+            // 전역 변수 초기화
+            window.currentSurveyActivity = activity;
+            window.surveyAnswers = {};
+            
+            updateSurveyProgress();
         }
 
         // 답안 선택 처리
@@ -1462,6 +1693,102 @@
                 attempts: state.attempts,
                 timeUsed: state.timeLeft ? (window.currentMemoryGameActivity.content.timeLimit - state.timeLeft) : null
             };
+        }
+        
+        // Survey 상호작용 함수들 - 새로운 템플릿!
+        function selectSurveyOption(questionIndex, optionIndex, questionType) {
+            const options = document.querySelectorAll(`.survey-question-block:nth-child(${questionIndex + 2}) .survey-option`);
+            
+            if (questionType === 'multiple-choice') {
+                // 기존 선택 해제
+                options.forEach(opt => opt.classList.remove('selected'));
+                // 새로운 선택
+                options[optionIndex].classList.add('selected');
+                
+                // 답변 저장
+                const activity = window.currentSurveyActivity;
+                const question = activity.content.questions[questionIndex];
+                window.surveyAnswers[questionIndex] = {
+                    type: 'multiple-choice',
+                    value: question.options[optionIndex]
+                };
+            }
+            
+            updateSurveyProgress();
+        }
+        
+        function selectSurveyRating(questionIndex, rating) {
+            const ratings = document.querySelectorAll(`.survey-question-block:nth-child(${questionIndex + 2}) .rating-button`);
+            
+            // 기존 선택 해제
+            ratings.forEach(r => r.classList.remove('selected'));
+            // 새로운 선택
+            ratings[rating - 1].classList.add('selected');
+            
+            // 답변 저장
+            window.surveyAnswers[questionIndex] = {
+                type: 'rating',
+                value: rating
+            };
+            
+            updateSurveyProgress();
+        }
+        
+        function updateSurveyText(questionIndex, value) {
+            // 답변 저장
+            window.surveyAnswers[questionIndex] = {
+                type: 'text',
+                value: value
+            };
+            
+            updateSurveyProgress();
+        }
+        
+        function updateSurveyProgress() {
+            const activity = window.currentSurveyActivity;
+            const totalQuestions = activity.content.questions.length;
+            const answeredCount = Object.keys(window.surveyAnswers).length;
+            
+            document.getElementById('survey-progress').textContent = `${answeredCount}/${totalQuestions}`;
+            
+            // 제출 버튼 활성화/비활성화
+            const submitBtn = document.getElementById('submit-survey');
+            if (submitBtn) {
+                submitBtn.disabled = answeredCount < totalQuestions;
+            }
+        }
+        
+        function submitSurvey() {
+            const activity = window.currentSurveyActivity;
+            const answers = window.surveyAnswers;
+            const totalQuestions = activity.content.questions.length;
+            const answeredCount = Object.keys(answers).length;
+            
+            if (answeredCount < totalQuestions) {
+                showNotification('모든 질문에 답변해주세요!', 'warning');
+                return;
+            }
+            
+            // 결과 처리
+            const result = document.getElementById('result');
+            result.textContent = '📋 설문이 완료되었습니다! 참여해주셔서 감사합니다.';
+            result.className = 'result correct';
+            result.style.display = 'block';
+            
+            // 제출 버튼 비활성화
+            document.getElementById('submit-survey').disabled = true;
+            
+            showNotification('설문 제출 완료!', 'success');
+            
+            // 결과 저장
+            results[currentActivity] = {
+                type: 'survey',
+                answers: answers,
+                completionRate: (answeredCount / totalQuestions) * 100,
+                submittedAt: new Date().toISOString()
+            };
+            
+            console.log('설문 결과:', results[currentActivity]);
         }
         
         // 컨트롤 버튼 상태 업데이트
