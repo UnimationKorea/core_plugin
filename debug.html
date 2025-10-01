@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>디버그 테스트</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #1a1a1a; color: white; padding: 20px; }
+    .btn { background: #0066cc; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+    .btn:disabled { background: #666; }
+    select { width: 100%; padding: 10px; background: #333; color: white; border: 1px solid #555; }
+    .debug-log { background: #000; color: #0f0; padding: 10px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; }
+    .activity-area { background: #333; min-height: 300px; padding: 20px; text-align: center; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>디버그 테스트</h1>
+  
+  <div>
+    <h3>디버그 로그</h3>
+    <div class="debug-log" id="debug-log">시스템 시작...<br></div>
+    <button class="btn" onclick="clearLog()">로그 지우기</button>
+  </div>
+
+  <div>
+    <h3>레슨 테스트</h3>
+    <select id="lesson-select">
+      <option value="">-- 레슨 선택 --</option>
+      <option value="sample1">기초 영어 회화</option>
+      <option value="sample2">수학 기초 연산</option>
+    </select>
+    <button class="btn" onclick="testLoad()" id="load-btn" disabled>로드 테스트</button>
+  </div>
+
+  <div>
+    <h3>활동 영역</h3>
+    <div class="activity-area" id="activity-area">활동이 여기에 표시됩니다</div>
+    <button class="btn" onclick="testVideo()">비디오 테스트</button>
+    <button class="btn" onclick="testQuiz()">퀴즈 테스트</button>
+  </div>
+
+  <script>
+    function log(msg) {
+      console.log(msg);
+      const el = document.getElementById('debug-log');
+      el.innerHTML += new Date().toLocaleTimeString() + ': ' + msg + '<br>';
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById('debug-log').innerHTML = '로그 지워짐<br>';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      log('DOM 로드 완료');
+      
+      const select = document.getElementById('lesson-select');
+      select.addEventListener('change', function() {
+        const btn = document.getElementById('load-btn');
+        btn.disabled = !select.value;
+        log('레슨 선택: ' + select.value);
+      });
+    });
+
+    function testLoad() {
+      const select = document.getElementById('lesson-select');
+      const value = select.value;
+      log('레슨 로드 시도: ' + value);
+      
+      if (value === 'sample1') {
+        log('샘플1 로드 성공');
+        testVideo();
+      } else if (value === 'sample2') {
+        log('샘플2 로드 성공');
+        testQuiz();
+      }
+    }
+
+    function testVideo() {
+      log('비디오 테스트 시작');
+      const area = document.getElementById('activity-area');
+      area.innerHTML = '<h3>비디오 활동</h3><video controls style="max-width:100%; max-height:300px;"><source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4"></video><p>비디오를 시청하세요</p>';
+      log('비디오 렌더링 완료');
+    }
+
+    function testQuiz() {
+      log('퀴즈 테스트 시작');
+      const area = document.getElementById('activity-area');
+      area.innerHTML = '<h3>퀴즈 활동</h3><p>2 + 3 = ?</p><div style="margin:20px 0;"><button onclick="answer(4)">4</button> <button onclick="answer(5)">5</button> <button onclick="answer(6)">6</button></div><div id="result"></div>';
+      log('퀴즈 렌더링 완료');
+    }
+
+    function answer(num) {
+      log('답변 선택: ' + num);
+      const result = document.getElementById('result');
+      if (num === 5) {
+        result.innerHTML = '<span style="color:#28a745;">정답입니다!</span>';
+        log('정답 처리 완료');
+      } else {
+        result.innerHTML = '<span style="color:#dc3545;">틀렸습니다. 다시 시도하세요.</span>';
+        log('오답 처리 완료');
+      }
+    }
+
+    log('스크립트 초기화 완료');
+  </script>
+</body>
+</html>
