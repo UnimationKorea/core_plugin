@@ -857,7 +857,7 @@
 
   <!-- JavaScript -->
   <script>
-    // 안전한 레슨 플랫폼 클래스
+    // 간단한 레슨 플랫폼 클래스
     class SafeLessonPlatform {
       constructor() {
         this.currentLesson = null;
@@ -865,16 +865,33 @@
         this.activities = [];
         this.results = [];
         
+        console.log('🚀 레슨 플랫폼 생성자 호출됨');
         this.init();
       }
 
       init() {
-        this.setupNavigation();
-        this.setupLessonLoader();
-        this.setupPlayerControls();
-        this.loadSampleLessons();
-        
-        console.log('✅ 안전한 레슨 플랫폼이 초기화되었습니다.');
+        console.log('🔧 초기화 시작');
+        try {
+          this.setupNavigation();
+          console.log('✅ 네비게이션 설정 완료');
+          
+          this.setupLessonLoader();
+          console.log('✅ 레슨 로더 설정 완료');
+          
+          this.setupPlayerControls();
+          console.log('✅ 플레이어 컨트롤 설정 완료');
+          
+          this.loadSampleLessons();
+          console.log('✅ 샘플 레슨 로드 완료');
+          
+          console.log('🎉 안전한 레슨 플랫폼이 초기화되었습니다.');
+          
+          // 테스트용 알림
+          this.showNotification('플랫폼이 준비되었습니다!', 'success');
+        } catch (error) {
+          console.error('❌ 초기화 오류:', error);
+          this.showNotification('초기화 오류: ' + error.message, 'error');
+        }
       }
 
       // 네비게이션 설정
@@ -1020,27 +1037,35 @@
 
       // 레슨 로드
       async loadLesson(lessonId) {
+        console.log('📚 레슨 로드 시작:', lessonId);
         try {
           this.showNotification('레슨을 로드하고 있습니다...', 'info');
           
+          console.log('🔍 샘플 레슨 검색 중...');
           const lesson = this.sampleLessons[lessonId];
+          console.log('🎯 검색 결과:', lesson);
+          
           if (!lesson) {
-            throw new Error('레슨을 찾을 수 없습니다.');
+            throw new Error(`레슨을 찾을 수 없습니다: ${lessonId}`);
           }
 
+          console.log('📖 레슨 정보:', lesson.title, '활동 수:', lesson.activities.length);
+          
           this.currentLesson = lesson;
           this.activities = lesson.activities;
           this.currentActivityIndex = 0;
           this.results = [];
 
+          console.log('🔄 UI 업데이트 시작...');
           this.updateLessonInfo();
           this.loadActivity(0);
           this.updateControls();
           
+          console.log('✅ 레슨 로드 완료');
           this.showNotification('레슨이 성공적으로 로드되었습니다.', 'success');
           
         } catch (error) {
-          console.error('레슨 로드 실패:', error);
+          console.error('❌ 레슨 로드 실패:', error);
           this.showNotification('레슨 로드에 실패했습니다: ' + error.message, 'error');
         }
       }
@@ -1085,22 +1110,38 @@
 
       // 활동 로드
       loadActivity(index) {
+        console.log('🎮 활동 로드 시작:', index);
+        
         if (!this.activities || index < 0 || index >= this.activities.length) {
+          console.log('❌ 활동 로드 실패: 유효하지 않은 인덱스');
           return;
         }
 
         const activity = this.activities[index];
+        console.log('📋 활동 정보:', activity);
+        
         const container = document.getElementById('activity-container');
+        if (!container) {
+          console.log('❌ 활동 컨테이너를 찾을 수 없음');
+          return;
+        }
         
         // 활동 카운터 업데이트
-        document.getElementById('activity-counter').textContent = `${index + 1} / ${this.activities.length}`;
-        document.getElementById('current-template').textContent = activity.type;
+        console.log('🔢 카운터 업데이트...');
+        const counterEl = document.getElementById('activity-counter');
+        const templateEl = document.getElementById('current-template');
+        
+        if (counterEl) counterEl.textContent = `${index + 1} / ${this.activities.length}`;
+        if (templateEl) templateEl.textContent = activity.type;
         
         // 진행률 업데이트
+        console.log('📊 진행률 업데이트...');
         const progress = ((index) / this.activities.length) * 100;
-        document.getElementById('progress-fill').style.width = `${progress}%`;
+        const progressEl = document.getElementById('progress-fill');
+        if (progressEl) progressEl.style.width = `${progress}%`;
 
         try {
+          console.log('🎨 활동 렌더링 시작:', activity.type);
           // 안전한 템플릿 렌더링
           if (activity.type === 'video') {
             this.renderVideoActivity(container, activity);
@@ -1109,8 +1150,9 @@
           } else {
             throw new Error(`지원하지 않는 활동 유형: ${activity.type}`);
           }
+          console.log('✅ 활동 렌더링 완료');
         } catch (error) {
-          console.error('활동 로드 실패:', error);
+          console.error('❌ 활동 로드 실패:', error);
           container.innerHTML = `
             <div class="activity-placeholder">
               <p>활동을 로드할 수 없습니다</p>
