@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>🔌 외부 플러그인 데모</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1e1e2e;
+            color: #cdd6f4;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .title {
+            color: #cba6f7;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            color: #a6adc8;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            background: #313244;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: #fab387;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .code-block {
+            background: #1e1e2e;
+            border: 1px solid #45475a;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #cdd6f4;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .btn {
+            background: #89b4fa;
+            color: #1e1e2e;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #74c7ec;
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            background: #a6e3a1;
+        }
+        
+        .btn-success:hover {
+            background: #94e2d5;
+        }
+        
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .status.success {
+            background: rgba(166, 227, 161, 0.2);
+            border: 1px solid #a6e3a1;
+            color: #a6e3a1;
+        }
+        
+        .status.error {
+            background: rgba(243, 139, 168, 0.2);
+            border: 1px solid #f38ba8;
+            color: #f38ba8;
+        }
+        
+        .plugin-container {
+            background: #45475a;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🔌 외부 플러그인 시스템 데모</h1>
+            <p class="subtitle">모듈형 아키텍처의 확장성 실증</p>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">📚 플러그인 시스템 개요</h2>
+            <p>이 데모는 Enhanced Modular Educational Platform v2.0의 확장성을 보여줍니다.</p>
+            <ul style="margin: 1rem 0; padding-left: 2rem; color: #bac2de;">
+                <li>✅ 기존 시스템에 영향 없이 새로운 템플릿 추가</li>
+                <li>✅ 외부에서 개발된 코드의 독립적 로딩</li>
+                <li>✅ 표준 인터페이스를 통한 통합</li>
+                <li>✅ 런타임 플러그인 등록 및 해제</li>
+            </ul>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">🔧 플러그인 시스템 상태</h2>
+            <div id="system-status" class="status">
+                시스템 초기화 중...
+            </div>
+            
+            <div>
+                <button class="btn" onclick="loadPlugin()">🔌 플러그인 로드</button>
+                <button class="btn" onclick="testPlugin()">🧪 플러그인 테스트</button>
+                <button class="btn" onclick="showRegistered()">📋 등록된 템플릿 확인</button>
+            </div>
+            
+            <div id="plugin-info" style="margin-top: 1rem;"></div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">🎨 Drawing Canvas 플러그인</h2>
+            <p>외부에서 개발된 그리기 캔버스 플러그인의 실제 동작을 확인해보세요.</p>
+            
+            <div class="plugin-container" id="plugin-demo">
+                <div style="text-align: center; color: #6c7086;">
+                    플러그인을 로드하면 여기에 표시됩니다.
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">💻 플러그인 개발 가이드</h2>
+            
+            <h3 style="color: #f9e2af; margin: 1.5rem 0 1rem;">1. 기본 구조</h3>
+            <div class="code-block">const MyPlugin = {
+    name: 'my-template',
+    version: '1.0.0',
+    
+    getDefaultParams() {
+        return { /* 기본 매개변수 */ };
+    },
+    
+    async render(activity, container) {
+        // 렌더링 로직
+    }
+};</div>
+            
+            <h3 style="color: #f9e2af; margin: 1.5rem 0 1rem;">2. 플러그인 등록</h3>
+            <div class="code-block">// 자동 등록
+registerEduPlugin('my-template', '1.0.0', MyPlugin);
+
+// 또는 직접 등록
+PluginSystem.registerTemplate('my-template', '1.0.0', MyPlugin);</div>
+            
+            <h3 style="color: #f9e2af; margin: 1.5rem 0 1rem;">3. 외부 로딩</h3>
+            <div class="code-block">// URL에서 플러그인 로드
+await PluginSystem.loadExternalPlugin('path/to/plugin.js');</div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">🔗 통합 테스트</h2>
+            <p>전체 플랫폼에서 플러그인이 어떻게 작동하는지 확인하세요.</p>
+            
+            <div style="margin: 1rem 0;">
+                <button class="btn btn-success" onclick="openMainPlayer()">
+                    🎮 메인 플레이어에서 테스트
+                </button>
+                <button class="btn" onclick="openLessonBuilder()">
+                    📚 레슨 빌더에서 확인
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 플러그인 시스템 로드 -->
+    <script src="plugin-system.js"></script>
+    
+    <script>
+        let pluginLoaded = false;
+        
+        // 시스템 상태 업데이트
+        function updateSystemStatus(message, type = 'success') {
+            const status = document.getElementById('system-status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        // 플러그인 로드
+        async function loadPlugin() {
+            try {
+                updateSystemStatus('플러그인 로딩 중...', 'info');
+                
+                await PluginSystem.loadExternalPlugin('plugins/drawing-canvas-plugin.js');
+                
+                pluginLoaded = true;
+                updateSystemStatus('✅ Drawing Canvas 플러그인이 성공적으로 로드되었습니다!', 'success');
+                
+                showRegistered();
+                
+            } catch (error) {
+                updateSystemStatus(`❌ 플러그인 로드 실패: ${error.message}`, 'error');
+                console.error('플러그인 로드 오류:', error);
+            }
+        }
+        
+        // 플러그인 테스트
+        async function testPlugin() {
+            if (!pluginLoaded) {
+                await loadPlugin();
+            }
+            
+            const activity = {
+                template: 'drawing-canvas@1.0.0',
+                title: '플러그인 테스트',
+                params: {
+                    title: '🎨 외부 플러그인 테스트',
+                    instruction: '이것은 외부에서 개발되어 런타임에 로드된 플러그인입니다!',
+                    canvasWidth: 600,
+                    canvasHeight: 400,
+                    brushColor: '#ff6b6b',
+                    brushSize: 5,
+                    allowColorChange: true,
+                    allowSizeChange: true,
+                    tools: ['brush', 'eraser', 'circle', 'rectangle']
+                }
+            };
+            
+            const container = document.getElementById('plugin-demo');
+            
+            try {
+                await PluginSystem.renderActivity(activity, container);
+                updateSystemStatus('✅ 플러그인이 성공적으로 렌더링되었습니다!', 'success');
+            } catch (error) {
+                updateSystemStatus(`❌ 렌더링 실패: ${error.message}`, 'error');
+                console.error('렌더링 오류:', error);
+            }
+        }
+        
+        // 등록된 템플릿 표시
+        function showRegistered() {
+            const templates = PluginSystem.getRegisteredTemplates();
+            const info = document.getElementById('plugin-info');
+            
+            info.innerHTML = `
+                <h4 style="color: #fab387; margin-bottom: 0.5rem;">등록된 템플릿 (${templates.length}개)</h4>
+                <ul style="padding-left: 2rem; color: #bac2de;">
+                    ${templates.map(template => `<li>📦 ${template}</li>`).join('')}
+                </ul>
+            `;
+        }
+        
+        // 메인 플레이어 열기
+        function openMainPlayer() {
+            const url = 'simple.html';
+            const message = `
+메인 플레이어에서 플러그인을 테스트하려면:
+
+1. 페이지가 로드될 때까지 기다리세요
+2. "🔌 외부 플러그인 데모" 선택
+3. 또는 Ctrl+4 단축키 사용
+
+플러그인이 자동으로 로드되고 실행됩니다!
+            `;
+            
+            if (confirm(message)) {
+                window.open(url, '_blank');
+            }
+        }
+        
+        // 레슨 빌더 열기
+        function openLessonBuilder() {
+            alert('레슨 빌더에 플러그인 지원이 추가될 예정입니다!');
+            window.open('lesson-builder.html', '_blank');
+        }
+        
+        // 초기화
+        window.addEventListener('load', function() {
+            updateSystemStatus('🔌 플러그인 시스템이 준비되었습니다. "플러그인 로드" 버튼을 클릭하세요.', 'info');
+            
+            // 플러그인 시스템 이벤트 리스너
+            PluginSystem.on('template:registered', (data) => {
+                console.log('✅ 템플릿 등록됨:', data);
+            });
+            
+            PluginSystem.on('activity:rendered', (data) => {
+                console.log('🎨 활동 렌더링됨:', data.activity.template);
+            });
+        });
+        
+        console.log('🔌 플러그인 데모 페이지가 준비되었습니다!');
+    </script>
+</body>
+</html>

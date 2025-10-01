@@ -611,6 +611,7 @@
                         <option value="math">수학 기초 연산</option>
                         <option value="science">과학 실험</option>
                         <option value="surveyDemo">🆕 설문조사 데모</option>
+                        <option value="pluginDemo">🔌 외부 플러그인 데모</option>
                         <option value="realMultipleChoice">✨ 4지 선다형 테스트</option>
                         <option value="realWordGuess">✨ 단어 맞추기 테스트</option>
                         <option value="realMemoryGame">✨ 메모리 게임 테스트</option>
@@ -647,6 +648,9 @@
             </div>
         </div>
     </div>
+    
+    <!-- 플러그인 시스템 로드 -->
+    <script src="plugin-system.js"></script>
     
     <script>
         // 전역 상태
@@ -734,6 +738,28 @@
                                     required: false
                                 }
                             ]
+                        }
+                    }
+                ]
+            },
+            // 외부 플러그인 테스트
+            pluginDemo: {
+                title: "외부 플러그인 데모",
+                activities: [
+                    {
+                        type: "drawing-canvas",
+                        template: "drawing-canvas@1.0.0",
+                        title: "자유 그리기 활동",
+                        content: {
+                            title: "창의적 그리기",
+                            instruction: "자유롭게 그림을 그려보세요!",
+                            canvasWidth: 600,
+                            canvasHeight: 400,
+                            brushColor: "#ff6b6b",
+                            brushSize: 8,
+                            allowColorChange: true,
+                            allowSizeChange: true,
+                            tools: ['brush', 'eraser', 'circle', 'rectangle']
                         }
                     }
                 ]
@@ -1017,8 +1043,22 @@
             } else if (activity.type === 'survey') {
                 renderSurveyActivity(activity);
             } else {
-                console.error('지원하지 않는 활동 타입:', activity.type);
-                activityArea.innerHTML = '<div>지원하지 않는 활동 타입입니다: ' + activity.type + '</div>';
+                // 외부 플러그인 확인
+                const templateId = activity.template || `${activity.type}@1.0.0`;
+                if (window.PluginSystem && window.PluginSystem.hasTemplate(templateId)) {
+                    console.log('🔌 외부 플러그인으로 렌더링:', templateId);
+                    window.PluginSystem.renderActivity(activity, activityArea);
+                } else {
+                    console.error('지원하지 않는 활동 타입:', activity.type);
+                    activityArea.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: #f38ba8;">
+                            <h3>🔌 지원하지 않는 활동 타입입니다</h3>
+                            <p>타입: ${activity.type}</p>
+                            <p>템플릿: ${templateId}</p>
+                            <p>외부 플러그인을 로드하거나 템플릿을 추가해주세요.</p>
+                        </div>
+                    `;
+                }
             }
         }
         
@@ -1856,15 +1896,37 @@
             }
         }
         
+        // 외부 플러그인 로딩 함수
+        async function loadExternalPlugins() {
+            try {
+                console.log('🔌 외부 플러그인 로딩 시작...');
+                
+                // Drawing Canvas 플러그인 로드
+                await window.PluginSystem.loadExternalPlugin('plugins/drawing-canvas-plugin.js');
+                
+                console.log('✅ 모든 외부 플러그인 로드 완료');
+                console.log('📋 등록된 템플릿:', window.PluginSystem.getRegisteredTemplates());
+                
+            } catch (error) {
+                console.error('❌ 플러그인 로딩 오류:', error);
+            }
+        }
+        
         // 페이지 로드 후 자동 테스트 (개발용)
         window.addEventListener('load', function() {
-            setTimeout(() => {
+            setTimeout(async () => {
                 console.log('🎯 자동 템플릿 테스트 실행...');
+                
+                // 기본 템플릿 테스트
                 debugTemplateLoading().then(success => {
                     if (success) {
                         console.log('✅ 템플릿 시스템 정상 작동 - JSON 로딩 지원 확인!');
                     }
                 });
+                
+                // 외부 플러그인 로드
+                await loadExternalPlugins();
+                
             }, 1000);
         });
         
@@ -1891,6 +1953,14 @@
                 e.preventDefault();
                 console.log('🧪 Memory Game JSON 테스트 시작...');
                 lessonSelect.value = 'jsonMemoryGame';
+                loadBtn.disabled = false;
+                loadBtn.click();
+            }
+            // Ctrl+4: 외부 플러그인 테스트
+            else if (e.ctrlKey && e.key === '4') {
+                e.preventDefault();
+                console.log('🔌 외부 플러그인 테스트 시작...');
+                lessonSelect.value = 'pluginDemo';
                 loadBtn.disabled = false;
                 loadBtn.click();
             }
