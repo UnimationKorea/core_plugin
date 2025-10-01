@@ -1459,6 +1459,73 @@
             }, 3000);
         }
         
+        // 디버그 함수 - JSON 로딩 테스트
+        async function debugTemplateLoading() {
+            try {
+                console.log('🔧 JSON 템플릿 로딩 테스트 시작...');
+                
+                // Multiple Choice JSON 테스트
+                const response = await fetch('sample-lesson-multiple-choice.json');
+                const data = await response.json();
+                console.log('✅ Multiple Choice JSON 로드 성공:', data.title);
+                console.log('📊 활동 수:', data.flow.length);
+                
+                // 첫 번째 활동 템플릿 파싱 테스트
+                const firstActivity = data.flow[0];
+                const templateInfo = parseTemplate(firstActivity.template);
+                console.log('📋 첫 번째 활동 템플릿:', templateInfo);
+                
+                // 변환 테스트
+                const converted = convertJSONToInternalFormat(data);
+                console.log('🔄 변환된 레슨:', converted);
+                
+                return true;
+            } catch (error) {
+                console.error('❌ 템플릿 로딩 테스트 실패:', error);
+                return false;
+            }
+        }
+        
+        // 페이지 로드 후 자동 테스트 (개발용)
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                console.log('🎯 자동 템플릿 테스트 실행...');
+                debugTemplateLoading().then(success => {
+                    if (success) {
+                        console.log('✅ 템플릿 시스템 정상 작동 - JSON 로딩 지원 확인!');
+                    }
+                });
+            }, 1000);
+        });
+        
+        // 키보드 단축키로 빠른 테스트 (개발용)
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+1: Multiple Choice JSON 테스트
+            if (e.ctrlKey && e.key === '1') {
+                e.preventDefault();
+                console.log('🧪 Multiple Choice JSON 테스트 시작...');
+                lessonSelect.value = 'jsonMultipleChoice';
+                loadBtn.disabled = false;
+                loadBtn.click();
+            }
+            // Ctrl+2: Word Guess JSON 테스트  
+            else if (e.ctrlKey && e.key === '2') {
+                e.preventDefault();
+                console.log('🧪 Word Guess JSON 테스트 시작...');
+                lessonSelect.value = 'jsonWordGuess';
+                loadBtn.disabled = false;
+                loadBtn.click();
+            }
+            // Ctrl+3: Memory Game JSON 테스트
+            else if (e.ctrlKey && e.key === '3') {
+                e.preventDefault();
+                console.log('🧪 Memory Game JSON 테스트 시작...');
+                lessonSelect.value = 'jsonMemoryGame';
+                loadBtn.disabled = false;
+                loadBtn.click();
+            }
+        });
+        
         // 초기화
         console.log('🚀 간단한 레슨 플레이어가 준비되었습니다!');
         updateControls();
