@@ -236,6 +236,233 @@
             background: rgba(243, 139, 168, 0.2);
             color: #f38ba8;
         }
+        
+        /* Multiple Choice Template Styles */
+        .multiple-choice-container {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .multiple-choice-question {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #45475a;
+            border-radius: 8px;
+            border-left: 4px solid #cba6f7;
+        }
+        
+        .multiple-choice-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .choice-option {
+            background: #45475a;
+            border: 2px solid #6c7086;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .choice-option:hover {
+            border-color: #89b4fa;
+            background: #585b70;
+        }
+        
+        .choice-option.selected {
+            border-color: #a6e3a1;
+            background: rgba(166, 227, 161, 0.1);
+        }
+        
+        .choice-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6c7086;
+            border-radius: 4px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .choice-option.selected .choice-checkbox {
+            border-color: #a6e3a1;
+            background: #a6e3a1;
+        }
+        
+        .choice-option.selected .choice-checkbox::after {
+            content: '✓';
+            color: #1e1e2e;
+            font-weight: bold;
+        }
+        
+        /* Word Guess Template Styles */
+        .word-guess-container {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .word-display {
+            font-family: 'Courier New', monospace;
+            font-size: 2.5rem;
+            letter-spacing: 0.5rem;
+            margin: 2rem 0;
+            color: #fab387;
+            font-weight: bold;
+        }
+        
+        .word-guess-input {
+            background: #45475a;
+            border: 2px solid #6c7086;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1.2rem;
+            color: #cdd6f4;
+            text-align: center;
+            margin: 1rem 0;
+            width: 200px;
+        }
+        
+        .word-guess-input:focus {
+            outline: none;
+            border-color: #89b4fa;
+        }
+        
+        .guess-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            background: #45475a;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .guess-stat {
+            text-align: center;
+        }
+        
+        .guess-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #89b4fa;
+        }
+        
+        .wrong-letters {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #45475a;
+            border-radius: 8px;
+            min-height: 40px;
+        }
+        
+        .wrong-letter {
+            display: inline-block;
+            background: #f38ba8;
+            color: #1e1e2e;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        /* Memory Game Template Styles */
+        .memory-game-container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .memory-grid {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+        
+        .memory-grid.grid-2x2 { grid-template-columns: repeat(2, 1fr); }
+        .memory-grid.grid-4x2 { grid-template-columns: repeat(4, 1fr); }
+        .memory-grid.grid-4x4 { grid-template-columns: repeat(4, 1fr); }
+        
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            background: #45475a;
+            border: 2px solid #6c7086;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .memory-card:hover {
+            border-color: #89b4fa;
+            transform: scale(1.05);
+        }
+        
+        .memory-card.flipped {
+            background: #89b4fa;
+            color: #1e1e2e;
+        }
+        
+        .memory-card.matched {
+            background: #a6e3a1;
+            color: #1e1e2e;
+            border-color: #a6e3a1;
+        }
+        
+        .memory-card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #6c7086;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .memory-card.flipped .memory-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        .memory-game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 1rem 0;
+            background: #45475a;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .memory-stat {
+            text-align: center;
+        }
+        
+        .memory-stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fab387;
+        }
     </style>
 </head>
 <body>
@@ -255,6 +482,12 @@
                         <option value="english">기초 영어 회화</option>
                         <option value="math">수학 기초 연산</option>
                         <option value="science">과학 실험</option>
+                        <option value="realMultipleChoice">✨ 4지 선다형 테스트</option>
+                        <option value="realWordGuess">✨ 단어 맞추기 테스트</option>
+                        <option value="realMemoryGame">✨ 메모리 게임 테스트</option>
+                        <option value="jsonMultipleChoice">📄 JSON: 4지 선다형</option>
+                        <option value="jsonWordGuess">📄 JSON: 단어 맞추기</option>
+                        <option value="jsonMemoryGame">📄 JSON: 메모리 게임</option>
                     </select>
                 </div>
                 
@@ -343,6 +576,91 @@
                         }
                     }
                 ]
+            },
+            // 실제 JSON 파일 로드 테스트용
+            realMultipleChoice: {
+                title: "4지 선다형 문제 데모",
+                activities: [
+                    {
+                        type: "multiple-choice",
+                        title: "한국어 문법 문제",
+                        content: {
+                            question: "다음 문장에서 빈 칸에 들어갈 적절한 조사는 무엇입니까?\n\n'이 책___ 매우 재미있습니다.'",
+                            choices: [
+                                { id: "choice-a", text: "은" },
+                                { id: "choice-b", text: "는" },
+                                { id: "choice-c", text: "이" },
+                                { id: "choice-d", text: "가" }
+                            ],
+                            correctAnswer: "choice-a",
+                            allowMultiple: false,
+                            explanation: "'책'은 받침이 있으므로 '은'을 사용합니다. '은/는'은 주제를 나타내는 조사입니다."
+                        }
+                    },
+                    {
+                        type: "multiple-choice",
+                        title: "수학 문제 - 소수",
+                        content: {
+                            question: "다음 중 소수(Prime Number)에 해당하는 것을 모두 선택하세요.",
+                            choices: [
+                                { id: "choice-a", text: "2" },
+                                { id: "choice-b", text: "3" },
+                                { id: "choice-c", text: "4" },
+                                { id: "choice-d", text: "5" }
+                            ],
+                            correctAnswer: ["choice-a", "choice-b", "choice-d"],
+                            allowMultiple: true,
+                            explanation: "소수는 1과 자기 자신으로만 나누어지는 1보다 큰 자연수입니다. 2, 3, 5가 소수입니다."
+                        }
+                    }
+                ]
+            },
+            realWordGuess: {
+                title: "단어 맞추기 게임",
+                activities: [
+                    {
+                        type: "word-guess",
+                        title: "동물 맞추기",
+                        content: {
+                            word: "코끼리",
+                            hint: "아프리카에 사는 큰 귀를 가진 회색 동물",
+                            category: "동물",
+                            maxAttempts: 6
+                        }
+                    },
+                    {
+                        type: "word-guess",
+                        title: "음식 맞추기",
+                        content: {
+                            word: "파스타",
+                            hint: "이탈리아에서 온 면 요리",
+                            category: "음식",
+                            maxAttempts: 7
+                        }
+                    }
+                ]
+            },
+            realMemoryGame: {
+                title: "메모리 게임 데모",
+                activities: [
+                    {
+                        type: "memory-game",
+                        title: "가족 단어 기억하기",
+                        content: {
+                            cards: [
+                                { id: "card-1", content: "아버지", matchId: "father" },
+                                { id: "card-2", content: "Father", matchId: "father" },
+                                { id: "card-3", content: "어머니", matchId: "mother" },
+                                { id: "card-4", content: "Mother", matchId: "mother" },
+                                { id: "card-5", content: "형/누나", matchId: "sibling" },
+                                { id: "card-6", content: "Brother/Sister", matchId: "sibling" },
+                                { id: "card-7", content: "할아버지", matchId: "grandfather" },
+                                { id: "card-8", content: "Grandfather", matchId: "grandfather" }
+                            ],
+                            timeLimit: 120
+                        }
+                    }
+                ]
             }
         };
         
@@ -402,6 +720,21 @@
         function loadLesson(lessonId) {
             console.log('레슨 로드:', lessonId);
             
+            // JSON 파일 로딩 체크
+            if (lessonId.startsWith('json')) {
+                const jsonFiles = {
+                    'jsonMultipleChoice': 'sample-lesson-multiple-choice.json',
+                    'jsonWordGuess': 'sample-lesson-word-guess.json',
+                    'jsonMemoryGame': 'sample-lesson-memory-game.json'
+                };
+                
+                const fileName = jsonFiles[lessonId];
+                if (fileName) {
+                    loadLessonFromJSON(fileName);
+                    return;
+                }
+            }
+            
             const lesson = sampleLessons[lessonId];
             if (!lesson) {
                 showNotification('레슨을 찾을 수 없습니다.', 'error');
@@ -425,6 +758,75 @@
             console.log('레슨 로드 완료:', lesson);
         }
         
+        // JSON 파일에서 레슨 로드
+        async function loadLessonFromJSON(fileName) {
+            try {
+                console.log('JSON 파일 로드:', fileName);
+                showNotification('JSON 파일을 로드하는 중...', 'info');
+                
+                const response = await fetch(fileName);
+                if (!response.ok) {
+                    throw new Error(`파일을 찾을 수 없습니다: ${fileName}`);
+                }
+                
+                const lessonData = await response.json();
+                console.log('JSON 레슨 데이터:', lessonData);
+                
+                // JSON 형식을 내부 형식으로 변환
+                const convertedLesson = convertJSONToInternalFormat(lessonData);
+                
+                currentLesson = convertedLesson;
+                activities = convertedLesson.activities;
+                currentActivity = 0;
+                results = [];
+                
+                // UI 업데이트
+                lessonTitle.textContent = convertedLesson.title;
+                lessonInfo.style.display = 'block';
+                
+                // 첫 번째 활동 로드
+                loadActivity(0);
+                updateControls();
+                
+                showNotification('JSON 레슨이 로드되었습니다!', 'success');
+                console.log('JSON 레슨 로드 완료:', convertedLesson);
+                
+            } catch (error) {
+                console.error('JSON 로드 오류:', error);
+                showNotification(`JSON 로드 실패: ${error.message}`, 'error');
+            }
+        }
+        
+        // JSON 형식을 내부 형식으로 변환
+        function convertJSONToInternalFormat(lessonData) {
+            console.log('JSON 형식 변환 중:', lessonData);
+            
+            const activities = lessonData.flow.map(flowItem => {
+                const templateInfo = parseTemplate(flowItem.template);
+                
+                return {
+                    type: templateInfo.name,
+                    title: flowItem.activityId,
+                    content: flowItem.params,
+                    template: templateInfo
+                };
+            });
+            
+            return {
+                title: lessonData.title,
+                activities: activities
+            };
+        }
+        
+        // 템플릿 문자열 파싱 (예: "multiple-choice@1.0.0")
+        function parseTemplate(templateString) {
+            const [name, version] = templateString.split('@');
+            return {
+                name: name,
+                version: version || '1.0.0'
+            };
+        }
+        
         // 활동 로드 함수
         function loadActivity(index) {
             console.log('활동 로드:', index);
@@ -445,9 +847,15 @@
                 renderVideoActivity(activity);
             } else if (activity.type === 'quiz') {
                 renderQuizActivity(activity);
+            } else if (activity.type === 'multiple-choice') {
+                renderMultipleChoiceActivity(activity);
+            } else if (activity.type === 'word-guess') {
+                renderWordGuessActivity(activity);
+            } else if (activity.type === 'memory-game') {
+                renderMemoryGameActivity(activity);
             } else {
                 console.error('지원하지 않는 활동 타입:', activity.type);
-                activityArea.innerHTML = '<div>지원하지 않는 활동 타입입니다.</div>';
+                activityArea.innerHTML = '<div>지원하지 않는 활동 타입입니다: ' + activity.type + '</div>';
             }
         }
         
@@ -497,6 +905,161 @@
             });
         }
         
+        // Multiple Choice 활동 렌더링
+        function renderMultipleChoiceActivity(activity) {
+            console.log('Multiple Choice 활동 렌더링:', activity);
+            
+            const content = activity.content;
+            const allowMultiple = content.allowMultiple || false;
+            
+            const optionsHtml = content.choices.map(choice => `
+                <div class="choice-option" data-choice-id="${choice.id}" onclick="selectMultipleChoice('${choice.id}', ${allowMultiple})">
+                    <div class="choice-checkbox"></div>
+                    <span class="choice-text">${choice.text}</span>
+                </div>
+            `).join('');
+            
+            activityArea.innerHTML = `
+                <div class="multiple-choice-container">
+                    <h3 style="margin-bottom: 1rem; color: #fab387;">${activity.title}</h3>
+                    <div class="multiple-choice-question">${content.question}</div>
+                    <div class="multiple-choice-options">${optionsHtml}</div>
+                    <div class="multiple-choice-controls">
+                        <button class="btn" onclick="checkMultipleChoiceAnswer()" id="check-answer-btn" ${allowMultiple ? '' : 'style="display:none;"'}>
+                            답안 확인
+                        </button>
+                    </div>
+                    <div class="result" id="result" style="display: none;"></div>
+                    ${content.explanation ? `<div class="explanation" id="explanation" style="display: none; margin-top: 1rem; padding: 1rem; background: #45475a; border-radius: 8px;">${content.explanation}</div>` : ''}
+                </div>
+            `;
+            
+            // 전역 변수에 현재 활동 정보 저장
+            window.currentMultipleChoiceActivity = activity;
+            window.selectedChoices = [];
+        }
+        
+        // Word Guess 활동 렌더링
+        function renderWordGuessActivity(activity) {
+            console.log('Word Guess 활동 렌더링:', activity);
+            
+            const content = activity.content;
+            const word = content.word.toUpperCase();
+            const maxAttempts = content.maxAttempts || 6;
+            
+            // 단어 표시 초기화 (빈 칸으로)
+            const displayWord = word.split('').map(() => '_').join(' ');
+            
+            activityArea.innerHTML = `
+                <div class="word-guess-container">
+                    <h3 style="margin-bottom: 1rem; color: #fab387;">${activity.title}</h3>
+                    <div class="word-display" id="word-display">${displayWord}</div>
+                    <div class="guess-info">
+                        <div class="guess-stat">
+                            <div class="guess-stat-value" id="attempts-left">${maxAttempts}</div>
+                            <div>남은 기회</div>
+                        </div>
+                        <div class="guess-stat">
+                            <div class="guess-stat-value" id="guessed-count">0</div>
+                            <div>맞춘 글자</div>
+                        </div>
+                    </div>
+                    <div style="margin: 1rem 0;">
+                        <div style="margin-bottom: 1rem; color: #a6adc8;">
+                            <strong>힌트:</strong> ${content.hint}
+                        </div>
+                        <div style="margin-bottom: 1rem; color: #a6adc8;">
+                            <strong>카테고리:</strong> ${content.category}
+                        </div>
+                    </div>
+                    <input type="text" class="word-guess-input" id="guess-input" placeholder="글자를 입력하세요" maxlength="1" onkeyup="handleWordGuessInput(event)">
+                    <div class="wrong-letters" id="wrong-letters">
+                        <div style="color: #6c7086;">틀린 글자들이 여기에 표시됩니다</div>
+                    </div>
+                    <div class="result" id="result" style="display: none;"></div>
+                </div>
+            `;
+            
+            // 전역 변수 초기화
+            window.currentWordGuessActivity = activity;
+            window.wordGuessState = {
+                word: word,
+                guessedLetters: [],
+                wrongLetters: [],
+                attemptsLeft: maxAttempts,
+                gameOver: false
+            };
+        }
+        
+        // Memory Game 활동 렌더링
+        function renderMemoryGameActivity(activity) {
+            console.log('Memory Game 활동 렌더링:', activity);
+            
+            const content = activity.content;
+            const cards = [...content.cards]; // 카드 복사
+            
+            // 카드 섞기
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            
+            const gridSize = Math.ceil(Math.sqrt(cards.length));
+            const gridClass = `grid-${gridSize}x${Math.ceil(cards.length / gridSize)}`;
+            
+            const cardsHtml = cards.map(card => `
+                <div class="memory-card" data-card-id="${card.id}" data-match-id="${card.matchId}" onclick="flipMemoryCard('${card.id}')">
+                    <div class="memory-card-content">${card.content}</div>
+                    <div class="memory-card-back">?</div>
+                </div>
+            `).join('');
+            
+            activityArea.innerHTML = `
+                <div class="memory-game-container">
+                    <h3 style="margin-bottom: 1rem; color: #fab387;">${activity.title}</h3>
+                    <div class="memory-game-stats">
+                        <div class="memory-stat">
+                            <div class="memory-stat-value" id="matched-pairs">0</div>
+                            <div>매칭된 쌍</div>
+                        </div>
+                        <div class="memory-stat">
+                            <div class="memory-stat-value" id="total-pairs">${cards.length / 2}</div>
+                            <div>총 쌍의 수</div>
+                        </div>
+                        <div class="memory-stat">
+                            <div class="memory-stat-value" id="attempts">0</div>
+                            <div>시도 횟수</div>
+                        </div>
+                        ${content.timeLimit ? `
+                        <div class="memory-stat">
+                            <div class="memory-stat-value" id="timer">${content.timeLimit}</div>
+                            <div>남은 시간(초)</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="memory-grid ${gridClass}" id="memory-grid">${cardsHtml}</div>
+                    <div class="result" id="result" style="display: none;"></div>
+                </div>
+            `;
+            
+            // 전역 변수 초기화
+            window.currentMemoryGameActivity = activity;
+            window.memoryGameState = {
+                cards: cards,
+                flippedCards: [],
+                matchedPairs: 0,
+                totalPairs: cards.length / 2,
+                attempts: 0,
+                gameOver: false,
+                timeLeft: content.timeLimit || null
+            };
+            
+            // 타이머 시작
+            if (content.timeLimit) {
+                startMemoryGameTimer();
+            }
+        }
+
         // 답안 선택 처리
         function selectAnswer(answer) {
             console.log('답안 선택:', answer);
@@ -557,6 +1120,304 @@
                 selected: selectedAnswer,
                 correct: correctAnswer,
                 isCorrect: isCorrect
+            };
+        }
+        
+        // Multiple Choice 상호작용 함수들
+        function selectMultipleChoice(choiceId, allowMultiple) {
+            const selectedChoices = window.selectedChoices || [];
+            const choiceElement = document.querySelector(`[data-choice-id="${choiceId}"]`);
+            
+            if (allowMultiple) {
+                // 다중 선택 모드
+                const index = selectedChoices.indexOf(choiceId);
+                if (index === -1) {
+                    selectedChoices.push(choiceId);
+                    choiceElement.classList.add('selected');
+                } else {
+                    selectedChoices.splice(index, 1);
+                    choiceElement.classList.remove('selected');
+                }
+                window.selectedChoices = selectedChoices;
+            } else {
+                // 단일 선택 모드 - 즉시 답안 확인
+                // 기존 선택 해제
+                document.querySelectorAll('.choice-option').forEach(el => el.classList.remove('selected'));
+                // 새 선택 표시
+                choiceElement.classList.add('selected');
+                window.selectedChoices = [choiceId];
+                
+                // 잠시 후 답안 확인
+                setTimeout(() => checkMultipleChoiceAnswer(), 500);
+            }
+        }
+        
+        function checkMultipleChoiceAnswer() {
+            const activity = window.currentMultipleChoiceActivity;
+            const selectedChoices = window.selectedChoices || [];
+            const correctAnswer = activity.content.correctAnswer;
+            
+            let isCorrect = false;
+            
+            if (Array.isArray(correctAnswer)) {
+                // 다중 정답 체크
+                isCorrect = correctAnswer.length === selectedChoices.length && 
+                           correctAnswer.every(answer => selectedChoices.includes(answer));
+            } else {
+                // 단일 정답 체크
+                isCorrect = selectedChoices.length === 1 && selectedChoices[0] === correctAnswer;
+            }
+            
+            const result = document.getElementById('result');
+            const explanation = document.getElementById('explanation');
+            
+            if (isCorrect) {
+                result.textContent = '🎉 정답입니다!';
+                result.className = 'result correct';
+                showNotification('정답입니다!', 'success');
+            } else {
+                result.textContent = '❌ 틀렸습니다. 다시 시도해보세요.';
+                result.className = 'result incorrect';
+                showNotification('틀렸습니다. 다시 시도해보세요.', 'error');
+            }
+            
+            result.style.display = 'block';
+            
+            // 설명 표시
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+            
+            // 결과 저장
+            results[currentActivity] = {
+                selected: selectedChoices,
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            };
+        }
+        
+        // Word Guess 상호작용 함수들
+        function handleWordGuessInput(event) {
+            if (event.key === 'Enter' || event.type === 'input') {
+                const input = event.target;
+                const letter = input.value.toUpperCase();
+                
+                if (letter && /[A-Z가-힣]/.test(letter)) {
+                    guessLetter(letter);
+                    input.value = '';
+                }
+            }
+        }
+        
+        function guessLetter(letter) {
+            const state = window.wordGuessState;
+            
+            if (state.gameOver || state.guessedLetters.includes(letter)) {
+                return;
+            }
+            
+            state.guessedLetters.push(letter);
+            
+            if (state.word.includes(letter)) {
+                // 정답 글자
+                updateWordDisplay();
+                updateGuessedCount();
+                
+                // 단어 완성 체크
+                if (isWordComplete()) {
+                    completeWordGuess(true);
+                }
+            } else {
+                // 틀린 글자
+                state.wrongLetters.push(letter);
+                state.attemptsLeft--;
+                updateWrongLetters();
+                updateAttemptsLeft();
+                
+                // 게임 오버 체크
+                if (state.attemptsLeft <= 0) {
+                    completeWordGuess(false);
+                }
+            }
+        }
+        
+        function updateWordDisplay() {
+            const state = window.wordGuessState;
+            const display = state.word.split('').map(letter => 
+                state.guessedLetters.includes(letter) ? letter : '_'
+            ).join(' ');
+            
+            document.getElementById('word-display').textContent = display;
+        }
+        
+        function updateGuessedCount() {
+            const state = window.wordGuessState;
+            const correctLetters = [...new Set(state.word.split('').filter(letter => 
+                state.guessedLetters.includes(letter)
+            ))];
+            document.getElementById('guessed-count').textContent = correctLetters.length;
+        }
+        
+        function updateWrongLetters() {
+            const state = window.wordGuessState;
+            const wrongLettersElement = document.getElementById('wrong-letters');
+            
+            if (state.wrongLetters.length === 0) {
+                wrongLettersElement.innerHTML = '<div style="color: #6c7086;">틀린 글자들이 여기에 표시됩니다</div>';
+            } else {
+                wrongLettersElement.innerHTML = state.wrongLetters.map(letter => 
+                    `<span class="wrong-letter">${letter}</span>`
+                ).join('');
+            }
+        }
+        
+        function updateAttemptsLeft() {
+            document.getElementById('attempts-left').textContent = window.wordGuessState.attemptsLeft;
+        }
+        
+        function isWordComplete() {
+            const state = window.wordGuessState;
+            return state.word.split('').every(letter => state.guessedLetters.includes(letter));
+        }
+        
+        function completeWordGuess(success) {
+            const state = window.wordGuessState;
+            state.gameOver = true;
+            
+            const result = document.getElementById('result');
+            const input = document.getElementById('guess-input');
+            
+            input.disabled = true;
+            
+            if (success) {
+                result.textContent = '🎉 축하합니다! 단어를 맞추셨습니다!';
+                result.className = 'result correct';
+                showNotification('단어를 맞추셨습니다!', 'success');
+            } else {
+                result.textContent = `😔 게임 오버! 정답은 "${state.word}"였습니다.`;
+                result.className = 'result incorrect';
+                showNotification('게임 오버', 'error');
+                
+                // 정답 표시
+                document.getElementById('word-display').textContent = state.word.split('').join(' ');
+            }
+            
+            result.style.display = 'block';
+            
+            // 결과 저장
+            results[currentActivity] = {
+                success: success,
+                attemptsUsed: (window.currentWordGuessActivity.content.maxAttempts || 6) - state.attemptsLeft,
+                word: state.word
+            };
+        }
+        
+        // Memory Game 상호작용 함수들
+        function flipMemoryCard(cardId) {
+            const state = window.memoryGameState;
+            
+            if (state.gameOver || state.flippedCards.length >= 2) {
+                return;
+            }
+            
+            const cardElement = document.querySelector(`[data-card-id="${cardId}"]`);
+            
+            if (cardElement.classList.contains('flipped') || cardElement.classList.contains('matched')) {
+                return;
+            }
+            
+            // 카드 뒤집기
+            cardElement.classList.add('flipped');
+            state.flippedCards.push(cardId);
+            
+            if (state.flippedCards.length === 2) {
+                state.attempts++;
+                updateMemoryGameStats();
+                
+                // 매칭 체크
+                setTimeout(() => checkMemoryMatch(), 1000);
+            }
+        }
+        
+        function checkMemoryMatch() {
+            const state = window.memoryGameState;
+            const [card1Id, card2Id] = state.flippedCards;
+            
+            const card1Element = document.querySelector(`[data-card-id="${card1Id}"]`);
+            const card2Element = document.querySelector(`[data-card-id="${card2Id}"]`);
+            
+            const match1Id = card1Element.getAttribute('data-match-id');
+            const match2Id = card2Element.getAttribute('data-match-id');
+            
+            if (match1Id === match2Id) {
+                // 매칭 성공
+                card1Element.classList.add('matched');
+                card2Element.classList.add('matched');
+                state.matchedPairs++;
+                
+                updateMemoryGameStats();
+                
+                // 게임 완료 체크
+                if (state.matchedPairs === state.totalPairs) {
+                    completeMemoryGame(true);
+                }
+            } else {
+                // 매칭 실패
+                card1Element.classList.remove('flipped');
+                card2Element.classList.remove('flipped');
+            }
+            
+            state.flippedCards = [];
+        }
+        
+        function updateMemoryGameStats() {
+            const state = window.memoryGameState;
+            document.getElementById('matched-pairs').textContent = state.matchedPairs;
+            document.getElementById('attempts').textContent = state.attempts;
+        }
+        
+        function startMemoryGameTimer() {
+            const state = window.memoryGameState;
+            
+            const timer = setInterval(() => {
+                if (state.gameOver || state.timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (state.timeLeft <= 0 && !state.gameOver) {
+                        completeMemoryGame(false);
+                    }
+                    return;
+                }
+                
+                state.timeLeft--;
+                document.getElementById('timer').textContent = state.timeLeft;
+            }, 1000);
+        }
+        
+        function completeMemoryGame(success) {
+            const state = window.memoryGameState;
+            state.gameOver = true;
+            
+            const result = document.getElementById('result');
+            
+            if (success) {
+                result.textContent = '🎉 축하합니다! 모든 카드를 매칭했습니다!';
+                result.className = 'result correct';
+                showNotification('메모리 게임 완료!', 'success');
+            } else {
+                result.textContent = '⏰ 시간이 부족했습니다. 다시 도전해보세요!';
+                result.className = 'result incorrect';
+                showNotification('시간 초과', 'error');
+            }
+            
+            result.style.display = 'block';
+            
+            // 결과 저장
+            results[currentActivity] = {
+                success: success,
+                matchedPairs: state.matchedPairs,
+                totalPairs: state.totalPairs,
+                attempts: state.attempts,
+                timeUsed: state.timeLeft ? (window.currentMemoryGameActivity.content.timeLimit - state.timeLeft) : null
             };
         }
         
