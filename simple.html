@@ -775,6 +775,25 @@
                             target: 5,
                             step: 1
                         }
+                    },
+                    {
+                        type: "chinese-tone",
+                        template: "chinese-tone@1.0.0",
+                        title: "중국어 성조 학습",
+                        params: {
+                            title: "🇨🇳 중국어 성조 매칭 게임",
+                            instruction: "한자를 올바른 성조(병음)에 드래그하세요!",
+                            characters: [
+                                { hanzi: '你', pinyin: 'nǐ', tone: 3, meaning: '너' },
+                                { hanzi: '好', pinyin: 'hǎo', tone: 3, meaning: '좋다' },
+                                { hanzi: '我', pinyin: 'wǒ', tone: 3, meaning: '나' },
+                                { hanzi: '是', pinyin: 'shì', tone: 4, meaning: '이다' },
+                                { hanzi: '来', pinyin: 'lái', tone: 2, meaning: '오다' },
+                                { hanzi: '妈', pinyin: 'mā', tone: 1, meaning: '엄마' }
+                            ],
+                            showMeaning: true,
+                            shuffleCharacters: true
+                        }
                     }
                 ]
             },
@@ -1920,6 +1939,9 @@
                 
                 // Timer Counter 플러그인 로드
                 await window.PluginSystem.loadExternalPlugin('plugins/timer-counter-plugin.js');
+                
+                // Chinese Tone 플러그인 로드
+                await window.PluginSystem.loadExternalPlugin('plugins/chinese-tone-plugin.js');
                 
                 console.log('✅ 모든 외부 플러그인 로드 완료');
                 console.log('📋 등록된 템플릿:', window.PluginSystem.getRegisteredTemplates());
