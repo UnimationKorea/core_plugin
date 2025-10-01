@@ -90,7 +90,7 @@ class PluginSystem {
      * @param {HTMLElement} container - 렌더링할 컨테이너
      */
     async renderActivity(activity, container) {
-        const templateId = activity.template;
+        const templateId = activity.template || `${activity.type}@1.0.0`;
         const plugin = this.getTemplate(templateId);
         
         if (!plugin) {
@@ -98,15 +98,32 @@ class PluginSystem {
         }
         
         try {
+            console.log(`🎨 플러그인 렌더링 시작: ${templateId}`);
+            
+            // activity.params를 activity.content로 매핑 (호환성)
+            const activityWithContent = {
+                ...activity,
+                params: activity.params || activity.content || {}
+            };
+            
             // 플러그인의 렌더링 함수 호출
-            await plugin.render(activity, container);
+            await plugin.render(activityWithContent, container);
+            
+            console.log(`✅ 플러그인 렌더링 완료: ${templateId}`);
             
             // 렌더링 완료 이벤트
-            this.emit('activity:rendered', { activity, plugin });
+            this.emit('activity:rendered', { activity: activityWithContent, plugin });
             
         } catch (error) {
             console.error('활동 렌더링 오류:', error);
-            container.innerHTML = `<div class="error">렌더링 오류: ${error.message}</div>`;
+            container.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #f38ba8; background: rgba(243, 139, 168, 0.1); border-radius: 8px;">
+                    <h3>❌ 플러그인 렌더링 오류</h3>
+                    <p>템플릿: ${templateId}</p>
+                    <p>오류: ${error.message}</p>
+                    <small>콘솔에서 자세한 정보를 확인하세요.</small>
+                </div>
+            `;
         }
     }
     

@@ -306,13 +306,15 @@ await PluginSystem.loadExternalPlugin('path/to/plugin.js');</div>
             updateSystemStatus('🔌 플러그인 시스템이 준비되었습니다. "플러그인 로드" 버튼을 클릭하세요.', 'info');
             
             // 플러그인 시스템 이벤트 리스너
-            PluginSystem.on('template:registered', (data) => {
-                console.log('✅ 템플릿 등록됨:', data);
-            });
-            
-            PluginSystem.on('activity:rendered', (data) => {
-                console.log('🎨 활동 렌더링됨:', data.activity.template);
-            });
+            if (window.PluginSystem) {
+                PluginSystem.on('template:registered', (data) => {
+                    console.log('✅ 템플릿 등록됨:', data);
+                });
+                
+                PluginSystem.on('activity:rendered', (data) => {
+                    console.log('🎨 활동 렌더링됨:', data.activity.template);
+                });
+            }
         });
         
         console.log('🔌 플러그인 데모 페이지가 준비되었습니다!');
