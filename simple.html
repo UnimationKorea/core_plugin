@@ -761,6 +761,20 @@
                             allowSizeChange: true,
                             tools: ['brush', 'eraser', 'circle', 'rectangle']
                         }
+                    },
+                    {
+                        type: "timer-counter",
+                        template: "timer-counter@1.0.0", 
+                        title: "타이머 카운터 활동",
+                        params: {
+                            title: "⏱️ 집중 시간 측정",
+                            instruction: "3가지 모드로 시간을 관리해보세요!",
+                            initialTime: 30,
+                            mode: "countdown",
+                            allowReset: true,
+                            target: 5,
+                            step: 1
+                        }
                     }
                 ]
             },
@@ -1903,6 +1917,9 @@
                 
                 // Drawing Canvas 플러그인 로드
                 await window.PluginSystem.loadExternalPlugin('plugins/drawing-canvas-plugin.js');
+                
+                // Timer Counter 플러그인 로드
+                await window.PluginSystem.loadExternalPlugin('plugins/timer-counter-plugin.js');
                 
                 console.log('✅ 모든 외부 플러그인 로드 완료');
                 console.log('📋 등록된 템플릿:', window.PluginSystem.getRegisteredTemplates());
