@@ -431,12 +431,18 @@
             <div class="toolbar">
                 <select class="form-select" id="template-select" style="width: 250px;">
                     <option value="">템플릿을 선택하세요</option>
-                    <option value="multiple-choice">🔘 4지 선다형</option>
-                    <option value="word-guess">🔤 단어 맞추기</option>
-                    <option value="memory-game">🧠 메모리 게임</option>
-                    <option value="video">🎥 비디오</option>
-                    <option value="quiz">❓ 퀴즈</option>
-                    <option value="survey">📋 설문조사</option>
+                    <optgroup label="내장 템플릿">
+                        <option value="multiple-choice">🔘 4지 선다형</option>
+                        <option value="word-guess">🔤 단어 맞추기</option>
+                        <option value="memory-game">🧠 메모리 게임</option>
+                        <option value="video">🎥 비디오</option>
+                        <option value="quiz">❓ 퀴즈</option>
+                        <option value="survey">📋 설문조사</option>
+                    </optgroup>
+                    <optgroup label="외부 플러그인">
+                        <option value="fill-in-blanks">✏️ 빈칸 채우기</option>
+                        <option value="chinese-pinyin-match">🀄 중국어 병음 매칭</option>
+                    </optgroup>
                 </select>
                 
                 <button class="btn" id="create-activity-btn" disabled>활동 생성</button>
@@ -689,6 +695,52 @@
                         }
                     };
                     
+                case 'fill-in-blanks':
+                    return {
+                        ...baseActivity,
+                        template: 'fill-in-blanks@1.0.0',
+                        params: {
+                            title: '빈칸 채우기',
+                            sentence: '고양이가 {blank}를 쫓아간다.',
+                            blanks: [
+                                { id: 'blank-1', position: '{blank}', answer: '쥐', alternatives: ['쥐', '생쥐'] }
+                            ],
+                            caseSensitive: false,
+                            showHints: true,
+                            hints: ['작은 동물', '치즈를 좋아함'],
+                            timeLimit: 0,
+                            feedback: {
+                                correct: '정답입니다! 🎉',
+                                incorrect: '다시 시도해보세요. 💭',
+                                timeout: '시간이 종료되었습니다! ⏰',
+                                complete: '모든 빈칸을 완성했습니다! 🌟'
+                            },
+                            allowMultipleAttempts: true,
+                            showProgressBar: true,
+                            autoCheckOnComplete: false
+                        }
+                    };
+                    
+                case 'chinese-pinyin-match':
+                    return {
+                        ...baseActivity,
+                        template: 'chinese-pinyin-match@1.0.0',
+                        params: {
+                            words: [
+                                { hanzi: '你好', pinyin: 'nǐhǎo', meaning: '안녕하세요' },
+                                { hanzi: '谢谢', pinyin: 'xièxie', meaning: '감사합니다' },
+                                { hanzi: '再见', pinyin: 'zàijiàn', meaning: '안녕히 가세요' },
+                                { hanzi: '早上好', pinyin: 'zǎoshang hǎo', meaning: '좋은 아침입니다' },
+                                { hanzi: '晚安', pinyin: 'wǎn\'ān', meaning: '안녕히 주무세요' },
+                                { hanzi: '对不起', pinyin: 'duìbùqǐ', meaning: '죄송합니다' }
+                            ],
+                            showHint: true,
+                            autoShuffle: true,
+                            successMessage: '축하합니다! 모든 매칭을 완료했습니다! 🎉',
+                            failMessage: '아직 매칭되지 않은 항목이 있습니다. 다시 시도해보세요!'
+                        }
+                    };
+                    
                 case 'survey':
                     return {
                         ...baseActivity,
@@ -808,6 +860,12 @@
                     break;
                 case 'survey':
                     editorHtml = renderSurveyEditor(activity);
+                    break;
+                case 'fill-in-blanks':
+                    editorHtml = renderExternalPluginEditor(activity, '✏️ 빈칸 채우기 플러그인');
+                    break;
+                case 'chinese-pinyin-match':
+                    editorHtml = renderExternalPluginEditor(activity, '🀄 중국어 병음 매칭 플러그인');
                     break;
                 default:
                     editorHtml = '<div class="card"><div class="card-title">지원하지 않는 템플릿</div></div>';
@@ -1106,6 +1164,79 @@
                     </div>
                 </div>
             `;
+        }
+        
+        // 외부 플러그인 에디터 (JSON 기반)
+        function renderExternalPluginEditor(activity, title) {
+            return `
+                <div class="card">
+                    <div class="card-title">${title}</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">파라미터 (JSON)</label>
+                        <p style="color: #a6adc8; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                            외부 플러그인 파라미터를 JSON 형식으로 편집하세요. 
+                            <a href="plugins/README-${activity.template.split('@')[0].toUpperCase().replace(/-/g, '-')}.md" 
+                               target="_blank" style="color: #89b4fa;">
+                               📖 문서 보기
+                            </a>
+                        </p>
+                        <textarea class="form-input form-textarea" 
+                                  id="plugin-params-json" 
+                                  rows="20"
+                                  style="font-family: 'Courier New', monospace; font-size: 0.9rem;"
+                                  placeholder="JSON 파라미터를 입력하세요">${JSON.stringify(activity.params, null, 2)}</textarea>
+                        <div id="json-validation-error" style="color: #f38ba8; margin-top: 0.5rem; display: none;"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">템플릿 정보</label>
+                        <div style="background: #45475a; padding: 1rem; border-radius: 8px;">
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong>템플릿:</strong> ${activity.template}
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <strong>Activity ID:</strong> ${activity.activityId}
+                            </div>
+                            <div>
+                                <strong>타입:</strong> 외부 플러그인
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="validateAndUpdatePluginParams()">✅ 파라미터 적용</button>
+                </div>
+            `;
+        }
+        
+        // 플러그인 파라미터 검증 및 업데이트
+        function validateAndUpdatePluginParams() {
+            const jsonTextarea = document.getElementById('plugin-params-json');
+            const errorDiv = document.getElementById('json-validation-error');
+            
+            try {
+                const params = JSON.parse(jsonTextarea.value);
+                
+                // 현재 활동 업데이트
+                if (currentActivity) {
+                    currentActivity.params = params;
+                    errorDiv.style.display = 'none';
+                    updateJsonPreview();
+                    
+                    // 성공 메시지
+                    errorDiv.textContent = '✅ 파라미터가 성공적으로 업데이트되었습니다.';
+                    errorDiv.style.color = '#a6e3a1';
+                    errorDiv.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        errorDiv.style.display = 'none';
+                    }, 3000);
+                }
+            } catch (error) {
+                errorDiv.textContent = '❌ JSON 파싱 오류: ' + error.message;
+                errorDiv.style.color = '#f38ba8';
+                errorDiv.style.display = 'block';
+            }
         }
         
         // 편집기 이벤트 연결
