@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill in the Blanks Plugin Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .test-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .test-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .test-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .test-controls {
+            max-width: 900px;
+            margin: 0 auto 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .control-group button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        #activity-container {
+            min-height: 400px;
+        }
+
+        .status-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+        }
+
+        .status-indicator h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+
+        .status-indicator .status-item {
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #4a5568;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .status-indicator .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-log {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-log h3 {
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .event-log pre {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>✏️ Fill in the Blanks Plugin Test</h1>
+        <p>빈칸 채우기 플러그인 테스트 페이지</p>
+    </div>
+
+    <div class="test-controls">
+        <div class="control-group">
+            <label for="test-scenario">테스트 시나리오 선택</label>
+            <select id="test-scenario">
+                <option value="basic">기본 테스트 (간단한 문장)</option>
+                <option value="multiple">복수 빈칸 테스트</option>
+                <option value="hints">힌트 포함 테스트</option>
+                <option value="timer">타이머 테스트 (30초)</option>
+                <option value="alternatives">대체 정답 테스트</option>
+                <option value="complex">복잡한 문장 테스트</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <button id="load-test-btn">테스트 로드</button>
+        </div>
+    </div>
+
+    <div id="activity-container"></div>
+
+    <div class="status-indicator">
+        <h3>📊 상태</h3>
+        <div class="status-item" id="status-plugin">플러그인: 대기 중</div>
+        <div class="status-item" id="status-activity">액티비티: 없음</div>
+        <div class="status-item" id="status-events">이벤트: 0개</div>
+    </div>
+
+    <div class="event-log">
+        <h3>📝 이벤트 로그</h3>
+        <pre id="event-log-output">이벤트 대기 중...</pre>
+    </div>
+
+    <!-- 플러그인 시스템 로드 -->
+    <script src="plugin-system.js"></script>
+    
+    <!-- Fill in the Blanks 플러그인 로드 -->
+    <script src="plugins/fill-in-blanks-plugin.js"></script>
+
+    <!-- 테스트 스크립트 -->
+    <script>
+        // 이벤트 로그
+        const eventLog = [];
+        let currentActivity = null;
+
+        // 테스트 시나리오
+        const testScenarios = {
+            basic: {
+                title: '기본 빈칸 채우기',
+                sentence: '고양이가 {blank}를 쫓아간다.',
+                blanks: [
+                    { id: 'blank-1', position: '{blank}', answer: '쥐' }
+                ],
+                showHints: false,
+                timeLimit: 0
+            },
+            multiple: {
+                title: '복수 빈칸 테스트',
+                sentence: '나는 {blank1}에서 {blank2}를 공부합니다.',
+                blanks: [
+                    { id: 'blank-1', position: '{blank1}', answer: '학교' },
+                    { id: 'blank-2', position: '{blank2}', answer: '수학' }
+                ],
+                showHints: false,
+                timeLimit: 0
+            },
+            hints: {
+                title: '힌트 포함 테스트',
+                sentence: '한국의 수도는 {blank}입니다.',
+                blanks: [
+                    { id: 'blank-1', position: '{blank}', answer: '서울' }
+                ],
+                showHints: true,
+                hints: [
+                    '대한민국의 수도',
+                    '한강이 흐르는 도시',
+                    '인구가 가장 많은 도시'
+                ],
+                timeLimit: 0
+            },
+            timer: {
+                title: '타이머 테스트 (30초)',
+                sentence: '2 + 2 = {blank}',
+                blanks: [
+                    { id: 'blank-1', position: '{blank}', answer: '4' }
+                ],
+                showHints: false,
+                timeLimit: 30
+            },
+            alternatives: {
+                title: '대체 정답 테스트',
+                sentence: '가장 큰 동물은 {blank}입니다.',
+                blanks: [
+                    { 
+                        id: 'blank-1', 
+                        position: '{blank}', 
+                        answer: '고래',
+                        alternatives: ['고래', '흰수염고래', '대왕고래']
+                    }
+                ],
+                showHints: true,
+                hints: ['바다에 사는 동물', '포유류입니다'],
+                timeLimit: 0
+            },
+            complex: {
+                title: '복잡한 문장 테스트',
+                sentence: '세종대왕은 {blank1}을 창제하여 {blank2}을 넓히고, 백성들이 {blank3}을 배울 수 있도록 했습니다.',
+                blanks: [
+                    { id: 'blank-1', position: '{blank1}', answer: '한글' },
+                    { id: 'blank-2', position: '{blank2}', answer: '문자' },
+                    { id: 'blank-3', position: '{blank3}', answer: '글' }
+                ],
+                showHints: true,
+                hints: [
+                    '우리나라 고유의 문자',
+                    '소통의 수단',
+                    '읽고 쓰는 것'
+                ],
+                timeLimit: 0,
+                caseSensitive: false
+            }
+        };
+
+        // 상태 업데이트
+        function updateStatus(type, message) {
+            const statusEl = document.getElementById(`status-${type}`);
+            if (statusEl) {
+                statusEl.textContent = message;
+            }
+        }
+
+        // 이벤트 로그 추가
+        function addEventLog(event, data) {
+            const timestamp = new Date().toLocaleTimeString('ko-KR');
+            eventLog.push({ timestamp, event, data });
+            
+            const logOutput = document.getElementById('event-log-output');
+            if (logOutput) {
+                logOutput.textContent = JSON.stringify(eventLog, null, 2);
+                logOutput.scrollTop = logOutput.scrollHeight;
+            }
+            
+            updateStatus('events', `이벤트: ${eventLog.length}개`);
+        }
+
+        // 이벤트 리스너 등록
+        if (window.PluginSystem) {
+            window.PluginSystem.on('activity:started', (data) => {
+                addEventLog('activity:started', data);
+                updateStatus('activity', '액티비티: 실행 중');
+            });
+
+            window.PluginSystem.on('activity:completed', (data) => {
+                addEventLog('activity:completed', data);
+                updateStatus('activity', '액티비티: 완료');
+                
+                // 완료 알림
+                setTimeout(() => {
+                    alert(`🎉 완료!\n\n점수: ${(data.score * 100).toFixed(0)}%\n시간: ${(data.durationMs / 1000).toFixed(1)}초\n시도: ${data.attempts}번`);
+                }, 500);
+            });
+
+            window.PluginSystem.on('activity:timeout', (data) => {
+                addEventLog('activity:timeout', data);
+                updateStatus('activity', '액티비티: 시간 초과');
+            });
+
+            updateStatus('plugin', '플러그인: 로드 완료 ✅');
+        } else {
+            updateStatus('plugin', '플러그인: 로드 실패 ❌');
+        }
+
+        // 테스트 로드 버튼
+        document.getElementById('load-test-btn').addEventListener('click', () => {
+            const scenarioId = document.getElementById('test-scenario').value;
+            const scenario = testScenarios[scenarioId];
+            
+            if (!scenario) {
+                alert('시나리오를 선택하세요.');
+                return;
+            }
+
+            // 이전 로그 초기화
+            eventLog.length = 0;
+            document.getElementById('event-log-output').textContent = '이벤트 대기 중...';
+            updateStatus('events', '이벤트: 0개');
+
+            // 액티비티 생성
+            currentActivity = {
+                activityId: `test-${scenarioId}-${Date.now()}`,
+                template: 'fill-in-blanks@1.0.0',
+                params: scenario
+            };
+
+            // 렌더링
+            const container = document.getElementById('activity-container');
+            window.PluginSystem.renderActivity(currentActivity, container);
+
+            addEventLog('test:loaded', { scenarioId, activity: currentActivity });
+            console.log('🧪 테스트 로드:', currentActivity);
+        });
+
+        // 페이지 로드 시 기본 테스트 로드
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('load-test-btn').click();
+            }, 500);
+        });
+
+        // 디버그용 전역 함수
+        window.getActivityState = function() {
+            return currentActivity;
+        };
+
+        window.getEventLog = function() {
+            return eventLog;
+        };
+
+        console.log('🧪 테스트 페이지 초기화 완료');
+        console.log('💡 팁: getActivityState(), getEventLog() 함수로 상태 확인 가능');
+    </script>
+</body>
+</html>

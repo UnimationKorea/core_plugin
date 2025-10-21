@@ -18,7 +18,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 90%;
             text-align: center;
         }
@@ -43,7 +43,7 @@
         
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             margin: 3rem 0;
         }
@@ -108,6 +108,20 @@
             background-clip: text;
         }
         
+        .plugin-card .tool-icon {
+            background: linear-gradient(45deg, #cba6f7, #f5c2e7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .chinese-card .tool-icon {
+            background: linear-gradient(45deg, #e67e22, #d35400);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
         .tool-title {
             font-size: 1.5rem;
             font-weight: 600;
@@ -163,6 +177,14 @@
             background: linear-gradient(45deg, #a6e3a1, #94e2d5);
         }
         
+        .plugin-card .tool-button {
+            background: linear-gradient(45deg, #cba6f7, #f5c2e7);
+        }
+        
+        .chinese-card .tool-button {
+            background: linear-gradient(45deg, #e67e22, #d35400);
+        }
+        
         .tool-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(137, 180, 250, 0.3);
@@ -199,6 +221,12 @@
             border: 1px solid rgba(166, 227, 161, 0.3);
         }
         
+        .new-badge {
+            background: rgba(203, 166, 247, 0.2);
+            color: #cba6f7;
+            border: 1px solid rgba(203, 166, 247, 0.3);
+        }
+        
         .footer {
             margin-top: 3rem;
             color: #6c7086;
@@ -208,8 +236,9 @@
         .version-info {
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 1rem;
             margin-top: 2rem;
+            flex-wrap: wrap;
         }
         
         .version-item {
@@ -258,9 +287,9 @@
                 </p>
                 
                 <div class="tool-features">
-                    <div class="feature-item">5가지 템플릿 지원 (4지선다, 단어맞추기, 메모리게임, 비디오, 퀴즈)</div>
+                    <div class="feature-item">5가지 템플릿 지원</div>
                     <div class="feature-item">실시간 편집 및 미리보기</div>
-                    <div class="feature-item">JSON 자동 생성 및 내보내기</div>
+                    <div class="feature-item">JSON 자동 생성</div>
                     <div class="feature-item">로컬 저장 및 관리</div>
                 </div>
                 
@@ -276,10 +305,10 @@
                 </p>
                 
                 <div class="tool-features">
-                    <div class="feature-item">모든 템플릿 타입 완벽 지원</div>
-                    <div class="feature-item">JSON 파일 직접 로딩</div>
-                    <div class="feature-item">실시간 디버깅 도구</div>
-                    <div class="feature-item">키보드 단축키 (Ctrl+1/2/3)</div>
+                    <div class="feature-item">모든 템플릿 완벽 지원</div>
+                    <div class="feature-item">JSON 파일 로딩</div>
+                    <div class="feature-item">실시간 디버깅</div>
+                    <div class="feature-item">키보드 단축키</div>
                 </div>
                 
                 <button class="tool-button">▶️ 레슨 실행</button>
@@ -297,25 +326,66 @@
                     <div class="feature-item">템플릿 로딩 검증</div>
                     <div class="feature-item">단계별 디버깅</div>
                     <div class="feature-item">JSON 구조 분석</div>
-                    <div class="feature-item">오류 진단 및 해결</div>
+                    <div class="feature-item">오류 진단</div>
                 </div>
                 
                 <button class="tool-button">🔍 디버깅 시작</button>
             </div>
+            
+            <div class="tool-card plugin-card" onclick="window.open('test-fill-in-blanks.html', '_blank')">
+                <div class="status-badge new-badge">🆕 NEW</div>
+                <span class="tool-icon">✏️</span>
+                <h2 class="tool-title">빈칸 채우기 플러그인</h2>
+                <p class="tool-description">
+                    새로운 외부 플러그인 시스템! 문장의 빈칸을 채우는 인터랙티브 학습 도구입니다.
+                    다양한 테스트 시나리오로 플러그인을 체험해보세요.
+                </p>
+                
+                <div class="tool-features">
+                    <div class="feature-item">다중 빈칸 무제한 지원</div>
+                    <div class="feature-item">힌트 시스템 & 타이머</div>
+                    <div class="feature-item">대체 정답 지원</div>
+                    <div class="feature-item">6가지 테스트 시나리오</div>
+                </div>
+                
+                <button class="tool-button">🧪 플러그인 테스트</button>
+            </div>
+            
+            <div class="tool-card chinese-card" onclick="window.open('test-chinese-pinyin.html', '_blank')">
+                <div class="status-badge new-badge">🆕 NEW</div>
+                <span class="tool-icon">🀄</span>
+                <h2 class="tool-title">중국어 병음 매칭</h2>
+                <p class="tool-description">
+                    중국어 학습을 위한 한자와 병음 매칭 플러그인입니다.
+                    드래그 앤 드롭으로 한자와 병음을 매칭하며 학습할 수 있습니다.
+                </p>
+                
+                <div class="tool-features">
+                    <div class="feature-item">드래그 앤 드롭 매칭</div>
+                    <div class="feature-item">실시간 피드백 & 통계</div>
+                    <div class="feature-item">힌트 시스템 & 카드 섞기</div>
+                    <div class="feature-item">4가지 테스트 시나리오</div>
+                </div>
+                
+                <button class="tool-button">🎯 플러그인 테스트</button>
+            </div>
         </div>
         
         <div class="footer">
-            <p>🛠️ Enhanced Modular Architecture v2.0 - 완전 기능적인 교육 플랫폼</p>
+            <p>🛠️ Enhanced Modular Architecture v2.0 + External Plugin System</p>
             
             <div class="version-info">
                 <div class="version-item">
-                    <strong>템플릿:</strong> multiple-choice@1.0.0, word-guess@1.0.0, memory-game@1.0.0
+                    <strong>내장 템플릿:</strong> multiple-choice, word-guess, memory-game
                 </div>
                 <div class="version-item">
-                    <strong>빌드:</strong> 2024-10-01
+                    <strong>외부 플러그인:</strong> fill-in-blanks@1.0.0, chinese-pinyin-match@1.0.0 🆕
                 </div>
                 <div class="version-item">
-                    <strong>상태:</strong> 프로덕션 준비 완료
+                    <strong>빌드:</strong> 2025-10-21
+                </div>
+                <div class="version-item">
+                    <strong>상태:</strong> ✅ 프로덕션 준비 완료
                 </div>
             </div>
         </div>
@@ -338,12 +408,20 @@
                         e.preventDefault();
                         window.open('debug.html', '_blank');
                         break;
+                    case '4':
+                        e.preventDefault();
+                        window.open('test-fill-in-blanks.html', '_blank');
+                        break;
+                    case '5':
+                        e.preventDefault();
+                        window.open('test-chinese-pinyin.html', '_blank');
+                        break;
                 }
             }
         });
         
         console.log('🎓 교육 플랫폼 허브가 준비되었습니다!');
-        console.log('💡 단축키: Ctrl+1 (빌더), Ctrl+2 (플레이어), Ctrl+3 (디버그)');
+        console.log('💡 단축키: Ctrl+1 (빌더), Ctrl+2 (플레이어), Ctrl+3 (디버그), Ctrl+4 (빈칸채우기), Ctrl+5 (중국어병음)');
     </script>
 </body>
 </html>

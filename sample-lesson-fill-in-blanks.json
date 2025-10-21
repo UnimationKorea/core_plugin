@@ -1,0 +1,216 @@
+{
+  "lessonId": "korean-grammar-fill-blanks-001",
+  "title": "한국어 문법 연습: 빈칸 채우기",
+  "description": "조사와 문법 요소를 빈칸에 채워 문장을 완성하는 연습",
+  "locale": "ko",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "UnimationKorea",
+    "createdAt": "2025-10-21",
+    "difficulty": "초급",
+    "estimatedMinutes": 10,
+    "tags": ["문법", "한국어", "빈칸채우기", "조사"]
+  },
+  "flow": [
+    {
+      "activityId": "activity-001",
+      "template": "fill-in-blanks@1.0.0",
+      "params": {
+        "title": "조사 넣기 1단계",
+        "sentence": "나{blank1} 친구{blank2} 만났다.",
+        "blanks": [
+          {
+            "id": "blank-1",
+            "position": "{blank1}",
+            "answer": "는",
+            "alternatives": ["는", "은"]
+          },
+          {
+            "id": "blank-2",
+            "position": "{blank2}",
+            "answer": "를",
+            "alternatives": ["를", "을"]
+          }
+        ],
+        "caseSensitive": false,
+        "showHints": true,
+        "hints": [
+          "주격 조사는 모음 뒤에 '는', 자음 뒤에 '은'",
+          "목적격 조사는 모음 뒤에 '를', 자음 뒤에 '을'"
+        ],
+        "timeLimit": 0,
+        "allowMultipleAttempts": true,
+        "showProgressBar": true
+      },
+      "rules": {
+        "passingScore": 1.0,
+        "allowSkip": false,
+        "maxAttempts": 0
+      }
+    },
+    {
+      "activityId": "activity-002",
+      "template": "fill-in-blanks@1.0.0",
+      "params": {
+        "title": "조사 넣기 2단계",
+        "sentence": "학교{blank1} 가서 선생님{blank2} 인사했다.",
+        "blanks": [
+          {
+            "id": "blank-1",
+            "position": "{blank1}",
+            "answer": "에",
+            "alternatives": ["에"]
+          },
+          {
+            "id": "blank-2",
+            "position": "{blank2}",
+            "answer": "께",
+            "alternatives": ["께", "에게"]
+          }
+        ],
+        "caseSensitive": false,
+        "showHints": true,
+        "hints": [
+          "장소를 나타내는 조사는 '에'",
+          "높임말을 사용할 때는 '께', 일반적으로는 '에게'"
+        ],
+        "timeLimit": 60,
+        "allowMultipleAttempts": true,
+        "showProgressBar": true
+      },
+      "rules": {
+        "passingScore": 1.0,
+        "allowSkip": false,
+        "maxAttempts": 0
+      }
+    },
+    {
+      "activityId": "activity-003",
+      "template": "fill-in-blanks@1.0.0",
+      "params": {
+        "title": "문장 완성하기",
+        "sentence": "어제 {blank1}에서 {blank2}를 먹고 {blank3}를 봤다.",
+        "blanks": [
+          {
+            "id": "blank-1",
+            "position": "{blank1}",
+            "answer": "식당",
+            "alternatives": ["식당", "음식점", "레스토랑"]
+          },
+          {
+            "id": "blank-2",
+            "position": "{blank2}",
+            "answer": "밥",
+            "alternatives": ["밥", "음식", "식사"]
+          },
+          {
+            "id": "blank-3",
+            "position": "{blank3}",
+            "answer": "영화",
+            "alternatives": ["영화", "영화"]
+          }
+        ],
+        "caseSensitive": false,
+        "showHints": true,
+        "hints": [
+          "첫 번째: 음식을 먹는 장소",
+          "두 번째: 먹을 수 있는 것",
+          "세 번째: 극장에서 보는 것"
+        ],
+        "timeLimit": 90,
+        "allowMultipleAttempts": true,
+        "showProgressBar": true
+      },
+      "rules": {
+        "passingScore": 0.7,
+        "allowSkip": true,
+        "maxAttempts": 0
+      }
+    },
+    {
+      "activityId": "activity-004",
+      "template": "fill-in-blanks@1.0.0",
+      "params": {
+        "title": "속담 완성하기",
+        "sentence": "{blank1}도 제 말 하면 온다.",
+        "blanks": [
+          {
+            "id": "blank-1",
+            "position": "{blank1}",
+            "answer": "호랑이",
+            "alternatives": ["호랑이", "범"]
+          }
+        ],
+        "caseSensitive": false,
+        "showHints": true,
+        "hints": [
+          "한국의 전통 속담입니다",
+          "무서운 동물이 나오는 속담",
+          "말을 조심하라는 의미"
+        ],
+        "timeLimit": 45,
+        "allowMultipleAttempts": true,
+        "showProgressBar": true
+      },
+      "rules": {
+        "passingScore": 1.0,
+        "allowSkip": false,
+        "maxAttempts": 3
+      }
+    },
+    {
+      "activityId": "activity-005",
+      "template": "fill-in-blanks@1.0.0",
+      "params": {
+        "title": "역사 지식 테스트",
+        "sentence": "세종대왕은 {blank1}을 창제하여 백성들이 {blank2}을 배울 수 있도록 했습니다.",
+        "blanks": [
+          {
+            "id": "blank-1",
+            "position": "{blank1}",
+            "answer": "한글",
+            "alternatives": ["한글", "훈민정음"]
+          },
+          {
+            "id": "blank-2",
+            "position": "{blank2}",
+            "answer": "글",
+            "alternatives": ["글", "문자", "글자"]
+          }
+        ],
+        "caseSensitive": false,
+        "showHints": true,
+        "hints": [
+          "우리나라 고유의 문자",
+          "조선시대 세종대왕이 만든 것",
+          "읽고 쓰는 것"
+        ],
+        "timeLimit": 60,
+        "allowMultipleAttempts": true,
+        "showProgressBar": true,
+        "feedback": {
+          "correct": "훌륭합니다! 한글의 역사를 잘 알고 계시네요! 🎉",
+          "incorrect": "다시 한 번 생각해보세요. 💭",
+          "timeout": "시간이 종료되었습니다! ⏰",
+          "complete": "완벽합니다! 한국 역사 지식이 훌륭하네요! 🌟"
+        }
+      },
+      "rules": {
+        "passingScore": 1.0,
+        "allowSkip": false,
+        "maxAttempts": 0
+      }
+    }
+  ],
+  "grading": {
+    "totalPoints": 100,
+    "passingScore": 70,
+    "scoreWeights": {
+      "activity-001": 15,
+      "activity-002": 15,
+      "activity-003": 20,
+      "activity-004": 20,
+      "activity-005": 30
+    }
+  }
+}
