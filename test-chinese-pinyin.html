@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🀄 Chinese Pinyin Match Plugin Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .test-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .test-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .test-controls {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .scenario-selector {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-selector label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .scenario-selector select {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .test-btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-btn.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .test-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .test-btn.secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .test-btn.secondary:hover {
+            background: #e5e7eb;
+        }
+
+        #plugin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .status-indicator {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-indicator h3 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .status-icon {
+            font-size: 1.2rem;
+        }
+
+        .event-log {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event-log h3 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .event-item {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background: #f3f4f6;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .event-item.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .event-item.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>🀄 Chinese Pinyin Match Plugin Test</h1>
+        <p>중국어 병음-한자 매칭 플러그인 테스트 페이지</p>
+    </div>
+
+    <div class="test-controls">
+        <div class="scenario-selector">
+            <label for="scenario-select">테스트 시나리오:</label>
+            <select id="scenario-select">
+                <option value="basic">기본 테스트 (6개 단어)</option>
+                <option value="simple">간단한 테스트 (3개 단어)</option>
+                <option value="advanced">고급 테스트 (8개 단어)</option>
+                <option value="custom">커스텀 (설정 변경)</option>
+            </select>
+        </div>
+        <div class="test-buttons">
+            <button class="test-btn primary" id="start-btn">▶️ 테스트 시작</button>
+            <button class="test-btn secondary" id="clear-btn">🗑️ 초기화</button>
+        </div>
+    </div>
+
+    <div id="plugin-container"></div>
+
+    <div class="status-indicator">
+        <h3>📊 플러그인 상태</h3>
+        <div class="status-item">
+            <span class="status-icon">🔌</span>
+            <span id="plugin-status">플러그인 로딩 중...</span>
+        </div>
+        <div class="status-item">
+            <span class="status-icon">📝</span>
+            <span id="activity-status">활동 대기 중</span>
+        </div>
+    </div>
+
+    <div class="event-log">
+        <h3>📋 이벤트 로그</h3>
+        <div id="event-log-content"></div>
+    </div>
+
+    <script>
+        // 간단한 플러그인 시스템 시뮬레이션
+        const plugins = {};
+        
+        window.registerEduPlugin = function(name, version, plugin) {
+            const key = `${name}@${version}`;
+            plugins[key] = plugin;
+            console.log(`✅ 플러그인 등록: ${key}`);
+            logEvent(`플러그인 등록 완료: ${key}`, 'success');
+            document.getElementById('plugin-status').textContent = `플러그인 로드됨: ${key}`;
+        };
+
+        // 이벤트 로깅
+        function logEvent(message, type = 'info') {
+            const logContent = document.getElementById('event-log-content');
+            const eventItem = document.createElement('div');
+            eventItem.className = `event-item ${type}`;
+            eventItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContent.insertBefore(eventItem, logContent.firstChild);
+        }
+
+        // 테스트 시나리오
+        const scenarios = {
+            basic: {
+                title: '🀄 중국어 병음-한자 매칭 (기본)',
+                instruction: '한자를 올바른 병음으로 드래그해서 연결하세요!',
+                pairs: [
+                    { hanzi: '학습', pinyin: 'xuéxí', meaning: '공부하다', category: '동사' },
+                    { hanzi: '朋友', pinyin: 'péngyǒu', meaning: '친구', category: '명사' },
+                    { hanzi: '学校', pinyin: 'xuéxiào', meaning: '학교', category: '명사' },
+                    { hanzi: '老师', pinyin: 'lǎoshī', meaning: '선생님', category: '명사' },
+                    { hanzi: '中国', pinyin: 'zhōngguó', meaning: '중국', category: '명사' },
+                    { hanzi: '汉语', pinyin: 'hànyǔ', meaning: '중국어', category: '명사' }
+                ],
+                showMeaning: true,
+                showCategory: true,
+                shuffleCards: true
+            },
+            simple: {
+                title: '🀄 간단한 중국어 매칭',
+                instruction: '3개의 단어를 연결해보세요!',
+                pairs: [
+                    { hanzi: '你好', pinyin: 'nǐhǎo', meaning: '안녕', category: '인사' },
+                    { hanzi: '谢谢', pinyin: 'xièxie', meaning: '감사합니다', category: '인사' },
+                    { hanzi: '再见', pinyin: 'zàijiàn', meaning: '안녕히 가세요', category: '인사' }
+                ],
+                showMeaning: true,
+                showCategory: true,
+                shuffleCards: true
+            },
+            advanced: {
+                title: '🀄 고급 중국어 매칭',
+                instruction: '더 많은 단어에 도전하세요!',
+                pairs: [
+                    { hanzi: '学习', pinyin: 'xuéxí', meaning: '공부하다', category: '동사' },
+                    { hanzi: '朋友', pinyin: 'péngyǒu', meaning: '친구', category: '명사' },
+                    { hanzi: '学校', pinyin: 'xuéxiào', meaning: '학교', category: '명사' },
+                    { hanzi: '老师', pinyin: 'lǎoshī', meaning: '선생님', category: '명사' },
+                    { hanzi: '中国', pinyin: 'zhōngguó', meaning: '중국', category: '명사' },
+                    { hanzi: '汉语', pinyin: 'hànyǔ', meaning: '중국어', category: '명사' },
+                    { hanzi: '书', pinyin: 'shū', meaning: '책', category: '명사' },
+                    { hanzi: '吃饭', pinyin: 'chīfàn', meaning: '식사하다', category: '동사' }
+                ],
+                showMeaning: true,
+                showCategory: true,
+                shuffleCards: true
+            },
+            custom: {
+                title: '🀄 커스텀 중국어 매칭',
+                instruction: '설정을 변경한 테스트입니다',
+                pairs: [
+                    { hanzi: '你好', pinyin: 'nǐhǎo', meaning: '안녕', category: '인사' },
+                    { hanzi: '谢谢', pinyin: 'xièxie', meaning: '감사합니다', category: '인사' },
+                    { hanzi: '对不起', pinyin: 'duìbuqǐ', meaning: '미안합니다', category: '인사' },
+                    { hanzi: '没关系', pinyin: 'méiguānxi', meaning: '괜찮습니다', category: '인사' }
+                ],
+                showMeaning: false, // 뜻 숨김
+                showCategory: false, // 품사 숨김
+                shuffleCards: false // 섞지 않음
+            }
+        };
+
+        // 테스트 시작
+        document.getElementById('start-btn').addEventListener('click', () => {
+            const selectedScenario = document.getElementById('scenario-select').value;
+            const scenario = scenarios[selectedScenario];
+            
+            logEvent(`테스트 시작: ${selectedScenario}`, 'info');
+            document.getElementById('activity-status').textContent = `활동 진행 중: ${selectedScenario}`;
+            
+            const activity = {
+                activityId: `test-${selectedScenario}-${Date.now()}`,
+                template: 'chinese-pinyin-match@1.0.0',
+                params: scenario
+            };
+            
+            const plugin = plugins['chinese-pinyin-match@1.0.0'];
+            if (plugin) {
+                const container = document.getElementById('plugin-container');
+                container.innerHTML = '';
+                plugin.render(activity, container);
+                logEvent('플러그인 렌더링 완료', 'success');
+            } else {
+                logEvent('플러그인을 찾을 수 없습니다!', 'error');
+            }
+        });
+
+        // 초기화
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            document.getElementById('plugin-container').innerHTML = '';
+            document.getElementById('activity-status').textContent = '활동 대기 중';
+            logEvent('컨테이너 초기화', 'info');
+        });
+
+        // 페이지 로드 시 첫 번째 테스트 자동 실행
+        window.addEventListener('load', () => {
+            logEvent('페이지 로드 완료', 'success');
+            setTimeout(() => {
+                document.getElementById('start-btn').click();
+            }, 500);
+        });
+    </script>
+
+    <!-- 플러그인 로드 -->
+    <script src="plugins/chinese-pinyin-match-plugin.js"></script>
+</body>
+</html>

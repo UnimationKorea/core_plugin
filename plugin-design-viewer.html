@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>외부 플러그인 시스템 설계 문서</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f7fafc;
+            border-bottom: 2px solid #e2e8f0;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 3rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 5px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
+        }
+
+        /* Markdown 스타일링 */
+        .markdown-content {
+            line-height: 1.8;
+            color: #2d3748;
+        }
+
+        .markdown-content h1 {
+            font-size: 2.5rem;
+            margin: 2rem 0 1rem;
+            color: #1a202c;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .markdown-content h2 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: #2d3748;
+        }
+
+        .markdown-content h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.75rem;
+            color: #4a5568;
+        }
+
+        .markdown-content h4 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem;
+            color: #718096;
+        }
+
+        .markdown-content p {
+            margin: 1rem 0;
+            line-height: 1.8;
+        }
+
+        .markdown-content code {
+            background: #f7fafc;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            color: #e53e3e;
+        }
+
+        .markdown-content pre {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .markdown-content pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        .markdown-content li {
+            margin: 0.5rem 0;
+        }
+
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .markdown-content th,
+        .markdown-content td {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .markdown-content th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .markdown-content tr:hover {
+            background: #f7fafc;
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            color: #4a5568;
+            font-style: italic;
+        }
+
+        .markdown-content a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .markdown-content a:hover {
+            text-decoration: underline;
+        }
+
+        .markdown-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #4a5568;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            color: #c53030;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔌 외부 플러그인 시스템</h1>
+            <p>설계 문서 및 개발 가이드</p>
+        </div>
+
+        <div class="tabs" id="tabs">
+            <button class="tab active" data-doc="summary">📋 요약 가이드</button>
+            <button class="tab" data-doc="detailed">📖 상세 설계</button>
+            <button class="tab" data-doc="newtemplate">🆕 템플릿 추가</button>
+            <button class="tab" data-doc="quickstart">🚀 빠른 시작</button>
+        </div>
+
+        <div class="content">
+            <div class="loading" id="loading">문서 로딩 중...</div>
+            <div class="markdown-content" id="markdown-content" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 문서 파일 매핑
+        const DOCUMENTS = {
+            summary: 'PLUGIN_SYSTEM_SUMMARY.md',
+            detailed: 'EXTERNAL_PLUGIN_DESIGN.md',
+            newtemplate: 'NEW_TEMPLATE_GUIDE.md',
+            quickstart: null // 내장 콘텐츠
+        };
+
+        // 현재 로딩 상태
+        let isLoading = false;
+
+        // 빠른 시작 가이드 콘텐츠 (내장)
+        function getQuickstartContent() {
+            return `# 🚀 빠른 시작 가이드
+
+## 5분 만에 첫 플러그인 만들기
+
+### Step 1: 플러그인 코드 작성
+
+\`\`\`javascript
+// my-first-plugin.js
+(function() {
+  const MyFirstPlugin = {
+    name: 'my-first-plugin',
+    version: '1.0.0',
+    
+    getDefaultParams() {
+      return {
+        title: '안녕하세요!',
+        message: '첫 플러그인입니다.'
+      };
+    },
+    
+    async render(activity, container) {
+      const params = { ...this.getDefaultParams(), ...activity.params };
+      container.innerHTML = \\\`
+        <div style="padding: 2rem; text-align: center;">
+          <h2>\${params.title}</h2>
+          <p>\${params.message}</p>
+        </div>
+      \\\`;
+    }
+  };
+  
+  // 플러그인 등록
+  if (window.registerEduPlugin) {
+    window.registerEduPlugin(MyFirstPlugin.name, MyFirstPlugin.version, MyFirstPlugin);
+  }
+})();
+\`\`\`
+
+### Step 2: CDN 배포
+
+\`\`\`bash
+git add .
+git commit -m "feat: Add my-first-plugin"
+git tag v1.0.0
+git push origin main --tags
+\`\`\`
+
+### Step 3: 사용
+
+\`\`\`javascript
+// jsDelivr CDN URL
+https://cdn.jsdelivr.net/gh/username/my-first-plugin@1.0.0/my-first-plugin.js
+\`\`\`
+
+## 다음 단계
+
+- [📋 요약 가이드](PLUGIN_SYSTEM_SUMMARY.md) - 전체 개요
+- [🆕 템플릿 추가](NEW_TEMPLATE_GUIDE.md) - 상세 가이드
+- [📖 상세 설계](EXTERNAL_PLUGIN_DESIGN.md) - 아키텍처
+`;
+        }
+
+        // 문서 로드 함수
+        async function loadDocument(docType) {
+            if (isLoading) return;
+            isLoading = true;
+
+            console.log('📄 문서 로드:', docType);
+
+            const loadingDiv = document.getElementById('loading');
+            const contentDiv = document.getElementById('markdown-content');
+
+            // 로딩 표시
+            loadingDiv.style.display = 'block';
+            contentDiv.style.display = 'none';
+
+            try {
+                let markdownContent;
+
+                if (docType === 'quickstart') {
+                    markdownContent = getQuickstartContent();
+                } else {
+                    const filename = DOCUMENTS[docType];
+                    console.log('🌐 파일 로드:', filename);
+                    
+                    const response = await fetch(filename);
+                    if (!response.ok) {
+                        throw new Error(`파일을 불러올 수 없습니다: ${filename} (${response.status})`);
+                    }
+                    
+                    markdownContent = await response.text();
+                    console.log('✅ 파일 로드 완료:', markdownContent.length, '바이트');
+                }
+
+                // 마크다운을 HTML로 변환
+                console.log('🔄 마크다운 변환...');
+                let html;
+                if (typeof marked === 'function') {
+                    html = marked(markdownContent);
+                } else if (marked && typeof marked.parse === 'function') {
+                    html = marked.parse(markdownContent);
+                } else {
+                    throw new Error('marked 라이브러리를 사용할 수 없습니다.');
+                }
+
+                // HTML 렌더링
+                contentDiv.innerHTML = html;
+                loadingDiv.style.display = 'none';
+                contentDiv.style.display = 'block';
+
+                // 스크롤 맨 위로
+                document.querySelector('.content').scrollTop = 0;
+
+                console.log('✅ 문서 렌더링 완료');
+
+            } catch (error) {
+                console.error('❌ 오류:', error);
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ 오류 발생</h3>
+                        <p><strong>${error.message}</strong></p>
+                        <p>콘솔을 확인하여 자세한 정보를 확인하세요.</p>
+                    </div>
+                `;
+                loadingDiv.style.display = 'none';
+                contentDiv.style.display = 'block';
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // 탭 클릭 이벤트 핸들러
+        document.getElementById('tabs').addEventListener('click', function(e) {
+            const tab = e.target.closest('.tab');
+            if (!tab) return;
+
+            const docType = tab.getAttribute('data-doc');
+            console.log('🖱️ 탭 클릭:', docType);
+
+            // 모든 탭 비활성화
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            // 클릭한 탭 활성화
+            tab.classList.add('active');
+
+            // 문서 로드
+            loadDocument(docType);
+        });
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 페이지 로드 완료');
+
+            // marked 라이브러리 확인
+            if (typeof marked === 'undefined') {
+                console.error('❌ marked 라이브러리 로드 실패');
+                document.getElementById('markdown-content').innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ 라이브러리 오류</h3>
+                        <p>marked 마크다운 라이브러리를 로드할 수 없습니다.</p>
+                    </div>
+                `;
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('markdown-content').style.display = 'block';
+                return;
+            }
+
+            console.log('✅ marked 라이브러리 로드 완료');
+
+            // 기본 문서 로드 (약간의 지연)
+            setTimeout(function() {
+                loadDocument('summary');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
